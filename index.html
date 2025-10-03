@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ciência em Movimento — Protótipo</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#ffd54a;--muted:#9aa4b2}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#071029 0%, #08182b 100%);color:#e6eef8}
+    .app{max-width:1100px;margin:20px auto;padding:18px}
+    header{display:flex;align-items:center;gap:16px}
+    h1{margin:0;font-size:1.4rem}
+    .grid{display:grid;grid-template-columns:640px 1fr;gap:16px;margin-top:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.04)}
+    #videoWrap{position:relative;width:100%;height:480px;background:#000;border-radius:8px;overflow:hidden}
+    video{width:100%;height:100%;object-fit:cover}
+    canvas#overlay{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+    .hud{margin-top:10px;display:flex;gap:10px;align-items:center}
+    .btn{background:var(--accent);color:#082033;padding:8px 12px;border-radius:8px;border:none;font-weight:600;cursor:pointer}
+    .muted{color:var(--muted);font-size:0.95rem}
+    .panel{display:flex;flex-direction:column;gap:10px}
+    .phase{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
+    .questionModal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.6)}
+    .modalCard{background:#071227;padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);width:520px}
+    .choices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .choice{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.02)}
+    .score{font-weight:700;color:var(--accent)}
+    footer{margin-top:18px;color:var(--muted);font-size:0.9rem}
+    .small{font-size:0.85rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <img src="" alt="" style="width:56px;height:56px;border-radius:10px;background:linear-gradient(90deg,#ffd54a,#ffb74d);display:inline-block">
+      <div>
+        <h1>Ciência em Movimento — Protótipo</h1>
+        <div class="small">Jogo de captura de movimento com fases que desbloqueiam perguntas científicas.</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div id="videoWrap">
+          <video id="video" autoplay playsinline></video>
+          <canvas id="overlay"></canvas>
+        </div>
+
+        <div class="hud">
+          <div class="phase">Fase atual: <span id="phaseName">—</span></div>
+          <div class="phase">Progresso: <span id="phaseIdx">0</span>/<span id="phaseTotal">0</span></div>
+          <div style="flex:1"></div>
+          <div class="score">Pontos: <span id="score">0</span></div>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button id="startBtn" class="btn">Iniciar jogo</button>
+          <button id="calibrateBtn" class="btn" style="background:#6b9bd1">Calibrar (position)</button>
+          <div style="flex:1"></div>
+          <div class="muted">Use câmera, compare distância e movimentos amplos.</div>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <div>
+          <h3>Como jogar</h3>
+          <ol class="small">
+            <li>Permita acesso à câmera.</li>
+            <li>Pressione <strong>Iniciar jogo</strong>.</li>
+            <li>Realize a ação pedida na fase (pular, agachar, mover para o lado, levantar braços).</li>
+            <li>Ao completar a fase, responda a pergunta que aparece para ganhar pontos.</li>
+          </ol>
+        </div>
+
+        <div>
+          <h3>Fases (exemplo)</h3>
+          <div id="phasesList" class="small"></div>
+        </div>
+
+        <div>
+          <h3>Configuração</h3>
+          <div class="small">Tempo por fase: <span id="phaseTime">8</span>s</div>
+          <input id="phaseTimeInput" type="range" min="4" max="30" value="8" />
+        </div>
+
+        <footer>
+          Protótipo feito para feira de ciências — use em ambiente bem iluminado. Ajuste sensibilidade de calibração se necessário.
+        </footer>
+      </div>
+    </div>
+
+    <!-- Modal de pergunta -->
+    <div id="questionModal" class="questionModal" style="display:none">
+      <div class="modalCard">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong id="qTitle">Pergunta</strong>
+          <div class="small">Fase <span id="modalPhaseIdx">0</span></div>
+        </div>
+        <div id="qText" style="margin-top:10px"></div>
+        <div class="choices" id="choices"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dependências (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.20.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet@2.2.1/dist/posenet.min.js"></script>
+
+  <script>
+    /* ===== Banco de fases + perguntas (simples, editável) ===== */
+    const PHASES = [
+      { id: 'levantar_braços', name: 'Levantar os braços (2x)', action: 'raise_hands', desc: 'Levante ambos os braços acima da cabeça duas vezes.', question: {text:'Qual gás é essencial para a respiração humana?', choices:['Oxigênio','Nitrogênio','Dióxido de carbono','Hélio'], answer:0}},
+      { id: 'agachar', name: 'Agachar', action: 'squat', desc: 'Faça um agachamento completo.', question: {text:'Qual parte do corpo produz insulina?', choices:['Fígado','Pâncreas','Rim','Coração'], answer:1}},
+      { id: 'passo_lado', name: 'Andar para o lado', action: 'step_side', desc: 'Dê um passo largo para a esquerda e outro para a direita.', question: {text:'Qual é a camada mais externa da Terra?', choices:['Manto','Crosta','Núcleo','Litosfera'], answer:1}},
+      { id: 'pular', name: 'Pular', action: 'jump', desc: 'Dê dois pulos no mesmo lugar.', question: {text:'A água congela a 0°C. Isso é uma propriedade física ou química?', choices:['Física','Química'], answer:0}}
+    ];
+
+    // UI refs
+    const video = document.getElementById('video');
+    const overlay = document.getElementById('overlay');
+    const ctx = overlay.getContext('2d');
+    const startBtn = document.getElementById('startBtn');
+    const calibrateBtn = document.getElementById('calibrateBtn');
+    const phaseNameEl = document.getElementById('phaseName');
+    const phaseIdxEl = document.getElementById('phaseIdx');
+    const phaseTotalEl = document.getElementById('phaseTotal');
+    const phasesList = document.getElementById('phasesList');
+    const scoreEl = document.getElementById('score');
+    const questionModal = document.getElementById('questionModal');
+    const qText = document.getElementById('qText');
+    const choicesEl = document.getElementById('choices');
+    const modalPhaseIdx = document.getElementById('modalPhaseIdx');
+    const phaseTimeInput = document.getElementById('phaseTimeInput');
+    const phaseTimeDisplay = document.getElementById('phaseTime');
+
+    phaseTimeInput.addEventListener('input', ()=>{phaseTimeDisplay.textContent = phaseTimeInput.value});
+
+    // Game state
+    let detector = null; // posenet model
+    let modelReady = false;
+    let streaming = false;
+    let calibrated = false;
+    let baseline = {centerX:0, centerY:0};
+    let playing = false;
+    let currentPhaseIndex = 0;
+    let score = 0;
+    let phaseTimer = null;
+    let phaseStartTime = 0;
+
+    // Draw phase list
+    function renderPhaseList(){
+      phaseTotalEl.textContent = PHASES.length;
+      phasesList.innerHTML = PHASES.map((p,i)=>`<div style="padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.02);margin-bottom:6px"><strong>${i+1}. ${p.name}</strong><div class='small' style='margin-top:4px'>${p.desc}</div></div>`).join('');
+    }
+    renderPhaseList();
+
+    // Init camera
+    async function initCamera(){
+      const stream = await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}, audio:false});
+      video.srcObject = stream;
+      await video.play();
+      overlay.width = video.videoWidth;
+      overlay.height = video.videoHeight;
+      streaming = true;
+    }
+
+    // Load model
+    async function loadModel(){
+      detector = await posenet.load({architecture: 'MobileNetV1', outputStride:16, inputResolution:{width:640,height:480}, multiplier:0.75});
+      modelReady = true;
+      console.log('PoseNet ready');
+    }
+
+    // Calibrate: store center position
+    function calibrate(){
+      if(!streaming) return alert('Ative a câmera primeiro (permita o acesso)');
+      baseline.centerX = video.videoWidth/2;
+      baseline.centerY = video.videoHeight/2;
+      calibrated = true;
+      calibrateBtn.textContent = 'Posição calibrada ✓';
+      setTimeout(()=>{calibrateBtn.textContent='Calibrar (position)';},2000);
+    }
+
+    // Helpers: get keypoint by name
+    function getKey(kp,name){
+      return kp.find(p=>p.part===name);
+    }
+
+    // Simple action detectors
+    function detectRaiseHands(keypoints){
+      const leftW = getKey(keypoints,'leftWrist');
+      const rightW = getKey(keypoints,'rightWrist');
+      const nose = getKey(keypoints,'nose');
+      if(!leftW||!rightW||!nose) return false;
+      // If both wrists above nose by margin
+      return (leftW.position.y < nose.position.y - 20) && (rightW.position.y < nose.position.y - 20);
+    }
+    function detectSquat(keypoints){
+      const leftHip = getKey(keypoints,'leftHip');
+      const rightHip = getKey(keypoints,'rightHip');
+      const leftKnee = getKey(keypoints,'leftKnee');
+      const rightKnee = getKey(keypoints,'rightKnee');
+      if(!leftHip||!rightHip||!leftKnee||!rightKnee) return false;
+      const hipY = (leftHip.position.y + rightHip.position.y)/2;
+      const kneeY = (leftKnee.position.y + rightKnee.position.y)/2;
+      // squat when hips are close to knees (y values similar)
+      return (hipY - kneeY) > -10; // hipY slightly below kneeY when squat (camera perspective varies)
+    }
+    function detectJump(prevY, currentY){
+      // detect quick upward displacement of center (nose)
+      return (prevY - currentY) > 20; // moved up by >20px
+    }
+    function detectStepSide(prevX, currentX){
+      return Math.abs(currentX - prevX) > 40; // moved horizontally > 40px
+    }
+
+    // Draw skeleton and keypoints
+    function drawKeypoints(keypoints){
+      ctx.clearRect(0,0,overlay.width,overlay.height);
+      // draw keypoints
+      keypoints.forEach(k=>{
+        const {x,y} = k.position;
+        ctx.beginPath();
+        ctx.arc(x,y,4,0,Math.PI*2);
+        ctx.fillStyle = '#ffd54a'; ctx.fill();
+      });
+    }
+
+    // Game loop
+    let lastNose = null;
+    let lastTimestamp = 0;
+    let raiseCount = 0;
+    let jumpDetectedRecently = false;
+    let stepDetectedRecently = false;
+
+    async function loop(){
+      if(!streaming || !modelReady) return requestAnimationFrame(loop);
+      const pose = await detector.estimateSinglePose(video, {flipHorizontal:true});
+      drawKeypoints(pose.keypoints);
+
+      // get nose position
+      const nose = getKey(pose.keypoints,'nose');
+      if(nose){
+        const nx = nose.position.x; const ny = nose.position.y;
+        if(!lastNose) lastNose = {x:nx,y:ny};
+
+        // detect actions depending on current phase
+        if(playing){
+          const currentPhase = PHASES[currentPhaseIndex];
+          const action = currentPhase.action;
+
+          const now = performance.now();
+
+          if(action==='raise_hands'){
+            if(detectRaiseHands(pose.keypoints)){
+              // count distinct raises by time
+              if(now - lastTimestamp > 600){
+                raiseCount++;
+                lastTimestamp = now;
+              }
+            }
+            // success when raised twice
+            if(raiseCount>=2){
+              finishPhase(true);
+            }
+          }
+
+          if(action==='squat'){
+            if(detectSquat(pose.keypoints)){
+              finishPhase(true);
+            }
+          }
+
+          if(action==='jump'){
+            const prevY = lastNose.y; const currY = ny;
+            if(detectJump(prevY,currY) && !jumpDetectedRecently){
+              jumpDetectedRecently = true;
+              setTimeout(()=>{jumpDetectedRecently=false;},800);
+              // count two jumps
+              if(!window.__jumpCount) window.__jumpCount=1; else window.__jumpCount++;
+              if(window.__jumpCount>=2){ finishPhase(true); window.__jumpCount=0; }
+            }
+          }
+
+          if(action==='step_side'){
+            const prevX = lastNose.x; const currX = nx;
+            if(detectStepSide(prevX,currX) && !stepDetectedRecently){
+              stepDetectedRecently = true;
+              setTimeout(()=>{stepDetectedRecently=false;},700);
+              if(!window.__stepCount) window.__stepCount=1; else window.__stepCount++;
+              if(window.__stepCount>=2){ finishPhase(true); window.__stepCount=0; }
+            }
+          }
+
+          // phase timeout visual
+          const elapsed = (performance.now() - phaseStartTime)/1000;
+          if(elapsed > Number(phaseTimeInput.value)){
+            finishPhase(false);
+          }
+        }
+
+        lastNose.x = nx; lastNose.y = ny;
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    // Start game
+    startBtn.addEventListener('click', async ()=>{
+      if(!streaming) await initCamera();
+      if(!modelReady) await loadModel();
+      calibrated = true;
+      playing = true;
+      currentPhaseIndex = 0;
+      score = 0;
+      scoreEl.textContent = score;
+      phaseIdxEl.textContent = currentPhaseIndex+1;
+      phaseNameEl.textContent = PHASES[currentPhaseIndex].name;
+      phaseStartTime = performance.now();
+      raiseCount=0; window.__jumpCount=0; window.__stepCount=0;
+      requestAnimationFrame(loop);
+    });
+
+    calibrateBtn.addEventListener('click', ()=>{calibrate();});
+
+    function finishPhase(success){
+      playing = false;
+      clearTimeout(phaseTimer);
+      // show question (independent of success, but reward points when answered correctly)
+      showQuestionModal(PHASES[currentPhaseIndex], success);
+    }
+
+    // Show question modal
+    function showQuestionModal(phaseObj, success){
+      questionModal.style.display='flex';
+      qText.textContent = phaseObj.question.text;
+      choicesEl.innerHTML = '';
+      modalPhaseIdx.textContent = currentPhaseIndex+1;
+      phaseNameEl.textContent = phaseObj.name;
+      PHASES.forEach(()=>{});
+
+      phaseObj.question.choices.forEach((c,i)=>{
+        const btn = document.createElement('div');
+        btn.className='choice';
+        btn.textContent = c;
+        btn.addEventListener('click', ()=>{
+          const correct = (i === phaseObj.question.answer);
+          if(correct){ score += success? 20 : 10; }
+          else { score += 0; }
+          scoreEl.textContent = score;
+          questionModal.style.display='none';
+          // next phase
+          currentPhaseIndex++;
+          if(currentPhaseIndex >= PHASES.length){
+            // game over
+            showGameOver();
+          } else {
+            // reset and start next phase
+            playing = true;
+            phaseIdxEl.textContent = currentPhaseIndex+1;
+            phaseNameEl.textContent = PHASES[currentPhaseIndex].name;
+            phaseStartTime = performance.now();
+            raiseCount=0; window.__jumpCount=0; window.__stepCount=0;
+          }
+        });
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function showGameOver(){
+      // small result modal
+      const final = confirm('Fim do jogo! Sua pontuação: ' + score + '\nDeseja jogar novamente?');
+      if(final){ startBtn.click(); } else { phaseNameEl.textContent='—'; phaseIdxEl.textContent='0'; }
+    }
+
+    // start camera automatically (optional)
+    (async ()=>{
+      try{ await initCamera(); await loadModel(); }catch(e){console.warn('Erro ao iniciar câmera/modelo',e);}
+    })();
+  </script>
+</body>
+</html>
