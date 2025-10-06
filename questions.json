@@ -1,0 +1,1837 @@
+{
+  "lingua_portuguesa": [
+    {
+      "pergunta": "Qual é o principal objetivo de um texto argumentativo sobre bioeconomia e desenvolvimento sustentável?",
+      "alternativas": [
+        "A) Apresentar dados estatísticos sem análise",
+        "B) Narrar uma história fictícia sobre sustentabilidade",
+        "C) Defender um ponto de vista com argumentos fundamentados",
+        "D) Descrever processos químicos detalhadamente"
+      ],
+      "resposta_correta": "C) Defender um ponto de vista com argumentos fundamentados"
+    },
+    {
+      "pergunta": "Ao analisar um discurso sobre sustentabilidade, qual aspecto deve ser priorizado?",
+      "alternativas": [
+        "A) A beleza estética das palavras utilizadas",
+        "B) A estrutura argumentativa e os recursos persuasivos",
+        "C) A velocidade da fala do orador",
+        "D) O sotaque regional do locutor"
+      ],
+      "resposta_correta": "B) A estrutura argumentativa e os recursos persuasivos"
+    },
+    {
+      "pergunta": "Num debate sobre políticas ambientais, qual estratégia é mais eficaz para contra-argumentar?",
+      "alternativas": [
+        "A) Atacar pessoalmente o oponente",
+        "B) Usar dados consistentes e refutar argumentos específicos",
+        "C) Falar mais alto que os outros participantes",
+        "D) Repetir várias vezes o mesmo ponto"
+      ],
+      "resposta_correta": "B) Usar dados consistentes e refutar argumentos específicos"
+    },
+    {
+      "pergunta": "Na produção de um artigo sobre bioeconomia, qual elemento NÃO é essencial?",
+      "alternativas": [
+        "A) Tese clara e bem definida",
+        "B) Argumentação coerente e fundamentada",
+        "C) Opiniões pessoais sem embasamento",
+        "D) Conclusão que sintetiza as ideias principais"
+      ],
+      "resposta_correta": "C) Opiniões pessoais sem embasamento"
+    },
+    {
+      "pergunta": "Qual característica é fundamental para uma notícia sobre sustentabilidade ser considerada confiável?",
+      "alternativas": [
+        "A) Tom sensacionalista",
+        "B) Fontes verificáveis e especialistas citados",
+        "C) Opiniões polarizadas extremas",
+        "D) Linguagem excessivamente técnica"
+      ],
+      "resposta_correta": "B) Fontes verificáveis e especialistas citados"
+    },
+    {
+      "pergunta": "Num texto argumentativo sobre responsabilidade social, qual destes argumentos seria mais forte?",
+      "alternativas": [
+        "A) 'Todo mundo sabe que as empresas devem ser responsáveis'",
+        "B) 'Estudos mostram que empresas com práticas sustentáveis têm melhor desempenho financeiro'",
+        "C) 'Eu acho que as empresas deveriam ser mais legais'",
+        "D) 'Minha opinião é que sustentabilidade é importante'"
+      ],
+      "resposta_correta": "B) 'Estudos mostram que empresas com práticas sustentáveis têm melhor desempenho financeiro'"
+    },
+    {
+      "pergunta": "Qual é a função principal da introdução em um texto sobre impactos da bioeconomia?",
+      "alternativas": [
+        "A) Apresentar todos os dados estatísticos",
+        "B) Contextualizar o tema e apresentar a tese",
+        "C) Desenvolver os argumentos principais",
+        "D) Concluir o raciocínio"
+      ],
+      "resposta_correta": "B) Contextualizar o tema e apresentar a tese"
+    },
+    {
+      "pergunta": "Ao analisar um artigo científico sobre sustentabilidade, qual elemento indica credibilidade?",
+      "alternativas": [
+        "A) Uso excessivo de adjetivos",
+        "B) Referências bibliográficas atualizadas",
+        "C) Opiniões pessoais do autor",
+        "D) Linguagem poética e metafórica"
+      ],
+      "resposta_correta": "B) Referências bibliográficas atualizadas"
+    },
+    {
+      "pergunta": "Num debate oral, qual postura contribui para um diálogo produtivo sobre políticas ambientais?",
+      "alternativas": [
+        "A) Interromper frequentemente os outros",
+        "B) Escutar ativamente e responder aos pontos levantados",
+        "C) Manter-se inflexível em todas as posições",
+        "D) Ignorar argumentos contrários"
+      ],
+      "resposta_correta": "B) Escutar ativamente e responder aos pontos levantados"
+    },
+    {
+      "pergunta": "Qual destes recursos NÃO é adequado para um texto argumentativo sobre bioeconomia?",
+      "alternativas": [
+        "A) Dados de pesquisas científicas",
+        "B) Argumentos de autoridade",
+        "C) Falácias argumentativas",
+        "D) Evidências estatísticas"
+      ],
+      "resposta_correta": "C) Falácias argumentativas"
+    },
+    {
+      "pergunta": "Na análise de um discurso político sobre meio ambiente, o que deve ser observado?",
+      "alternativas": [
+        "A) Apenas o conteúdo explícito",
+        "B) Conteúdo explícito, implícito e a intencionalidade",
+        "C) Somente a aparência do orador",
+        "D) Apenas o tempo de duração do discurso"
+      ],
+      "resposta_correta": "B) Conteúdo explícito, implícito e a intencionalidade"
+    },
+    {
+      "pergunta": "Qual é a principal vantagem do debate oral sobre políticas ambientais?",
+      "alternativas": [
+        "A) A possibilidade de confronto direto de ideias",
+        "B) A ausência de necessidade de preparação",
+        "C) A garantia de consenso entre os participantes",
+        "D) A eliminação de discordâncias"
+      ],
+      "resposta_correta": "A) A possibilidade de confronto direto de ideias"
+    },
+    {
+      "pergunta": "Na produção de textos sobre desenvolvimento sustentável, qual abordagem é mais eficaz?",
+      "alternativas": [
+        "A) Visão unilateral e dogmática",
+        "B) Abordagem multidimensional e crítica",
+        "C) Linguagem excessivamente técnica",
+        "D) Foco exclusivo em aspectos econômicos"
+      ],
+      "resposta_correta": "B) Abordagem multidimensional e crítica"
+    },
+    {
+      "pergunta": "Qual destes elementos NÃO caracteriza um bom texto argumentativo?",
+      "alternativas": [
+        "A) Coesão e coerência",
+        "B) Progressão temática",
+        "C) Argumentos desconexos",
+        "D) Estratégias persuasivas"
+      ],
+      "resposta_correta": "C) Argumentos desconexos"
+    },
+    {
+      "pergunta": "Ao analisar notícias sobre sustentabilidade, qual fator é crucial para avaliar sua veracidade?",
+      "alternativas": [
+        "A) Número de compartilhamentos nas redes sociais",
+        "B) Confirmação por múltiplas fontes independentes",
+        "C) Tom alarmista da manchete",
+        "D) Popularidade do veículo de comunicação"
+      ],
+      "resposta_correta": "B) Confirmação por múltiplas fontes independentes"
+    }
+  ],
+
+  "quimica": [
+    {
+      "pergunta": "Qual é a principal reação química envolvida na produção de biodiesel?",
+      "alternativas": [
+        "A) Fotossíntese",
+        "B) Transesterificação",
+        "C) Fermentação alcoólica",
+        "D) Eletrólise"
+      ],
+      "resposta_correta": "B) Transesterificação"
+    },
+    {
+      "pergunta": "O que caracteriza um material biodegradável?",
+      "alternativas": [
+        "A) Não pode ser reciclado",
+        "B) Decompõe-se naturalmente por ação biológica",
+        "C) É sempre mais caro que os convencionais",
+        "D) Mantém-se intacto por séculos"
+      ],
+      "resposta_correta": "B) Decompõe-se naturalmente por ação biológica"
+    },
+    {
+      "pergunta": "Qual processo químico é fundamental na produção de biogás?",
+      "alternativas": [
+        "A) Digestão anaeróbia",
+        "B) Combustão completa",
+        "C) Polimerização",
+        "D) Saponificação"
+      ],
+      "resposta_correta": "A) Digestão anaeróbia"
+    },
+    {
+      "pergunta": "Na produção de etanol a partir da cana-de-açúcar, qual processo é utilizado?",
+      "alternativas": [
+        "A) Craqueamento catalítico",
+        "B) Fermentação por leveduras",
+        "C) Eletrólise da água",
+        "D) Hidrogenação"
+      ],
+      "resposta_correta": "B) Fermentação por leveduras"
+    },
+    {
+      "pergunta": "O que é reciclagem química?",
+      "alternativas": [
+        "A) Separação manual de resíduos",
+        "B) Processo que transforma resíduos em novos produtos químicos",
+        "C) Incineração de lixo",
+        "D) Apenas a reutilização de materiais"
+      ],
+      "resposta_correta": "B) Processo que transforma resíduos em novos produtos químicos"
+    },
+    {
+      "pergunta": "Qual vantagem os biocombustíveis apresentam em relação aos combustíveis fósseis?",
+      "alternativas": [
+        "A) São mais densos energeticamente",
+        "B) Têm balanço neutro de carbono",
+        "C) Não emitem poluentes na combustão",
+        "D) São mais baratos sempre"
+      ],
+      "resposta_correta": "B) Têm balanço neutro de carbono"
+    },
+    {
+      "pergunta": "Qual elemento NÃO é comumente encontrado na composição do biogás?",
+      "alternativas": [
+        "A) Metano (CH₄)",
+        "B) Dióxido de carbono (CO₂)",
+        "C) Nitrogênio (N₂)",
+        "D) Chumbo (Pb)"
+      ],
+      "resposta_correta": "D) Chumbo (Pb)"
+    },
+    {
+      "pergunta": "O que são bioplásticos?",
+      "alternativas": [
+        "A) Plásticos feitos exclusivamente de petróleo",
+        "B) Plásticos derivados de fontes renováveis como amido ou celulose",
+        "C) Plásticos que não derretem com o calor",
+        "D) Plásticos coloridos artificialmente"
+      ],
+      "resposta_correta": "B) Plásticos derivados de fontes renováveis como amido ou celulose"
+    },
+    {
+      "pergunta": "Qual processo químico é usado no reaproveitamento de óleos vegetais para biodiesel?",
+      "alternativas": [
+        "A) Pirólise",
+        "B) Transesterificação com metanol ou etanol",
+        "C) Destilação fracionada",
+        "D) Oxidação"
+      ],
+      "resposta_correta": "B) Transesterificação com metanol ou etanol"
+    },
+    {
+      "pergunta": "Qual a principal diferença entre biodiesel e diesel mineral?",
+      "alternativas": [
+        "A) O biodiesel é mais poluente",
+        "B) O biodiesel é de origem renovável",
+        "C) O diesel mineral é biodegradável",
+        "D) Não há diferenças significativas"
+      ],
+      "resposta_correta": "B) O biodiesel é de origem renovável"
+    },
+    {
+      "pergunta": "O que significa o termo 'química verde'?",
+      "alternativas": [
+        "A) Uso exclusivo de produtos naturais",
+        "B) Desenvolvimento de processos químicos menos poluentes",
+        "C) Química que usa apenas corantes verdes",
+        "D) Estudo de plantas medicinais"
+      ],
+      "resposta_correta": "B) Desenvolvimento de processos químicos menos poluentes"
+    },
+    {
+      "pergunta": "Qual destes NÃO é um exemplo de material biodegradável?",
+      "alternativas": [
+        "A) Plástico de amido de milho",
+        "B) Polietileno convencional",
+        "C) Papel",
+        "D) Madeira"
+      ],
+      "resposta_correta": "B) Polietileno convencional"
+    },
+    {
+      "pergunta": "Na produção de etanol de segunda geração, qual material é utilizado?",
+      "alternativas": [
+        "A) Apenas sacarose da cana",
+        "B) Resíduos lignocelulósicos",
+        "C) Petróleo",
+        "D) Gás natural"
+      ],
+      "resposta_correta": "B) Resíduos lignocelulósicos"
+    },
+    {
+      "pergunta": "Qual é o principal componente do biogás?",
+      "alternativas": [
+        "A) Dióxido de carbono",
+        "B) Nitrogênio",
+        "C) Metano",
+        "D) Oxigênio"
+      ],
+      "resposta_correta": "C) Metano"
+    },
+    {
+      "pergunta": "O que é compostagem?",
+      "alternativas": [
+        "A) Processo de reciclagem de metais",
+        "B) Decomposição controlada de matéria orgânica",
+        "C) Incineração de resíduos perigosos",
+        "D) Separação de lixo seco e molhado"
+      ],
+      "resposta_correta": "B) Decomposição controlada de matéria orgânica"
+    }
+  ],
+
+  "matematica": [
+    {
+      "pergunta": "Qual medida estatística é mais adequada para representar o consumo médio de energia de uma população?",
+      "alternativas": [
+        "A) Moda",
+        "B) Mediana",
+        "C) Média aritmética",
+        "D) Desvio padrão"
+      ],
+      "resposta_correta": "C) Média aritmética"
+    },
+    {
+      "pergunta": "Num modelo matemático de crescimento sustentável, qual função geralmente representa melhor esse crescimento?",
+      "alternativas": [
+        "A) Função exponencial ilimitada",
+        "B) Função logística (curva S)",
+        "C) Função linear constante",
+        "D) Função quadrática"
+      ],
+      "resposta_correta": "B) Função logística (curva S)"
+    },
+    {
+      "pergunta": "Como se calcula a eficiência energética de um sistema?",
+      "alternativas": [
+        "A) Energia útil / Energia total consumida",
+        "B) Energia total consumida / Energia útil",
+        "C) Custo da energia / Energia produzida",
+        "D) Energia perdida / Energia total"
+      ],
+      "resposta_correta": "A) Energia útil / Energia total consumida"
+    },
+    {
+      "pergunta": "Qual conceito matemático é usado para prever impactos ambientais futuros?",
+      "alternativas": [
+        "A) Geometria euclidiana",
+        "B) Modelagem matemática",
+        "C) Aritmética básica",
+        "D) Teoria dos conjuntos"
+      ],
+      "resposta_correta": "B) Modelagem matemática"
+    },
+    {
+      "pergunta": "O que representa o coeficiente de correlação em estatísticas ambientais?",
+      "alternativas": [
+        "A) A causalidade entre duas variáveis",
+        "B) A intensidade da relação entre duas variáveis",
+        "C) A diferença média entre grupos",
+        "D) A variabilidade dos dados"
+      ],
+      "resposta_correta": "B) A intensidade da relação entre duas variáveis"
+    },
+    {
+      "pergunta": "Qual cálculo é usado para determinar a pegada de carbono?",
+      "alternativas": [
+        "A) Soma das emissões de gases de efeito estufa",
+        "B) Média de consumo de água",
+        "C) Produto do lixo gerado",
+        "D) Divisão da população por área"
+      ],
+      "resposta_correta": "A) Soma das emissões de gases de efeito estufa"
+    },
+    {
+      "pergunta": "Na análise de dados sobre poluição, qual gráfico é mais adequado para mostrar a evolução temporal?",
+      "alternativas": [
+        "A) Gráfico de pizza",
+        "B) Gráfico de linhas",
+        "C) Gráfico de barras horizontais",
+        "D) Diagrama de Venn"
+      ],
+      "resposta_correta": "B) Gráfico de linhas"
+    },
+    {
+      "pergunta": "O que é taxa de crescimento sustentável?",
+      "alternativas": [
+        "A) Crescimento máximo possível",
+        "B) Crescimento que pode ser mantido sem esgotar recursos",
+        "C) Crescimento exponencial contínuo",
+        "D) Crescimento zero"
+      ],
+      "resposta_correta": "B) Crescimento que pode ser mantido sem esgotar recursos"
+    },
+    {
+      "pergunta": "Qual indicador mede a desigualdade na distribuição de recursos?",
+      "alternativas": [
+        "A) Coeficiente de Gini",
+        "B) Média aritmética",
+        "C) Mediana",
+        "D) Moda"
+      ],
+      "resposta_correta": "A) Coeficiente de Gini"
+    },
+    {
+      "pergunta": "Como se calcula o retorno sobre investimento (ROI) em projetos sustentáveis?",
+      "alternativas": [
+        "A) (Ganho - Investimento) / Investimento",
+        "B) Investimento / Ganho",
+        "C) Ganho × Investimento",
+        "D) Ganho - Investimento"
+      ],
+      "resposta_correta": "A) (Ganho - Investimento) / Investimento"
+    },
+    {
+      "pergunta": "O que representa uma função de produção na economia sustentável?",
+      "alternativas": [
+        "A) A relação entre insumos e produtos",
+        "B) O custo de oportunidade",
+        "C) A taxa de juros",
+        "D) A inflação"
+      ],
+      "resposta_correta": "A) A relação entre insumos e produtos"
+    },
+    {
+      "pergunta": "Qual tipo de amostragem é mais adequado para pesquisas sobre consumo energético?",
+      "alternativas": [
+        "A) Amostragem por conveniência",
+        "B) Amostragem aleatória estratificada",
+        "C) Amostragem intencional",
+        "D) Amostragem por voluntários"
+      ],
+      "resposta_correta": "B) Amostragem aleatória estratificada"
+    },
+    {
+      "pergunta": "O que mede o índice de desenvolvimento sustentável?",
+      "alternativas": [
+        "A) Apenas crescimento econômico",
+        "B) Progresso integrando aspectos econômicos, sociais e ambientais",
+        "C) Exclusivamente preservação ambiental",
+        "D) Somente igualdade social"
+      ],
+      "resposta_correta": "B) Progresso integrando aspectos econômicos, sociais e ambientais"
+    },
+    {
+      "pergunta": "Qual cálculo é usado para determinar a vida útil de recursos não renováveis?",
+      "alternativas": [
+        "A) Reservas / Consumo anual",
+        "B) Consumo anual / Reservas",
+        "C) Reservas × Consumo anual",
+        "D) Consumo anual - Reservas"
+      ],
+      "resposta_correta": "A) Reservas / Consumo anual"
+    },
+    {
+      "pergunta": "Na análise de ciclo de vida de produtos, qual abordagem matemática é utilizada?",
+      "alternativas": [
+        "A) Análise de sistemas complexos",
+        "B) Cálculo de derivadas simples",
+        "C) Geometria analítica",
+        "D) Trigonometria"
+      ],
+      "resposta_correta": "A) Análise de sistemas complexos"
+    }
+  ],
+
+  "ingles": [
+    {
+      "pergunta": "What does 'bioeconomy' mean?",
+      "alternativas": [
+        "A) Economy based on fossil fuels",
+        "B) Economy based on biological resources",
+        "C) Economy without money",
+        "D) Digital economy"
+      ],
+      "resposta_correta": "B) Economy based on biological resources"
+    },
+    {
+      "pergunta": "Which term refers to the ability to meet present needs without compromising future generations?",
+      "alternativas": [
+        "A) Economic growth",
+        "B) Sustainability",
+        "C) Globalization",
+        "D) Industrialization"
+      ],
+      "resposta_correta": "B) Sustainability"
+    },
+    {
+      "pergunta": "What is the main goal of the Paris Agreement?",
+      "alternativas": [
+        "A) Promote international trade",
+        "B) Limit global warming to well below 2°C",
+        "C) Establish a world government",
+        "D) Eliminate all taxes"
+      ],
+      "resposta_correta": "B) Limit global warming to well below 2°C"
+    },
+    {
+      "pergunta": "What does 'carbon footprint' measure?",
+      "alternativas": [
+        "A) Shoe size",
+        "B) Total greenhouse gas emissions",
+        "C) Air quality index",
+        "D) Water consumption"
+      ],
+      "resposta_correta": "B) Total greenhouse gas emissions"
+    },
+    {
+      "pergunta": "Which term describes energy from sources that are naturally replenished?",
+      "alternativas": [
+        "A) Fossil fuels",
+        "B) Renewable energy",
+        "C) Nuclear energy",
+        "D) Non-renewable energy"
+      ],
+      "resposta_correta": "B) Renewable energy"
+    },
+    {
+      "pergunta": "What is 'greenhouse effect'?",
+      "alternativas": [
+        "A) Process of growing plants indoors",
+        "B) Natural process that warms the Earth's surface",
+        "C) Method of building construction",
+        "D) Type of pollution"
+      ],
+      "resposta_correta": "B) Natural process that warms the Earth's surface"
+    },
+    {
+      "pergunta": "Which term refers to the variety of life in a particular habitat?",
+      "alternativas": [
+        "A) Bioeconomy",
+        "B) Biodiversity",
+        "C) Biotechnology",
+        "D) Biomass"
+      ],
+      "resposta_correta": "B) Biodiversity"
+    },
+    {
+      "pergunta": "What does 'circular economy' mean?",
+      "alternativas": [
+        "A) Economy based on continuous consumption",
+        "B) Economic system aimed at eliminating waste",
+        "C) Economy without recycling",
+        "D) Linear production model"
+      ],
+      "resposta_correta": "B) Economic system aimed at eliminating waste"
+    },
+    {
+      "pergunta": "Which term describes the practice of using resources responsibly?",
+      "alternativas": [
+        "A) Stewardship",
+        "B) Exploitation",
+        "C) Consumption",
+        "D) Depletion"
+      ],
+      "resposta_correta": "A) Stewardship"
+    },
+    {
+      "pergunta": "What is 'climate change'?",
+      "alternativas": [
+        "A) Daily weather variations",
+        "B) Long-term changes in global weather patterns",
+        "C) Seasonal temperature changes",
+        "D) Local atmospheric conditions"
+      ],
+      "resposta_correta": "B) Long-term changes in global weather patterns"
+    },
+    {
+      "pergunta": "Which term refers to the development that meets present needs without compromising future generations?",
+      "alternativas": [
+        "A) Economic development",
+        "B) Sustainable development",
+        "C) Rapid development",
+        "D) Industrial development"
+      ],
+      "resposta_correta": "B) Sustainable development"
+    },
+    {
+      "pergunta": "What does 'zero waste' mean?",
+      "alternativas": [
+        "A) No garbage collection",
+        "B) Philosophy that encourages waste prevention",
+        "C) Complete absence of consumption",
+        "D) Illegal dumping"
+      ],
+      "resposta_correta": "B) Philosophy that encourages waste prevention"
+    },
+    {
+      "pergunta": "Which term describes the process of restoring degraded ecosystems?",
+      "alternativas": [
+        "A) Deforestation",
+        "B) Ecological restoration",
+        "C) Urbanization",
+        "D) Industrialization"
+      ],
+      "resposta_correta": "B) Ecological restoration"
+    },
+    {
+      "pergunta": "What is 'carbon neutrality'?",
+      "alternativas": [
+        "A) Having no carbon in atmosphere",
+        "B) Net-zero carbon dioxide emissions",
+        "C) Using only carbon-based fuels",
+        "D) Eliminating all carbon compounds"
+      ],
+      "resposta_correta": "B) Net-zero carbon dioxide emissions"
+    },
+    {
+      "pergunta": "Which term refers to the practice of using less energy?",
+      "alternativas": [
+        "A) Energy efficiency",
+        "B) Energy consumption",
+        "C) Energy production",
+        "D) Energy waste"
+      ],
+      "resposta_correta": "A) Energy efficiency"
+    }
+  ],
+
+  "biologia": [
+    {
+      "pergunta": "Qual ciclo biogeoquímico é fundamental para a produção de energia nos ecossistemas?",
+      "alternativas": [
+        "A) Ciclo do carbono",
+        "B) Ciclo do nitrogênio",
+        "C) Ciclo da água",
+        "D) Ciclo do fósforo"
+      ],
+      "resposta_correta": "A) Ciclo do carbono"
+    },
+    {
+      "pergunta": "Como a biotecnologia contribui para a sustentabilidade?",
+      "alternativas": [
+        "A) Aumentando o uso de agrotóxicos",
+        "B) Desenvolvendo organismos que demandam mais recursos",
+        "C) Criando culturas resistentes a pragas e secas",
+        "D) Reduzindo a biodiversidade"
+      ],
+      "resposta_correta": "C) Criando culturas resistentes a pragas e secas"
+    },
+    {
+      "pergunta": "O que é biodiversidade?",
+      "alternativas": [
+        "A) Variedade de espécies em um ecossistema",
+        "B) Apenas o número de animais",
+        "C) Quantidade de plantas medicinais",
+        "D) Disponibilidade de recursos minerais"
+      ],
+      "resposta_correta": "A) Variedade de espécies em um ecossistema"
+    },
+    {
+      "pergunta": "Qual processo biológico é essencial para a produção de biocombustíveis?",
+      "alternativas": [
+        "A) Fotossíntese",
+        "B) Respiração celular",
+        "C) Digestão animal",
+        "D) Transpiração"
+      ],
+      "resposta_correta": "A) Fotossíntese"
+    },
+    {
+      "pergunta": "O que são serviços ecossistêmicos?",
+      "alternativas": [
+        "A) Benefícios que os seres humanos obtêm dos ecossistemas",
+        "B) Serviços de limpeza ambiental",
+        "C) Empresas que trabalham com ecologia",
+        "D) Organizações não governamentais"
+      ],
+      "resposta_correta": "A) Benefícios que os seres humanos obtêm dos ecossistemas"
+    },
+    {
+      "pergunta": "Como a engenharia genética pode ajudar na conservação de espécies?",
+      "alternativas": [
+        "A) Criando espécies completamente novas",
+        "B) Aumentando a diversidade genética de populações ameaçadas",
+        "C) Eliminando predadores naturais",
+        "D) Reduzindo o tamanho dos habitats"
+      ],
+      "resposta_correta": "B) Aumentando a diversidade genética de populações ameaçadas"
+    },
+    {
+      "pergunta": "Qual é a principal causa da perda de biodiversidade atualmente?",
+      "alternativas": [
+        "A) Mudanças climáticas naturais",
+        "B) Ação humana e destruição de habitats",
+        "C) Competição entre espécies",
+        "D) Ciclos evolutivos normais"
+      ],
+      "resposta_correta": "B) Ação humana e destruição de habitats"
+    },
+    {
+      "pergunta": "O que são corredores ecológicos?",
+      "alternativas": [
+        "A) Faixas de habitat que conectam áreas protegidas",
+        "B) Estradas para animais",
+        "C) Cercas para delimitar reservas",
+        "D) Túneis subterrâneos"
+      ],
+      "resposta_correta": "A) Faixas de habitat que conectam áreas protegidas"
+    },
+    {
+      "pergunta": "Qual a importância dos decompositores nos ecossistemas?",
+      "alternativas": [
+        "A) Reciclam nutrientes para serem reutilizados",
+        "B) Apenas causam doenças",
+        "C) Consomem os produtores primários",
+        "D) Competem com os herbívoros"
+      ],
+      "resposta_correta": "A) Reciclam nutrientes para serem reutilizados"
+    },
+    {
+      "pergunta": "O que é desenvolvimento sustentável na perspectiva biológica?",
+      "alternativas": [
+        "A) Uso dos recursos naturais dentro da capacidade de regeneração dos ecossistemas",
+        "B) Exploração máxima dos recursos disponíveis",
+        "C) Preservação total sem uso humano",
+        "D) Substituição completa da natureza por tecnologia"
+      ],
+      "resposta_correta": "A) Uso dos recursos naturais dentro da capacidade de regeneração dos ecossistemas"
+    },
+    {
+      "pergunta": "Como a agroecologia contribui para a sustentabilidade?",
+      "alternativas": [
+        "A) Aumentando o uso de insumos químicos",
+        "B) Integrando conhecimentos tradicionais e científicos",
+        "C) Monoculturas em grande escala",
+        "D) Dependência exclusiva de transgênicos"
+      ],
+      "resposta_correta": "B) Integrando conhecimentos tradicionais e científicos"
+    },
+    {
+      "pergunta": "O que são espécies bioindicadoras?",
+      "alternativas": [
+        "A) Espécies que indicam a qualidade ambiental",
+        "B) Espécies que causam doenças",
+        "C) Espécies domesticadas",
+        "D) Espécies recém-descobertas"
+      ],
+      "resposta_correta": "A) Espécies que indicam a qualidade ambiental"
+    },
+    {
+      "pergunta": "Qual a relação entre desmatamento e ciclo da água?",
+      "alternativas": [
+        "A) Desmatamento não afeta o ciclo da água",
+        "B) Reduz a evapotranspiração e altera regimes de chuva",
+        "C) Aumenta a infiltração de água no solo",
+        "D) Melhora a qualidade da água"
+      ],
+      "resposta_correta": "B) Reduz a evapotranspiração e altera regimes de chuva"
+    },
+    {
+      "pergunta": "O que é resiliência ecológica?",
+      "alternativas": [
+        "A) Capacidade de um ecossistema resistir a perturbações",
+        "B) Velocidade de crescimento populacional",
+        "C) Tamanho máximo de uma população",
+        "D) Número de espécies em uma área"
+      ],
+      "resposta_correta": "A) Capacidade de um ecossistema resistir a perturbações"
+    },
+    {
+      "pergunta": "Como a biologia sintética pode ajudar na sustentabilidade?",
+      "alternativas": [
+        "A) Criando organismos para produzir biocombustíveis",
+        "B) Aumentando a poluição genética",
+        "C) Reduzindo a diversidade de cultivos",
+        "D) Substituindo todos os processos naturais"
+      ],
+      "resposta_correta": "A) Criando organismos para produzir biocombustíveis"
+    }
+  ],
+  
+  "fisica": [
+    {
+      "pergunta": "Qual é a principal vantagem das energias renováveis em relação às fontes fósseis?",
+      "alternativas": [
+        "A) São mais densas energeticamente",
+        "B) São inesgotáveis em escala humana",
+        "C) Têm custo sempre menor",
+        "D) Não requerem infraestrutura"
+      ],
+      "resposta_correta": "B) São inesgotáveis em escala humana"
+    },
+    {
+      "pergunta": "Como se calcula a eficiência energética de um sistema?",
+      "alternativas": [
+        "A) Energia útil / Energia total × 100%",
+        "B) Energia total / Energia útil × 100%",
+        "C) Energia perdida / Energia total × 100%",
+        "D) Energia útil × Energia total"
+      ],
+      "resposta_correta": "A) Energia útil / Energia total × 100%"
+    },
+    {
+      "pergunta": "Qual princípio físico é fundamental para o funcionamento de painéis solares?",
+      "alternativas": [
+        "A) Efeito Joule",
+        "B) Efeito fotovoltaico",
+        "C) Lei de Ohm",
+        "D) Princípio de Pascal"
+      ],
+      "resposta_correta": "B) Efeito fotovoltaico"
+    },
+    {
+      "pergunta": "O que diferencia a energia eólica de outras fontes renováveis?",
+      "alternativas": [
+        "A) Utiliza o movimento do ar para gerar eletricidade",
+        "B) Depende da queima de biomassa",
+        "C) Requer água em grande quantidade",
+        "D) É a mais cara entre todas"
+      ],
+      "resposta_correta": "A) Utiliza o movimento do ar para gerar eletricidade"
+    },
+    {
+      "pergunta": "Qual conceito físico explica por que materiais com boa isolabilidade térmica economizam energia?",
+      "alternativas": [
+        "A) Condutividade térmica",
+        "B) Capacidade calorífica",
+        "C) Dilatação térmica",
+        "D) Calor latente"
+      ],
+      "resposta_correta": "A) Condutividade térmica"
+    },
+    {
+      "pergunta": "Na produção de energia hidrelétrica, qual transformação energética ocorre?",
+      "alternativas": [
+        "A) Potencial gravitacional → Cinética → Elétrica",
+        "B) Química → Térmica → Elétrica",
+        "C) Nuclear → Térmica → Mecânica",
+        "D) Solar → Térmica → Elétrica"
+      ],
+      "resposta_correta": "A) Potencial gravitacional → Cinética → Elétrica"
+    },
+    {
+      "pergunta": "O que significa 'cogeração' de energia?",
+      "alternativas": [
+        "A) Produção simultânea de eletricidade e calor útil",
+        "B) Geração de energia por múltiplas fontes",
+        "C) Consumo colaborativo de energia",
+        "D) Armazenamento de energia em baterias"
+      ],
+      "resposta_correta": "A) Produção simultânea de eletricidade e calor útil"
+    },
+    {
+      "pergunta": "Qual parâmetro físico é crucial para avaliar a viabilidade de usinas eólicas?",
+      "alternativas": [
+        "A) Velocidade do vento",
+        "B) Umidade relativa do ar",
+        "C) Pressão atmosférica",
+        "D) Temperatura ambiente"
+      ],
+      "resposta_correta": "A) Velocidade do vento"
+    },
+    {
+      "pergunta": "Como o conceito de trabalho se relaciona com a sustentabilidade energética?",
+      "alternativas": [
+        "A) Quanto mais trabalho útil com menos energia, mais sustentável",
+        "B) Trabalho e sustentabilidade são conceitos independentes",
+        "C) Quanto mais energia consumida, mais trabalho realizado",
+        "D) Sustentabilidade requer máximo consumo energético"
+      ],
+      "resposta_correta": "A) Quanto mais trabalho útil com menos energia, mais sustentável"
+    },
+    {
+      "pergunta": "Qual destas é uma desvantagem da energia solar fotovoltaica?",
+      "alternativas": [
+        "A) Intermitência (não funciona à noite)",
+        "B) Emite gases poluentes durante operação",
+        "C) Requer combustível contínuo",
+        "D) Produz resíduos radioativos"
+      ],
+      "resposta_correta": "A) Intermitência (não funciona à noite)"
+    },
+    {
+      "pergunta": "O que é 'energia de biomassa'?",
+      "alternativas": [
+        "A) Energia obtida da matéria orgânica",
+        "B) Energia de reações nucleares",
+        "C) Energia de combustíveis fósseis",
+        "D) Energia de fontes geotérmicas"
+      ],
+      "resposta_correta": "A) Energia obtida da matéria orgânica"
+    },
+    {
+      "pergunta": "Qual princípio da termodinâmica limita a eficiência máxima das máquinas térmicas?",
+      "alternativas": [
+        "A) Segunda lei da termodinâmica",
+        "B) Primeira lei da termodinâmica",
+        "C) Lei zero da termodinâmica",
+        "D) Terceira lei da termodinâmica"
+      ],
+      "resposta_correta": "A) Segunda lei da termodinâmica"
+    },
+    {
+      "pergunta": "Por que a eficiência energética é importante para a sustentabilidade?",
+      "alternativas": [
+        "A) Reduz o consumo de recursos naturais",
+        "B) Aumenta o custo dos produtos",
+        "C) Diminui a qualidade dos serviços",
+        "D) Não tem relação com sustentabilidade"
+      ],
+      "resposta_correta": "A) Reduz o consumo de recursos naturais"
+    },
+    {
+      "pergunta": "Qual unidade física mede o consumo de energia elétrica?",
+      "alternativas": [
+        "A) Quilowatt-hora (kWh)",
+        "B) Joule por segundo",
+        "C) Volt-ampère",
+        "D) Ohm-metro"
+      ],
+      "resposta_correta": "A) Quilowatt-hora (kWh)"
+    },
+    {
+      "pergunta": "Como a física contribui para o desenvolvimento de materiais sustentáveis?",
+      "alternativas": [
+        "A) Estudando propriedades que permitem maior durabilidade e eficiência",
+        "B) Apenas analisando custos financeiros",
+        "C) Ignorando aspectos ambientais",
+        "D) Focando exclusivamente em aspectos estéticos"
+      ],
+      "resposta_correta": "A) Estudando propriedades que permitem maior durabilidade e eficiência"
+    }
+  ],
+
+  "historia": [
+    {
+      "pergunta": "Qual período histórico marcou o início dos grandes impactos ambientais causados pela humanidade?",
+      "alternativas": [
+        "A) Revolução Industrial",
+        "B) Idade Média",
+        "C) Período Neolítico",
+        "D) Grécia Antiga"
+      ],
+      "resposta_correta": "A) Revolução Industrial"
+    },
+    {
+      "pergunta": "O que caracterizou a transição da economia agrícola para a industrial?",
+      "alternativas": [
+        "A) Mecanização e uso intensivo de recursos",
+        "B) Retorno às práticas artesanais",
+        "C) Diminuição do consumo energético",
+        "D) Eliminação do comércio internacional"
+      ],
+      "resposta_correta": "A) Mecanização e uso intensivo de recursos"
+    },
+    {
+      "pergunta": "Qual foi o primeiro acordo internacional significativo sobre meio ambiente?",
+      "alternativas": [
+        "A) Protocolo de Kyoto (1997)",
+        "B) Conferência de Estocolmo (1972)",
+        "C) Acordo de Paris (2015)",
+        "D) Relatório Brundtland (1987)"
+      ],
+      "resposta_correta": "B) Conferência de Estocolmo (1972)"
+    },
+    {
+      "pergunta": "Como a Revolução Verde impactou o meio ambiente?",
+      "alternativas": [
+        "A) Aumentou a produtividade mas causou problemas ambientais",
+        "B) Reduziu completamente a fome mundial",
+        "C) Eliminou o uso de agrotóxicos",
+        "D) Promoveu apenas agricultura orgânica"
+      ],
+      "resposta_correta": "A) Aumentou a produtividade mas causou problemas ambientais"
+    },
+    {
+      "pergunta": "Qual evento histórico despertou a consciência ambiental global sobre chuva ácida?",
+      "alternativas": [
+        "A) A Grande Fumaça de Londres (1952)",
+        "B) Primeira Guerra Mundial",
+        "C) Revolução Francesa",
+        "D) Descobrimento da América"
+      ],
+      "resposta_correta": "A) A Grande Fumaça de Londres (1952)"
+    },
+    {
+      "pergunta": "O que propunha o Relatório 'Nosso Futuro Comum' de 1987?",
+      "alternativas": [
+        "A) O conceito de desenvolvimento sustentável",
+        "B) A exploração máxima dos recursos",
+        "C) O fim do crescimento econômico",
+        "D) A proibição de todas as indústrias"
+      ],
+      "resposta_correta": "A) O conceito de desenvolvimento sustentável"
+    },
+    {
+      "pergunta": "Qual crise ambiental marcou a década de 1970?",
+      "alternativas": [
+        "A) Primeira crise do petróleo",
+        "B) Acidente nuclear de Chernobyl",
+        "C) Vazamento da BP no Golfo do México",
+        "D) Tsunami no Oceano Índico"
+      ],
+      "resposta_correta": "A) Primeira crise do petróleo"
+    },
+    {
+      "pergunta": "Como as civilizações antigas lidavam com os recursos naturais?",
+      "alternativas": [
+        "A) Muitas desenvolveram práticas sustentáveis por necessidade",
+        "B) Exploravam sem qualquer preocupação",
+        "C) Tinham tecnologia para reparar todos os danos",
+        "D) Ignoravam completamente os recursos naturais"
+      ],
+      "resposta_correta": "A) Muitas desenvolveram práticas sustentáveis por necessidade"
+    },
+    {
+      "pergunta": "Qual o significado histórico do Protocolo de Montreal?",
+      "alternativas": [
+        "A) Acordo bem-sucedido para proteger a camada de ozônio",
+        "B) Primeiro tratado sobre mudanças climáticas",
+        "C) Acordo sobre comércio internacional",
+        "D) Tratado sobre armas nucleares"
+      ],
+      "resposta_correta": "A) Acordo bem-sucedido para proteger a camada de ozônio"
+    },
+    {
+      "pergunta": "O que desencadeou o movimento ambientalista moderno na década de 1960?",
+      "alternativas": [
+        "A) Publicação de 'Primavera Silenciosa' de Rachel Carson",
+        "B) Revolução Industrial",
+        "C) Segunda Guerra Mundial",
+        "D) Crise econômica de 1929"
+      ],
+      "resposta_correta": "A) Publicação de 'Primavera Silenciosa' de Rachel Carson"
+    },
+    {
+      "pergunta": "Como a colonização das Américas impactou o meio ambiente?",
+      "alternativas": [
+        "A) Introduziu espécies exóticas e alterou ecossistemas",
+        "B) Preservou completamente a natureza original",
+        "C) Reduziu a biodiversidade intencionalmente",
+        "D) Não causou impactos significativos"
+      ],
+      "resposta_correta": "A) Introduziu espécies exóticas e alterou ecossistemas"
+    },
+    {
+      "pergunta": "Qual a importância da Conferência das Nações Unidas sobre Meio Ambiente (Rio-92)?",
+      "alternativas": [
+        "A) Estabeleceu princípios importantes como o do poluidor-pagador",
+        "B) Foi a primeira reunião sobre meio ambiente",
+        "C) Aboliu o uso de combustíveis fósseis",
+        "D) Criou um governo ambiental mundial"
+      ],
+      "resposta_correta": "A) Estabeleceu princípios importantes como o do poluidor-pagador"
+    },
+    {
+      "pergunta": "Como a mineração histórica afetou o desenvolvimento das sociedades?",
+      "alternativas": [
+        "A) Impulsionou economias mas causou danos ambientais duradouros",
+        "B) Sempre foi realizada de forma sustentável",
+        "C) Nunca causou impactos significativos",
+        "D) Era a principal atividade econômica de todas as civilizações"
+      ],
+      "resposta_correta": "A) Impulsionou economias mas causou danos ambientais duradouros"
+    },
+    {
+      "pergunta": "O que aprendemos com o colapso de civilizações antigas em relação ao meio ambiente?",
+      "alternativas": [
+        "A) O esgotamento de recursos pode levar ao declínio civilizacional",
+        "B) O meio ambiente não influencia no desenvolvimento",
+        "C) Todas as civilizações colapsaram por guerras apenas",
+        "D) Recursos naturais são infinitos"
+      ],
+      "resposta_correta": "A) O esgotamento de recursos pode levar ao declínio civilizacional"
+    },
+    {
+      "pergunta": "Qual a evolução histórica das políticas de preservação ambiental no Brasil?",
+      "alternativas": [
+        "A) Do Código Florestal de 1934 às políticas atuais de bioeconomia",
+        "B) Nunca houve políticas ambientais no país",
+        "C) Começou apenas no século XXI",
+        "D) Foi sempre baseada em modelos europeus"
+      ],
+      "resposta_correta": "A) Do Código Florestal de 1934 às políticas atuais de bioeconomia"
+    }
+  ],
+
+  "geografia": [
+    {
+      "pergunta": "Como a distribuição desigual de recursos naturais afeta as relações internacionais?",
+      "alternativas": [
+        "A) Cria dependência econômica entre países",
+        "B) Uniformiza o desenvolvimento mundial",
+        "C) Elimina conflitos entre nações",
+        "D) Garante autonomia completa a todos"
+      ],
+      "resposta_correta": "A) Cria dependência econômica entre países"
+    },
+    {
+      "pergunta": "Qual fator geográfico explica a concentração de biodiversidade nos trópicos?",
+      "alternativas": [
+        "A) Maior incidência solar e estabilidade climática",
+        "B) Solo mais rico em nutrientes",
+        "C) Menor pressão antrópica",
+        "D) Altitude predominante"
+      ],
+      "resposta_correta": "A) Maior incidência solar e estabilidade climática"
+    },
+    {
+      "pergunta": "O que são 'passivos ambientais' em geografia?",
+      "alternativas": [
+        "A) Danos ambientais herdados de atividades econômicas passadas",
+        "B) Recursos naturais não explorados",
+        "C) Áreas totalmente preservadas",
+        "D) Tecnologias ambientais futuras"
+      ],
+      "resposta_correta": "A) Danos ambientais herdados de atividades econômicas passadas"
+    },
+    {
+      "pergunta": "Como o desmatamento afeta o regime de chuvas regional?",
+      "alternativas": [
+        "A) Reduz a evapotranspiração e altera os ciclos hidrológicos",
+        "B) Aumenta uniformemente as precipitações",
+        "C) Não causa impactos significativos",
+        "D) Melhora a distribuição das chuvas"
+      ],
+      "resposta_correta": "A) Reduz a evapotranspiração e altera os ciclos hidrológicos"
+    },
+    {
+      "pergunta": "Qual conceito geográfico descreve a pegada ecológica de uma população?",
+      "alternativas": [
+        "A) Área necessária para sustentar seu estilo de vida",
+        "B) Quantidade de lixo produzido",
+        "C) Densidade populacional",
+        "D) Taxa de crescimento vegetativo"
+      ],
+      "resposta_correta": "A) Área necessária para sustentar seu estilo de vida"
+    },
+    {
+      "pergunta": "O que explica a formação dos desertos verdes?",
+      "alternativas": [
+        "A) Monoculturas extensivas que reduzem a biodiversidade",
+        "B) Processos naturais de desertificação",
+        "C) Reflorestamento com espécies nativas",
+        "D) Agricultura familiar diversificada"
+      ],
+      "resposta_correta": "A) Monoculturas extensivas que reduzem a biodiversidade"
+    },
+    {
+      "pergunta": "Como a urbanização acelerada impacta o meio ambiente?",
+      "alternativas": [
+        "A) Aumenta a impermeabilização do solo e ilhas de calor",
+        "B) Melhora a qualidade do ar nas cidades",
+        "C) Reduz o consumo de recursos naturais",
+        "D) Preserva áreas verdes automaticamente"
+      ],
+      "resposta_correta": "A) Aumenta a impermeabilização do solo e ilhas de calor"
+    },
+    {
+      "pergunta": "Qual a relação entre mudanças climáticas e segurança alimentar?",
+      "alternativas": [
+        "A) Alterações climáticas afetam a produção agrícola mundial",
+        "B) Não há relação comprovada entre os fenômenos",
+        "C) O clima não influencia a agricultura",
+        "D) A segurança alimentar depende apenas de fatores econômicos"
+      ],
+      "resposta_correta": "A) Alterações climáticas afetam a produção agrícola mundial"
+    },
+    {
+      "pergunta": "O que são zonas de sacrifício ambiental?",
+      "alternativas": [
+        "A) Áreas degradadas para beneficiar o desenvolvimento de outras regiões",
+        "B) Unidades de conservação integral",
+        "C) Territórios sem recursos naturais",
+        "D) Parques nacionais protegidos"
+      ],
+      "resposta_correta": "A) Áreas degradadas para beneficiar o desenvolvimento de outras regiões"
+    },
+    {
+      "pergunta": "Como a globalização afeta a gestão dos recursos naturais?",
+      "alternativas": [
+        "A) Cria cadeias de suprimento que distanciam consumo e impactos",
+        "B) Reduz o comércio internacional de commodities",
+        "C) Localiza todos os processos produtivos",
+        "D) Elimina a extração de recursos"
+      ],
+      "resposta_correta": "A) Cria cadeias de suprimento que distanciam consumo e impactos"
+    },
+    {
+      "pergunta": "Qual o principal desafio geográfico da bioeconomia?",
+      "alternativas": [
+        "A) Conciliação entre produção e conservação dos ecossistemas",
+        "B) Falta de tecnologia adequada",
+        "C) Ausência de recursos naturais",
+        "D) Uniformidade climática mundial"
+      ],
+      "resposta_correta": "A) Conciliação entre produção e conservação dos ecossistemas"
+    },
+    {
+      "pergunta": "O que explica a crise hídrica em várias regiões do mundo?",
+      "alternativas": [
+        "A) Combinação de fatores naturais e má gestão antrópica",
+        "B) Apenas variações climáticas naturais",
+        "C) Exclusivamente o crescimento populacional",
+        "D) Somente a poluição industrial"
+      ],
+      "resposta_correta": "A) Combinação de fatores naturais e má gestão antrópica"
+    },
+    {
+      "pergunta": "Como a geografia contribui para o planejamento territorial sustentável?",
+      "alternativas": [
+        "A) Analisando a aptidão do território para diferentes usos",
+        "B) Definindo apenas aspectos econômicos",
+        "C) Ignorando características ambientais",
+        "D) Priorizando exclusivamente o urbanismo"
+      ],
+      "resposta_correta": "A) Analisando a aptidão do território para diferentes usos"
+    },
+    {
+      "pergunta": "O que são serviços ambientais na perspectiva geográfica?",
+      "alternativas": [
+        "A) Benefícios que a natureza fornece à sociedade",
+        "B) Empresas de consultoria ambiental",
+        "C) Políticas públicas de saneamento",
+        "D) Tecnologias de remedição"
+      ],
+      "resposta_correta": "A) Benefícios que a natureza fornece à sociedade"
+    },
+    {
+      "pergunta": "Qual a importância das áreas de preservação permanente (APPs) na geografia física?",
+      "alternativas": [
+        "A) Estabilizam solos e protegem recursos hídricos",
+        "B) Impedem qualquer atividade econômica",
+        "C) São relevantes apenas aestheticamente",
+        "D) Não têm função ecológica comprovada"
+      ],
+      "resposta_correta": "A) Estabilizam solos e protegem recursos hídricos"
+    }
+  ],
+
+  "arte": [
+    {
+      "pergunta": "Como a arte pode contribuir para a conscientização ambiental?",
+      "alternativas": [
+        "A) Sensibilizando emocionalmente sobre questões ecológicas",
+        "B) Apresentando apenas dados estatísticos",
+        "C) Ignorando problemas sociais",
+        "D) Promovendo o consumo desenfreado"
+      ],
+      "resposta_correta": "A) Sensibilizando emocionalmente sobre questões ecológicas"
+    },
+    {
+      "pergunta": "O que é 'land art' ou arte terrestre?",
+      "alternativas": [
+        "A) Intervenções artísticas que usam a paisagem natural como suporte",
+        "B) Pintura de paisagens em estúdio",
+        "C) Arte digital sobre natureza",
+        "D) Esculturas em galerias fechadas"
+      ],
+      "resposta_correta": "A) Intervenções artísticas que usam a paisagem natural como suporte"
+    },
+    {
+      "pergunta": "Qual o significado do uso de materiais reciclados na arte contemporânea?",
+      "alternativas": [
+        "A) Crítica ao consumismo e valorização do reaproveitamento",
+        "B) Apenas uma questão de custo reduzido",
+        "C) Falta de materiais tradicionais",
+        "D) Moda passageira sem significado"
+      ],
+      "resposta_correta": "A) Crítica ao consumismo e valorização do reaproveitamento"
+    },
+    {
+      "pergunta": "Como a arte indígena brasileira se relaciona com a sustentabilidade?",
+      "alternativas": [
+        "A) Utiliza recursos naturais de forma tradicional e sustentável",
+        "B) Explora intensivamente os recursos",
+        "C) Não considera o meio ambiente",
+        "D) Usa apenas materiais industrializados"
+      ],
+      "resposta_correta": "A) Utiliza recursos naturais de forma tradicional e sustentável"
+    },
+    {
+      "pergunta": "O que caracteriza a 'arte ecológica' ou 'ecoarte'?",
+      "alternativas": [
+        "A) Práticas artísticas que dialogam diretamente com questões ambientais",
+        "B) Apenas pinturas de natureza",
+        "C) Arte feita exclusivamente ao ar livre",
+        "D) Uso obrigatório de cor verde"
+      ],
+      "resposta_correta": "A) Práticas artísticas que dialogam diretamente com questões ambientais"
+    },
+    {
+      "pergunta": "Qual artista é conhecido por obras que criticam o consumismo?",
+      "alternativas": [
+        "A) Vik Muniz (com obras usando lixo reciclado)",
+        "B) Leonardo da Vinci",
+        "C) Vincent van Gogh",
+        "D) Michelangelo"
+      ],
+      "resposta_correta": "A) Vik Muniz (com obras usando lixo reciclado)"
+    },
+    {
+      "pergunta": "Como a fotografia pode denunciar problemas ambientais?",
+      "alternativas": [
+        "A) Documentando visualmente degradação e impactos",
+        "B) Apenas mostrando paisagens idealizadas",
+        "C) Ignorando conflitos socioambientais",
+        "D) Focando exclusivamente em aspectos estéticos"
+      ],
+      "resposta_correta": "A) Documentando visualmente degradação e impactos"
+    },
+    {
+      "pergunta": "O que é 'artivismo' ambiental?",
+      "alternativas": [
+        "A) Combinação de arte e ativismo em causas ecológicas",
+        "B) Arte comercial sem mensagem política",
+        "C) Ativismo sem componente artístico",
+        "D) Arte abstrata sem tema definido"
+      ],
+      "resposta_correta": "A) Combinação de arte e ativismo em causas ecológicas"
+    },
+    {
+      "pergunta": "Qual a importância dos grafites e murais urbanos com temas ambientais?",
+      "alternativas": [
+        "A) Levam a discussão para o espaço público de forma acessível",
+        "B) São considerados vandalismo sempre",
+        "C) Não comunicam efetivamente",
+        "D) São compreendidos apenas por especialistas"
+      ],
+      "resposta_correta": "A) Levam a讨论 para o espaço público de forma acessível"
+    },
+    {
+      "pergunta": "Como a arte performática pode abordar a sustentabilidade?",
+      "alternativas": [
+        "A) Através de ações simbólicas que provocam reflexão",
+        "B) Apenas com discursos técnicos",
+        "C) Ignorando o público espectador",
+        "D) Repetindo informações científicas literalmente"
+      ],
+      "resposta_correta": "A) Através de ações simbólicas que provocam reflexão"
+    },
+    {
+      "pergunta": "O que significa 'upcycling' na arte?",
+      "alternativas": [
+        "A) Transformar resíduos em obras de maior valor",
+        "B) Descarte adequado de materiais",
+        "C) Reciclagem industrial",
+        "D) Compostagem de orgânicos"
+      ],
+      "resposta_correta": "A) Transformar resíduos em obras de maior valor"
+    },
+    {
+      "pergunta": "Como a música pode promover a conscientização ambiental?",
+      "alternativas": [
+        "A) Através de letras que abordam questões ecológicas",
+        "B) Apenas com melodias agradáveis",
+        "C) Ignorando temas sociais",
+        "D) Promovendo apenas o entretenimento"
+      ],
+      "resposta_correta": "A) Através de letras que abordam questões ecológicas"
+    },
+    {
+      "pergunta": "Qual a relação entre artesanato tradicional e sustentabilidade?",
+      "alternativas": [
+        "A) Muitas técnicas usam recursos naturais de forma renovável",
+        "B) Sempre causa impacto ambiental negativo",
+        "C) Não tem relação com o meio ambiente",
+        "D) É incompatível com a modernidade"
+      ],
+      "resposta_correta": "A) Muitas técnicas usam recursos naturais de forma renovável"
+    },
+    {
+      "pergunta": "O que é 'design sustentável'?",
+      "alternativas": [
+        "A) Projetos que consideram todo o ciclo de vida do produto",
+        "B) Design apenas com materiais caros",
+        "C) Estética sem funcionalidade",
+        "D) Produção em massa sem preocupações"
+      ],
+      "resposta_correta": "A) Projetos que consideram todo o ciclo de vida do produto"
+    },
+    {
+      "pergunta": "Como o cinema documental contribui para a educação ambiental?",
+      "alternativas": [
+        "A) Apresentando realidades ambientais de forma impactante",
+        "B) Mostrando apenas ficções irreais",
+        "C) Ocultando problemas reais",
+        "D) Sendo entretenimento puro"
+      ],
+      "resposta_correta": "A) Apresentando realidades ambientais de forma impactante"
+    }
+  ],
+
+  "educacao_fisica": [
+    {
+      "pergunta": "Como o ecoturismo se relaciona com a educação física?",
+      "alternativas": [
+        "A) Promove atividades físicas em contato com a natureza",
+        "B) Substitui completamente os esportes tradicionais",
+        "C) Não tem relação com a educação física",
+        "D) Impede a prática de exercícios"
+      ],
+      "resposta_correta": "A) Promove atividades físicas em contato com a natureza"
+    },
+    {
+      "pergunta": "Qual o principal desafio de sustentabilidade em megaeventos esportivos?",
+      "alternativas": [
+        "A) Gestão de resíduos e consumo de recursos",
+        "B) Número de atletas participantes",
+        "C) Transmissão televisiva",
+        "D) Preços dos ingressos"
+      ],
+      "resposta_correta": "A) Gestão de resíduos e consumo de recursos"
+    },
+    {
+      "pergunta": "Como a prática de esportes ao ar livre pode promover a conscientização ambiental?",
+      "alternativas": [
+        "A) Criando vínculo afetivo com os espaços naturais",
+        "B) Isolando as pessoas da natureza",
+        "C) Promovendo competição excessiva",
+        "D) Ignorando o entorno natural"
+      ],
+      "resposta_correta": "A) Criando vínculo afetivo com os espaços naturais"
+    },
+    {
+      "pergunta": "O que são 'esportes de aventura sustentáveis'?",
+      "alternativas": [
+        "A) Práticas que minimizam impactos nos ecossistemas",
+        "B) Esportes radicais sem regras",
+        "C) Atividades exclusivamente indoor",
+        "D) Competições com alto consumo energético"
+      ],
+      "resposta_correta": "A) Práticas que minimizam impactos nos ecossistemas"
+    },
+    {
+      "pergunta": "Qual a relação entre qualidade de vida e ambiente sustentável na educação física?",
+      "alternativas": [
+        "A) Ambientes preservados favorecem a prática de atividades saudáveis",
+        "B) Não existe relação comprovada",
+        "C) O ambiente não influencia a saúde",
+        "D) Qualidade de vida depende apenas de exercícios"
+      ],
+      "resposta_correta": "A) Ambientes preservados favorecem a prática de atividades saudáveis"
+    },
+    {
+      "pergunta": "Como as academias ao ar livre contribuem para a sustentabilidade?",
+      "alternativas": [
+        "A) Reduzem consumo energético e promovem integração social",
+        "B) Aumentam o consumo de eletricidade",
+        "C) Isolam as pessoas da comunidade",
+        "D) Não trazem benefícios ambientais"
+      ],
+      "resposta_correta": "A) Reduzem consumo energético e promovem integração social"
+    },
+    {
+      "pergunta": "Qual o impacto ambiental positivo do uso da bicicleta como meio de transporte?",
+      "alternativas": [
+        "A) Reduz emissões de poluentes e congestionamentos",
+        "B) Aumenta o consumo de combustível",
+        "C) Não traz benefícios ambientais",
+        "D) Piora a qualidade do ar"
+      ],
+      "resposta_correta": "A) Reduz emissões de poluentes e congestionamentos"
+    },
+    {
+      "pergunta": "O que é 'pegada ecológica' nas atividades esportivas?",
+      "alternativas": [
+        "A) Impacto ambiental gerado pela prática esportiva",
+        "B) Marca deixada pelo tênis no chão",
+        "C) Performance atlética individual",
+        "D) Número de atletas em uma competição"
+      ],
+      "resposta_correta": "A) Impacto ambiental gerado pela prática esportiva"
+    },
+    {
+      "pergunta": "Como os clubes esportivos podem se tornar mais sustentáveis?",
+      "alternativas": [
+        "A) Implementando coleta seletiva e eficiência energética",
+        "B) Aumentando o consumo de água",
+        "C) Ignorando questões ambientais",
+        "D) Promovendo apenas esportes motorizados"
+      ],
+      "resposta_correta": "A) Implementando coleta seletiva e eficiência energética"
+    },
+    {
+      "pergunta": "Qual a importância das áreas verdes para a prática de educação física?",
+      "alternativas": [
+        "A) Oferecem espaços adequados e melhoram a qualidade do ar",
+        "B) Não têm importância significativa",
+        "C) Atrapalham a prática esportiva",
+        "D) Aumentam os custos de manutenção"
+      ],
+      "resposta_correta": "A) Oferecem espaços adequados e melhoram a qualidade do ar"
+    },
+    {
+      "pergunta": "Como a caminhada ecológica difere da caminhada comum?",
+      "alternativas": [
+        "A) Inclui educação ambiental durante o percurso",
+        "B) É mais rápida e competitiva",
+        "C) Ignora o ambiente natural",
+        "D) Usa apenas esteiras ergométricas"
+      ],
+      "resposta_correta": "A) Inclui educação ambiental durante o percurso"
+    },
+    {
+      "pergunta": "O que são 'esportes verdes'?",
+      "alternativas": [
+        "A) Práticas que priorizam a sustentabilidade em sua organização",
+        "B) Esportes que usam uniformes verdes",
+        "C) Atividades exclusivamente na grama",
+        "D) Competições com prêmios em dinheiro"
+      ],
+      "resposta_correta": "A) Práticas que priorizam a sustentabilidade em sua organização"
+    },
+    {
+      "pergunta": "Qual a relação entre alimentação saudável e sustentabilidade?",
+      "alternativas": [
+        "A) Dietas baseadas em alimentos locais e sazonais são mais sustentáveis",
+        "B) Não existe relação entre os conceitos",
+        "C) Alimentação saudável é sempre insustentável",
+        "D) Sustentabilidade requer consumo de importados"
+      ],
+      "resposta_correta": "A) Dietas baseadas em alimentos locais e sazonais são mais sustentáveis"
+    },
+    {
+      "pergunta": "Como a natação em águas abertas pode promover a conservação aquática?",
+      "alternativas": [
+        "A) Criando consciência sobre a qualidade dos corpos d'água",
+        "B) Poluindo os rios e lagos",
+        "C) Ignorando os ecossistemas aquáticos",
+        "D) Promovendo apenas competição"
+      ],
+      "resposta_correta": "A) Criando consciência sobre a qualidade dos corpos d'água"
+    },
+    {
+      "pergunta": "Qual o benefício do yoga ao ar livre para a sustentabilidade?",
+      "alternativas": [
+        "A) Promove conexão mente-corpo-ambiente sem consumo energético",
+        "B) Requer equipamentos complexos",
+        "C) Isola as pessoas da natureza",
+        "D) Consome muita energia elétrica"
+      ],
+      "resposta_correta": "A) Promove conexão mente-corpo-ambiente sem consumo energético"
+    }
+  ],
+
+  "filosofia": [
+    {
+      "pergunta": "O que é ética ambiental?",
+      "alternativas": [
+        "A) Reflexão sobre valores e responsabilidades em relação à natureza",
+        "B) Estudo exclusivo de leis ambientais",
+        "C) Análise econômica dos recursos naturais",
+        "D) Técnicas de preservação sem fundamento teórico"
+      ],
+      "resposta_correta": "A) Reflexão sobre valores e responsabilidades em relação à natureza"
+    },
+    {
+      "pergunta": "Qual conceito filosófico defende que as gerações atuais têm deveres com as futuras?",
+      "alternativas": [
+        "A) Justiça intergeracional",
+        "B) Direito positivo",
+        "C) Utilitarismo imediatista",
+        "D) Niilismo ambiental"
+      ],
+      "resposta_correta": "A) Justiça intergeracional"
+    },
+    {
+      "pergunta": "O que propõe o antropocentrismo em relação ao meio ambiente?",
+      "alternativas": [
+        "A) O ser humano como centro e medida de valor",
+        "B) Igualdade de valor entre todos os seres",
+        "C) A natureza como valor supremo",
+        "D) Indiferença em relação ao ambiente"
+      ],
+      "resposta_correta": "A) O ser humano como centro e medida de valor"
+    },
+    {
+      "pergunta": "Qual filósofo é associado ao conceito de 'desenvolvimento sustentável'?",
+      "alternativas": [
+        "A) Hans Jonas e seu princípio responsabilidade",
+        "B) Platão e suas ideias",
+        "C) Nietzsche e o super-homem",
+        "D) Descartes e o cogito"
+      ],
+      "resposta_correta": "A) Hans Jonas e seu princípio responsabilidade"
+    },
+    {
+      "pergunta": "O que é 'ecologia profunda'?",
+      "alternativas": [
+        "A) Visão que reconhece valor intrínseco em todos os seres",
+        "B) Estudo técnico de ecossistemas",
+        "C) Política ambiental superficial",
+        "D) Economia dos recursos naturais"
+      ],
+      "resposta_correta": "A) Visão que reconhece valor intrínseco em todos os seres"
+    },
+    {
+      "pergunta": "Qual a crítica filosófica ao conceito de progresso ilimitado?",
+      "alternativas": [
+        "A) Ignora os limites físicos do planeta",
+        "B) É economicamente inviável",
+        "C) Não gera lucro suficiente",
+        "D) Promove muito bem-estar"
+      ],
+      "resposta_correta": "A) Ignora os limites físicos do planeta"
+    },
+    {
+      "pergunta": "O que significa 'bem comum' na filosofia ambiental?",
+      "alternativas": [
+        "A) Recursos e condições que beneficiam toda a comunidade",
+        "B) Propriedade privada absoluta",
+        "C) Interesses individuais sobrepostos",
+        "D) Exploração máxima dos recursos"
+      ],
+      "resposta_correta": "A) Recursos e condições que beneficiam toda a comunidade"
+    },
+    {
+      "pergunta": "Qual a relação entre felicidade e consumo na perspectiva da sustentabilidade?",
+      "alternativas": [
+        "A) Felicidade não depende necessariamente do consumo material",
+        "B) Mais consumo sempre traz mais felicidade",
+        "C) Felicidade é incompatível com sustentabilidade",
+        "D) Consumo zero é a única opção"
+      ],
+      "resposta_correta": "A) Felicidade não depende necessariamente do consumo material"
+    },
+    {
+      "pergunta": "O que é 'ética do cuidado' aplicada ao meio ambiente?",
+      "alternativas": [
+        "A) Abordagem que valoriza relações de cuidado e responsabilidade",
+        "B) Descuidar dos recursos naturais",
+        "C) Exploração sem limites",
+        "D) Indiferença ecológica"
+      ],
+      "resposta_correta": "A) Abordagem que valoriza relações de cuidado e responsabilidade"
+    },
+    {
+      "pergunta": "Qual a contribuição do pensamento indígena para a filosofia ambiental?",
+      "alternativas": [
+        "A) Visões de interdependência e respeito à natureza",
+        "B) Defesa do desenvolvimento ilimitado",
+        "C) Antropocentrismo radical",
+        "D) Individualismo possessivo"
+      ],
+      "resposta_correta": "A) Visões de interdependência e respeito à natureza"
+    },
+    {
+      "pergunta": "O que significa 'princípio da precaução' na ética ambiental?",
+      "alternativas": [
+        "A) Agir com cautela diante de riscos ambientais incertos",
+        "B) Esperar certeza científica absoluta antes de agir",
+        "C) Ignorar possíveis danos futuros",
+        "D) Priorizar sempre o desenvolvimento econômico"
+      ],
+      "resposta_correta": "A) Agir com cautela diante de riscos ambientais incertos"
+    },
+    {
+      "pergunta": "Qual a crítica ao utilitarismo na questão ambiental?",
+      "alternativas": [
+        "A) Pode justificar sacrifícios ambientais por benefícios humanos",
+        "B) É muito radical na proteção ambiental",
+        "C) Ignora completamente os seres humanos",
+        "D) Defende direitos absolutos da natureza"
+      ],
+      "resposta_correta": "A) Pode justificar sacrifícios ambientais por benefícios humanos"
+    },
+    {
+      "pergunta": "O que é 'cidadania ecológica'?",
+      "alternativas": [
+        "A) Exercício de direitos e deveres em relação ao meio ambiente",
+        "B) Passaporte para áreas naturais",
+        "C) Certificado ambiental",
+        "D) Isenção de impostos verdes"
+      ],
+      "resposta_correta": "A) Exercício de direitos e deveres em relação ao meio ambiente"
+    },
+    {
+      "pergunta": "Qual a relação entre liberdade e responsabilidade ambiental?",
+      "alternativas": [
+        "A) Liberdade individual encontra limites na responsabilidade coletiva",
+        "B) São conceitos completamente independentes",
+        "C) Responsabilidade limita excessivamente a liberdade",
+        "D) Liberdade absoluta não precisa de responsabilidade"
+      ],
+      "resposta_correta": "A) Liberdade individual encontra limites na responsabilidade coletiva"
+    },
+    {
+      "pergunta": "O que significa 'sabedoria prática' (phronesis) na tomada de decisões ambientais?",
+      "alternativas": [
+        "A) Capacidade de julgar considerando múltiplos valores e contextos",
+        "B) Aplicação mecânica de regras",
+        "C) Decisões baseadas apenas em emoções",
+        "D) Ignorância deliberada dos fatos"
+      ],
+      "resposta_correta": "A) Capacidade de julgar considerando múltiplos valores e contextos"
+    }
+  ],
+
+  "sociologia": [
+    {
+      "pergunta": "Como a sociologia estuda as desigualdades no acesso a recursos naturais?",
+      "alternativas": [
+        "A) Analisando relações de poder e estruturas sociais",
+        "B) Apenas coletando dados estatísticos",
+        "C) Ignorando fatores históricos",
+        "D) Focando exclusivamente em aspectos biológicos"
+      ],
+      "resposta_correta": "A) Analisando relações de poder e estruturas sociais"
+    },
+    {
+      "pergunta": "O que é 'justiça ambiental'?",
+      "alternativas": [
+        "A) Distribuição equitativa de benefícios e ônus ambientais",
+        "B) Apenas leis de proteção ambiental",
+        "C) Políticas para empresas poluidoras",
+        "D) Preservação sem consideração social"
+      ],
+      "resposta_correta": "A) Distribuição equitativa de benefícios e ônus ambientais"
+    },
+    {
+      "pergunta": "Qual conceito explica por que populações vulneráveis sofrem mais com problemas ambientais?",
+      "alternativas": [
+        "A) Injustiça ambiental",
+        "B) Seleção natural",
+        "C) Livre mercado",
+        "D) Meritocracia"
+      ],
+      "resposta_correta": "A) Injustiça ambiental"
+    },
+    {
+      "pergunta": "Como os movimentos sociais contribuem para a sustentabilidade?",
+      "alternativas": [
+        "A) Pressão por políticas públicas e mudanças culturais",
+        "B) Apenas através de protestos violentos",
+        "C) Ignorando questões ambientais",
+        "D) Mantendo o status quo"
+      ],
+      "resposta_correta": "A) Pressão por políticas públicas e mudanças culturais"
+    },
+    {
+      "pergunta": "O que é 'consumo consciente' na perspectiva sociológica?",
+      "alternativas": [
+        "A) Prática que considera impactos sociais e ambientais das escolhas",
+        "B) Compra por impulso",
+        "C) Consumo de luxo exclusivo",
+        "D) Aquisição apenas de produtos baratos"
+      ],
+      "resposta_correta": "A) Prática que considera impactos sociais e ambientais das escolhas"
+    },
+    {
+      "pergunta": "Qual a relação entre capitalismo e crise ambiental?",
+      "alternativas": [
+        "A) Lógica de crescimento infinito conflita com limites planetários",
+        "B) Não existe relação entre eles",
+        "C) Capitalismo resolve automaticamente problemas ambientais",
+        "D) Crise ambiental é independente do sistema econômico"
+      ],
+      "resposta_correta": "A) Lógica de crescimento infinito conflita com limites planetários"
+    },
+    {
+      "pergunta": "O que são 'comunidades tradicionais' na sociologia ambiental?",
+      "alternativas": [
+        "A) Grupos com modos de vida vinculados a territórios e saberes ancestrais",
+        "B) Populações urbanas modernas",
+        "C) Empresas multinacionais",
+        "D) Governos centrais"
+      ],
+      "resposta_correta": "A) Grupos com modos de vida vinculados a territórios e saberes ancestrais"
+    },
+    {
+      "pergunta": "Como a bioeconomia pode afetar as relações de trabalho?",
+      "alternativas": [
+        "A) Criando novos empregos e exigindo novas qualificações",
+        "B) Eliminando todos os postos de trabalho",
+        "C) Mantendo as mesmas profissões forever",
+        "D) Reduzindo a necessidade de educação"
+      ],
+      "resposta_correta": "A) Criando novos empregos e exigindo novas qualificações"
+    },
+    {
+      "pergunta": "O que é 'modernização ecológica'?",
+      "alternativas": [
+        "A) Perspectiva que reconcilia desenvolvimento com proteção ambiental",
+        "B) Retorno ao primitivismo",
+        "C) Industrialização sem controles",
+        "D) Crescimento econômico ilimitado"
+      ],
+      "resposta_correta": "A) Perspectiva que reconcilia desenvolvimento com proteção ambiental"
+    },
+    {
+      "pergunta": "Qual o papel da educação na transição para sociedades sustentáveis?",
+      "alternativas": [
+        "A) Formar cidadãos críticos e conscientes",
+        "B) Apenas transmitir conhecimentos técnicos",
+        "C) Manter padrões de consumo atuais",
+        "D) Ignorar questões ambientais"
+      ],
+      "resposta_correta": "A) Formar cidadãos críticos e conscientes"
+    },
+    {
+      "pergunta": "O que significa 'democracia ambiental'?",
+      "alternativas": [
+        "A) Participação social nas decisões sobre meio ambiente",
+        "B) Governo de especialistas técnicos",
+        "C) Decisões exclusivamente empresariais",
+        "D) Ausência de regulamentação"
+      ],
+      "resposta_correta": "A) Participação social nas decisões sobre meio ambiente"
+    },
+    {
+      "pergunta": "Como a globalização afeta a governança ambiental?",
+      "alternativas": [
+        "A) Cria desafios que exigem cooperação internacional",
+        "B) Facilita soluções puramente locais",
+        "C) Elimina a necessidade de acordos globais",
+        "D) Não influencia políticas ambientais"
+      ],
+      "resposta_correta": "A) Cria desafios que exigem cooperação internacional"
+    },
+    {
+      "pergunta": "O que é 'conflito socioambiental'?",
+      "alternativas": [
+        "A) Disputas sobre acesso e uso de recursos naturais",
+        "B) Apenas desentendimentos pessoais",
+        "C) Competição esportiva em áreas naturais",
+        "D) Discussões acadêmicas teóricas"
+      ],
+      "resposta_correta": "A) Disputas sobre acesso e uso de recursos naturais"
+    },
+    {
+      "pergunta": "Qual a importância dos saberes tradicionais para a sustentabilidade?",
+      "alternativas": [
+        "A) Oferecem soluções testadas pelo tempo",
+        "B) São completamente obsoletos",
+        "C) Devem ser ignorados pela ciência",
+        "D) Impedem o progresso tecnológico"
+      ],
+      "resposta_correta": "A) Oferecem soluções testadas pelo tempo"
+    },
+    {
+      "pergunta": "Como a sociologia estuda a transição para a bioeconomia?",
+      "alternativas": [
+        "A) Analisando mudanças institucionais e culturais necessárias",
+        "B) Apenas calculando custos financeiros",
+        "C) Ignorando resistências sociais",
+        "D) Focando exclusivamente em tecnologia"
+      ],
+      "resposta_correta": "A) Analisando mudanças institucionais e culturais necessárias"
+    }
+  ]
+}
