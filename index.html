@@ -1,123 +1,235 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ciência em Movimento — Protótipo</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoGame - Jogo Educativo Sustentável</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="app">
-    <header>
-      <img src="" alt="" style="width:56px;height:56px;border-radius:10px;background:linear-gradient(90deg,#ffd54a,#ffb74d);display:inline-block">
-      <div>
-        <h1>Ciência em Movimento — Protótipo</h1>
-        <div class="small">Escolha um modo de jogo para começar a aventura.</div>
-      </div>
-    </header>
-
-    <div id="mode-selection">
-      <h2>Escolha o modo de jogo</h2>
-      <div class="mode-buttons">
-        <button id="real-life-btn" class="btn mode-btn">Modo Vida Real</button>
-        <button id="virtual-life-btn" class="btn mode-btn">Modo Vida Virtual</button>
-      </div>
-    </div>
-
-    <div id="real-life-mode" style="display: none;">
-      <div class="grid">
-        <div class="card">
-          <div id="videoWrap">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="overlay"></canvas>
-          </div>
-
-          <div class="hud">
-            <div class="phase">Fase atual: <span id="phaseName">—</span></div>
-            <div class="phase">Progresso: <span id="phaseIdx">0</span>/<span id="phaseTotal">0</span></div>
-            <div style="flex:1"></div>
-            <div class="score">Pontos: <span id="score">0</span></div>
-          </div>
-
-          <div style="margin-top:10px;display:flex;gap:8px">
-            <button id="startBtn" class="btn">Iniciar jogo</button>
-            <button id="calibrateBtn" class="btn" style="background:#6b9bd1">Calibrar (position)</button>
-            <div style="flex:1"></div>
-            <div class="muted">Use câmera, compare distância e movimentos amplos.</div>
-          </div>
-        </div>
-
-        <div class="card panel">
-          <div>
-            <h3>Como jogar</h3>
-            <ol class="small">
-              <li>Permita acesso à câmera.</li>
-              <li>Pressione <strong>Iniciar jogo</strong>.</li>
-              <li>Realize a ação pedida na fase (pular, agachar, mover para o lado, levantar braços).</li>
-              <li>Ao completar a fase, responda a pergunta que aparece para ganhar pontos.</li>
-            </ol>
-          </div>
-
-          <div>
-          <h3>Matérias do Jogo (12 temas)</h3>
-          <div class="small">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
-              <div>1. Energias Renováveis</div>
-              <div>2. Agricultura Sustentável</div>
-              <div>3. Biodiversidade</div>
-              <div>4. Economia Circular</div>
-              <div>5. Recursos Hídricos</div>
-              <div>6. Tecnologias Verdes</div>
-              <div>7. Poluição e Resíduos</div>
-              <div>8. Mudanças Climáticas</div>
-              <div>9. Sustentabilidade Urbana</div>
-              <div>10. Bioenergia</div>
-              <div>11. Conservação do Solo</div>
-              <div>12. Consumo Consciente</div>
+    <!-- Tela de Seleção de Modo -->
+    <div id="mode-selection" class="screen active">
+        <div class="app">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">🌱</div>
+                    <div class="logo-text">EcoGame</div>
+                </div>
+            </header>
+            
+            <div class="mode-selection-content">
+                <div class="mode-description">
+                    <h2>Aventura Sustentável</h2>
+                    <p>Junte-se à missão de aprender sobre sustentabilidade enquanto se diverte!<br>Escolha seu modo de jogo preferido e comece sua jornada ecológica.</p>
+                </div>
+                
+                <div class="mode-grid">
+                    <div class="mode-card" id="real-life-card">
+                        <div class="mode-icon">💪</div>
+                        <h3>Vida Real</h3>
+                        <p>Use movimentos corporais e sua câmera para interagir com o jogo. Perfeito para quem quer se exercitar enquanto aprende!</p>
+                        <button class="btn" onclick="AppManager.startRealLifeGame()">
+                            Começar Aventura
+                        </button>
+                    </div>
+                    
+                    <div class="mode-card" id="virtual-life-card">
+                        <div class="mode-icon">🎮</div>
+                        <h3>Vida Virtual</h3>
+                        <p>Explore um mundo virtual, colete sementes e responda perguntas para restaurar um ecossistema degradado.</p>
+                        <button class="btn" onclick="AppManager.showAvatarSelection()">
+                            Escolher Matéria
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
-          </div>
-
-          <div>
-            <h3>Configuração</h3>
-            <div class="small">Tempo por fase: <span id="phaseTime">8</span>s</div>
-            <input id="phaseTimeInput" type="range" min="4" max="30" value="8" />
-          </div>
-
-          <footer>
-            Protótipo feito para feira de ciências — use em ambiente bem iluminado. Ajuste sensibilidade de calibração se necessário.
-          </footer>
         </div>
-      </div>
     </div>
 
-    <div id="virtual-life-mode" style="display: none; text-align: center;">
-      <div class="card">
-        <canvas id="gameCanvas" width="800" height="480" style="background-color: #1e293b; border-radius: 8px;"></canvas>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding: 0 10px;">
-          <div class="small">Use as setas do teclado (←, →, ↑) para mover o personagem.</div>
-          <div class="phase">Nível: <span id="virtualLevelDisplay">1</span></div>
+    <!-- Seleção de Avatar/Matéria -->
+    <div id="avatar-selection" class="screen">
+        <div class="app">
+            <header>
+                <button class="btn btn-secondary" onclick="AppManager.showMainMenu()">
+                    ← Voltar ao Menu
+                </button>
+                <h1 style="text-align: center; flex: 1;">Escolha sua Matéria</h1>
+            </header>
+            
+            <div class="avatar-selection-content">
+                <p style="text-align: center; color: var(--muted); margin-bottom: 20px;">
+                    Selecione uma matéria para jogar com perguntas específicas do tema
+                </p>
+                <div class="avatar-grid" id="avatar-grid">
+                    <!-- Populado por JavaScript -->
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- Modal de pergunta -->
-    <div id="questionModal" class="questionModal" style="display:none">
-      <div class="modalCard">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong id="qTitle">Pergunta</strong>
-          <div class="small">Fase <span id="modalPhaseIdx">0</span></div>
+    <!-- Modo Vida Real -->
+    <div id="real-life-mode" class="screen">
+        <div class="app">
+            <header>
+                <button class="btn btn-secondary" onclick="AppManager.showMainMenu()">
+                    ← Sair do Jogo
+                </button>
+                <h1 style="text-align: center; flex: 1;">Vida Real - Detecção de Movimentos</h1>
+            </header>
+            
+            <div class="game-container">
+                <div class="video-container">
+                    <video id="video" autoplay muted playsinline></video>
+                    <canvas id="overlay"></canvas>
+                    
+                    <div class="video-overlay">
+                        <div class="action-indicator">
+                            <div id="actionIcon" class="action-icon">💪</div>
+                            <div id="actionText" class="action-text">Prepare-se para começar</div>
+                        </div>
+                        
+                        <div class="timer-container">
+                            <div class="timer-bar">
+                                <div id="timerProgress" class="timer-progress"></div>
+                            </div>
+                            <div id="timerText" class="timer-text">30s</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls-panel">
+                    <button id="startBtn" class="btn">Iniciar Jogo</button>
+                    <button id="calibrateBtn" class="btn btn-secondary">Calibrar Posição</button>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <div class="progress-text">Progresso: <span id="phaseIdx">0</span>/<span id="phaseTotal">15</span></div>
+                    </div>
+                    
+                    <div class="score-display">
+                        Pontuação: <span id="score">0</span>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                    <h3 style="margin-bottom: 15px; color: var(--accent);">Fase Atual: <span id="phaseName">Preparação</span></h3>
+                    <p style="margin-bottom: 10px;"><strong>Instruções:</strong> <span id="phaseDesc">Aguardando início do jogo...</span></p>
+                    <p><strong>Tempo por fase:</strong> <span id="phaseTime">30</span> segundos</p>
+                </div>
+            </div>
         </div>
-        <div id="qText" style="margin-top:10px"></div>
-        <div class="choices" id="choices"></div>
-      </div>
     </div>
-  </div>
 
-  <!-- Dependências (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.20.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet@2.2.1/dist/posenet.min.js"></script>
+    <!-- Modo Vida Virtual -->
+    <div id="virtual-life-mode" class="screen">
+        <div class="app">
+            <header>
+                <button class="btn btn-secondary" onclick="AppManager.showMainMenu()">
+                    ← Sair do Jogo
+                </button>
+                <h1 style="text-align: center; flex: 1;">Vida Virtual - Restauração Ecológica</h1>
+            </header>
+            
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="game-stats">
+                        <div class="stat">
+                            <div class="stat-label">Pontuação</div>
+                            <div class="stat-value" id="virtualScore">0</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Sementes</div>
+                            <div class="stat-value" id="seedCount">0/15</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Tempo</div>
+                            <div class="stat-value" id="gameTimer">00:00</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-canvas-container">
+                    <canvas id="gameCanvas"></canvas>
+                </div>
+                
+                <div class="controls-info">
+                    <div class="control-item">
+                        <div class="key">← →</div>
+                        <div class="action">Mover Personagem</div>
+                    </div>
+                    <div class="control-item">
+                        <div class="key">↑</div>
+                        <div class="action">Pular</div>
+                    </div>
+                    <div class="control-item">
+                        <div class="key">Espaço</div>
+                        <div class="action">Coletar Sementes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <script src="game.js"></script>
+    <!-- Modal de Perguntas -->
+    <div id="questionModal" class="questionModal">
+        <div class="modalCard">
+            <h3 id="qTitle">Pergunta</h3>
+            
+            <div class="question-progress">
+                <div class="progress-text" id="questionProgress">1/15</div>
+                <div class="progress-bar">
+                    <div id="questionProgressFill" class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <p id="qText">Carregando pergunta...</p>
+            
+            <div class="choices" id="choices">
+                <!-- Alternativas serão adicionadas por JS -->
+            </div>
+            
+            <div class="question-points">
+                Pontos: <span id="questionPoints">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela Final -->
+    <div id="final-screen" class="screen">
+        <div class="app">
+            <div class="final-container">
+                <div class="final-icon">🎉</div>
+                <h1>Missão Cumprida!</h1>
+                <p id="final-message">Você completou o desafio e contribuiu para um futuro mais sustentável!</p>
+                
+                <div class="final-stats">
+                    <div class="final-stat">
+                        <div class="final-stat-value" id="final-score">0</div>
+                        <div class="final-stat-label">Pontuação Total</div>
+                    </div>
+                    <div class="final-stat">
+                        <div class="final-stat-value" id="final-time">00:00</div>
+                        <div class="final-stat-label">Tempo</div>
+                    </div>
+                    <div class="final-stat">
+                        <div class="final-stat-value" id="final-correct">0/0</div>
+                        <div class="final-stat-label">Respostas Corretas</div>
+                    </div>
+                </div>
+                
+                <div class="final-buttons">
+                    <button id="play-again-btn" class="btn">Jogar Novamente</button>
+                    <button id="change-mode-btn" class="btn btn-secondary">Trocar Modo de Jogo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+    <script src="game.js"></script>
 </body>
 </html>
