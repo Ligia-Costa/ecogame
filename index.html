@@ -94,7 +94,10 @@
     <div id="virtual-life-mode" style="display: none; text-align: center;">
       <div class="card">
         <canvas id="gameCanvas" width="800" height="480" style="background-color: #1e293b; border-radius: 8px;"></canvas>
-        <div class="small" style="margin-top: 8px;">Use as setas do teclado (←, →, ↑) para mover o personagem.</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding: 0 10px;">
+          <div class="small">Use as setas do teclado (←, →, ↑) para mover o personagem.</div>
+          <div class="phase">Nível: <span id="virtualLevelDisplay">1</span></div>
+        </div>
       </div>
     </div>
 

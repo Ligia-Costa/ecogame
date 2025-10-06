@@ -39,7 +39,13 @@ const PHASES = [
   // Fases extras para completar 15
   { id: 'extra1', name: 'Energia Eólica', action: 'raise_hands', desc: 'Levante ambos os braços acima da cabeça duas vezes.', question: {text:'Qual vantagem da energia eólica?', choices:['Fonte limpa e renovável','Produz resíduos radioativos','Depende de combustíveis','Causa desmatamento'], answer:0}},
   { id: 'extra2', name: 'Compostagem', action: 'squat', desc: 'Faça um agachamento completo.', question: {text:'O que é compostagem?', choices:['Processo de reciclagem de orgânicos','Queima de resíduos','Aterro de lixo','Incineração'], answer:0}},
-  { id: 'extra3', name: 'Desenvolvimento Sustentável', action: 'step_side', desc: 'Dê um passo largo para a esquerda e outro para a direita.', question: {text:'O que é desenvolvimento sustentável?', choices:['Atender necessidades atuais sem comprometer futuras','Explorar todos os recursos agora','Priorizar apenas crescimento econômico','Ignorar questões ambientais'], answer:0}}
+  { id: 'extra3', name: 'Desenvolvimento Sustentável', action: 'step_side', desc: 'Dê um passo largo para a esquerda e outro para a direita.', question: {text:'O que é desenvolvimento sustentável?', choices:['Atender necessidades atuais sem comprometer futuras','Explorar todos os recursos agora','Priorizar apenas crescimento econômico','Ignorar questões ambientais'], answer:0}},
+
+  // Novas perguntas para o Nível 2
+  { id: 'extra4', name: 'Reciclagem de Eletrônicos', action: 'jump', desc: 'Dê dois pulos no mesmo lugar.', question: {text:'O que é lixo eletrônico?', choices:['Qualquer lixo produzido em casa','Equipamentos eletrônicos descartados','Restos de alimentos','Embalagens de plástico'], answer:1}},
+  { id: 'extra5', name: 'Transporte Sustentável', action: 'raise_hands', desc: 'Levante ambos os braços acima da cabeça duas vezes.', question: {text:'Qual é um meio de transporte sustentável?', choices:['Carro particular a gasolina','Bicicleta','Ônibus lotado','Avião'], answer:1}},
+  { id: 'extra6', name: 'Pegada de Carbono', action: 'squat', desc: 'Faça um agachamento completo.', question: {text:'O que é a pegada de carbono?', choices:['Uma marca deixada no chão','A quantidade de sapatos que uma pessoa tem','A medida de emissão de gases de efeito estufa','O peso de uma pessoa em carbono'], answer:2}},
+  { id: 'extra7', name: 'Desmatamento', action: 'step_side', desc: 'Dê um passo largo para a esquerda e outro para a direita.', question: {text:'Qual é uma consequência do desmatamento?', choices:['Aumento da biodiversidade','Melhora da qualidade do ar','Perda de habitat para animais','Redução do aquecimento global'], answer:2}}
 ];
 
 // Mode selection
@@ -391,9 +397,55 @@ const realLifeGame = {
   }
 };
 
+const virtualLevelData = [
+  { // Level 1
+    platforms: [
+      { x: 0, y: 430, width: 800, height: 50, color: '#334155' },
+      { x: 200, y: 320, width: 150, height: 20, color: '#475569' },
+      { x: 450, y: 250, width: 150, height: 20, color: '#475569' },
+      { x: 600, y: 150, width: 100, height: 20, color: '#475569' }
+    ],
+    seeds: [
+      { x: 635, y: 120, width: 20, height: 20, collected: false, questionIndex: 0 },
+      { x: 400, y: 220, width: 20, height: 20, collected: false, questionIndex: 1 },
+      { x: 250, y: 300, width: 20, height: 20, collected: false, questionIndex: 2 },
+      { x: 100, y: 400, width: 20, height: 20, collected: false, questionIndex: 3 }
+    ],
+    stumps: [
+      { x: 150, y: 410, width: 20, height: 20 },
+      { x: 500, y: 410, width: 20, height: 20 },
+      { x: 300, y: 410, width: 20, height: 20 },
+      { x: 650, y: 410, width: 20, height: 20 }
+    ]
+  },
+  { // Level 2
+    platforms: [
+      { x: 0, y: 430, width: 800, height: 50, color: '#334155' },
+      { x: 150, y: 350, width: 100, height: 20, color: '#475569' },
+      { x: 300, y: 280, width: 100, height: 20, color: '#475569' },
+      { x: 450, y: 210, width: 100, height: 20, color: '#475569' },
+      { x: 600, y: 140, width: 100, height: 20, color: '#475569' }
+    ],
+    seeds: [
+      { x: 180, y: 320, width: 20, height: 20, collected: false, questionIndex: 15 },
+      { x: 330, y: 250, width: 20, height: 20, collected: false, questionIndex: 16 },
+      { x: 480, y: 180, width: 20, height: 20, collected: false, questionIndex: 17 },
+      { x: 630, y: 110, width: 20, height: 20, collected: false, questionIndex: 18 }
+    ],
+    stumps: [
+      { x: 100, y: 410, width: 20, height: 20 },
+      { x: 250, y: 410, width: 20, height: 20 },
+      { x: 400, y: 410, width: 20, height: 20 },
+      { x: 550, y: 410, width: 20, height: 20 },
+      { x: 700, y: 410, width: 20, height: 20 }
+    ]
+  }
+];
+
 const virtualLifeGame = {
   canvas: null,
   ctx: null,
+  virtualLevelDisplay: null,
   player: {
     x: 100,
     y: 350,
@@ -406,35 +458,24 @@ const virtualLifeGame = {
   },
   gravity: 0.5,
   keys: {},
-  platforms: [
-    { x: 0, y: 430, width: 800, height: 50, color: '#334155' },
-    { x: 200, y: 320, width: 150, height: 20, color: '#475569' },
-    { x: 450, y: 250, width: 150, height: 20, color: '#475569' },
-    { x: 600, y: 150, width: 100, height: 20, color: '#475569' }
-  ],
-  seeds: [
-    { x: 635, y: 120, width: 20, height: 20, collected: false, questionIndex: 0 },
-    { x: 400, y: 220, width: 20, height: 20, collected: false, questionIndex: 1 },
-    { x: 250, y: 300, width: 20, height: 20, collected: false, questionIndex: 2 },
-    { x: 100, y: 400, width: 20, height: 20, collected: false, questionIndex: 3 }
-  ],
-  stumps: [
-    { x: 150, y: 410, width: 20, height: 20 },
-    { x: 500, y: 410, width: 20, height: 20 },
-    { x: 300, y: 410, width: 20, height: 20 },
-    { x: 650, y: 410, width: 20, height: 20 }
-  ],
+
+  platforms: [],
+  seeds: [],
+  stumps: [],
+
   flowers: [],
   animals: [],
   trees: [],
   environmentState: 'deforested',
   seedsCollected: 0,
-  totalSeeds: 4,
+  totalSeeds: 0,
   levelComplete: false,
+  currentLevelIndex: 0,
 
   init() {
     this.canvas = document.getElementById('gameCanvas');
     this.ctx = this.canvas.getContext('2d');
+    this.virtualLevelDisplay = document.getElementById('virtualLevelDisplay');
     
     window.addEventListener('keydown', (e) => { 
       this.keys[e.code] = true; 
@@ -444,7 +485,33 @@ const virtualLifeGame = {
       this.keys[e.code] = false; 
     });
 
+    this.loadLevel(this.currentLevelIndex);
     this.gameLoop();
+  },
+
+  loadLevel(levelIndex) {
+    const level = virtualLevelData[levelIndex];
+    if (!level) {
+      console.error(`Level ${levelIndex} not found.`);
+      return;
+    }
+
+    this.player.x = 100;
+    this.player.y = 350;
+    this.player.velocityX = 0;
+    this.player.velocityY = 0;
+
+    this.platforms = JSON.parse(JSON.stringify(level.platforms));
+    this.seeds = JSON.parse(JSON.stringify(level.seeds));
+    this.stumps = JSON.parse(JSON.stringify(level.stumps));
+
+    this.levelComplete = false;
+    this.seedsCollected = 0;
+    this.totalSeeds = this.seeds.length;
+    this.environmentState = 'deforested';
+    this.flowers = [];
+    this.animals = [];
+    this.trees = [];
   },
 
   update() {
@@ -516,9 +583,17 @@ const virtualLifeGame = {
         if (this.seedsCollected >= this.totalSeeds) {
           this.levelComplete = true;
           setTimeout(() => {
-            const playAgain = confirm("Parabéns! Você recuperou completamente o ambiente! Deseja jogar novamente?");
-            if (playAgain) {
-              this.resetLevel();
+            const nextLevelIndex = this.currentLevelIndex + 1;
+            if (nextLevelIndex < virtualLevelData.length) {
+              alert("Parabéns! Nível concluído. Preparando para o próximo nível...");
+              this.currentLevelIndex = nextLevelIndex;
+              this.loadLevel(this.currentLevelIndex);
+            } else {
+              const playAgain = confirm("Parabéns! Você recuperou completamente o ambiente e completou todos os níveis! Deseja jogar novamente?");
+              if (playAgain) {
+                this.currentLevelIndex = 0;
+                this.loadLevel(this.currentLevelIndex);
+              }
             }
           }, 1000);
         }
@@ -564,25 +639,16 @@ const virtualLifeGame = {
   },
   
   resetLevel() {
-    this.player.x = 100;
-    this.player.y = 350;
-    this.player.velocityX = 0;
-    this.player.velocityY = 0;
-    this.levelComplete = false;
-    this.seedsCollected = 0;
-    this.environmentState = 'deforested';
-    this.flowers = [];
-    this.animals = [];
-    this.trees = [];
-    
-    // Reset todas as sementes
-    this.seeds.forEach(seed => {
-      seed.collected = false;
-    });
+    this.loadLevel(this.currentLevelIndex);
   },
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Atualizar o número do nível na UI
+    if (this.virtualLevelDisplay) {
+      this.virtualLevelDisplay.textContent = this.currentLevelIndex + 1;
+    }
 
     // Desenhar jogador (estilo Mario pixel)
     const p = this.player;
