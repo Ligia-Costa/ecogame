@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoGame - Jogo Virtual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CORREÇÃO: Inseri o CSS completo do seu jogo aqui. */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --grass: #22c55e;
+            --wood: #a16207;
+            --stone: #6b7280;
+            --water: #3b82f6;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a, #065f46);
+            color: var(--light);
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .avatar-screen {
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .avatar-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .avatar-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+            transform: scale(1.05);
+        }
+
+        .avatar-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        .avatar-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .avatar-subject {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .game-screen {
+            background: linear-gradient(to bottom, #1e40af, #1e3a8a);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hud {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hud-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hud-avatar {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .hud-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 150px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .game-world {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, #15803d, #166534);
+            z-index: 1;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .ground::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+        }
+
+        .player {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            transition: transform 0.1s;
+            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .platform {
+            position: absolute;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .platform:hover {
+            transform: translateY(-5px);
+        }
+
+        .seed {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
+            cursor: pointer;
+        }
+
+        .environment-element {
+            position: absolute;
+            z-index: 0;
+            transition: transform 0.5s ease;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 2rem;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: modalAppear 0.5s ease;
+        }
+
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.8) translateY(50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: left;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        .option-letter {
+            background: var(--primary);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .feedback-modal {
+            text-align: center;
+        }
+
+        .feedback-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feedback-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-message {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .feedback-bonus {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .gameover-screen {
+            background: linear-gradient(135deg, #dc2626, #ea580c);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .gameover-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gameover-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .gameover-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .gameover-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .controls-help {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1rem;
+            color: white;
+            font-size: 0.9rem;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .controls-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .key {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .menu-title { font-size: 2.5rem; }
+            .menu-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; }
+            .avatar-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+            .hud { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .gameover-stats { grid-template-columns: 1fr; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
+        }
+
+        .bounce { animation: bounce 2s infinite; }
+        .glow { animation: glow 2s infinite; }
+    </style>
+</head>
+<body>
+    
+    <div id="avatar-screen" class="screen active">
+        <h2 class="avatar-title">Escolha seu Avatar Educativo</h2>
+        
+        <div id="avatar-grid" class="avatar-grid">
+            </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <a href="index.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            <button id="select-avatar-button" class="btn btn-primary" style="display: none;">
+                <i class="fas fa-rocket"></i> Iniciar Missão
+            </button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <div class="hud">
+            <div class="hud-section">
+                <div id="hud-avatar" class="hud-avatar"></div>
+                <div class="hud-stats">
+                    <div class="stat">
+                        <i class="fas fa-star" style="color: var(--accent);"></i>
+                        Pontuação: <span id="score">0</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-heart" style="color: var(--danger);"></i>
+                        Vidas: <span id="lives">3</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hud-section">
+                <div class="hud-stats">
+                    <div class="stat">
+                        <i class="fas fa-seedling" style="color: var(--primary);"></i>
+                        Sementes: <span id="seeds-collected">0</span>/15
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-leaf" style="color: var(--primary);"></i>
+                        Nível Ambiental
+                        <div class="progress-bar">
+                            <div id="environment-progress" class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hud-section">
+                <button id="pause-button" class="btn btn-secondary" style="padding: 0.5rem 1rem;">
+                    <i class="fas fa-pause"></i> Pausar
+                </button>
+            </div>
+        </div>
+
+        <div id="game-world" class="game-world"></div>
+
+        <div class="ground"></div>
+        
+        <div class="controls-help">
+            <div class="controls-title">Controles</div>
+            <div class="control-item"><span class="key">W</span> / <span class="key">↑</span> Pular</div>
+            <div class="control-item"><span class="key">A</span> / <span class="key">←</span> Mover Esquerda</div>
+            <div class="control-item"><span class="key">D</span> / <span class="key">→</span> Mover Direita</div>
+        </div>
+    </div>
+
+    <div id="question-overlay" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">🌱</div>
+                <h3 class="modal-title">Desafio do Conhecimento</h3>
+            </div>
+            <div class="modal-body">
+                <p id="question-text" class="question-text"></p>
+                <div id="options-container" class="options-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="feedback-overlay" class="modal-overlay">
+        <div class="modal feedback-modal">
+            <div id="feedback-icon" class="feedback-icon"></div>
+            <h3 id="feedback-title" class="feedback-title"></h3>
+            <p id="feedback-message" class="feedback-message"></p>
+            <p id="feedback-bonus" class="feedback-bonus"></p>
+        </div>
+    </div>
+
+    <div id="gameover-screen" class="screen">
+        <div class="gameover-card">
+            <div class="gameover-icon">🌍</div>
+            <h2 class="gameover-title">Missão Concluída!</h2>
+            <div class="gameover-stats">
+                <div class="stat-card">
+                    <div id="final-score" class="stat-value">0</div>
+                    <div class="stat-label">Pontuação</div>
+                </div>
+                <div class="stat-card">
+                    <div id="final-seeds" class="stat-value">0/15</div>
+                    <div class="stat-label">Sementes</div>
+                </div>
+                <div class="stat-card">
+                    <div id="final-environment" class="stat-value">0/15</div>
+                    <div class="stat-label">Nível Ambiental</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="restart-button" class="btn btn-primary">
+                    <i class="fas fa-redo"></i> Jogar Novamente
+                </button>
+                <button id="menu-button" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Menu Principal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados do jogo
+        const avatars = [ { id: 'math', name: 'Calculon', subject: 'Matemática', color: '#3B82F6', icon: '🧮' }, { id: 'portuguese', name: 'Letrinha', subject: 'Língua Portuguesa', color: '#EF4444', icon: '📚' }, { id: 'biology', name: 'Biobot', subject: 'Biologia', color: '#10B981', icon: '🧬' }, { id: 'physics', name: 'Quantum', subject: 'Física', color: '#8B5CF6', icon: '⚛️' }, { id: 'chemistry', name: 'Molecula', subject: 'Química', color: '#F59E0B', icon: '🧪' }, { id: 'history', name: 'Chronos', subject: 'História', color: '#92400E', icon: '📜' }, { id: 'geography', name: 'Globo', subject: 'Geografia', color: '#059669', icon: '🌍' }, { id: 'english', name: 'Wordly', subject: 'Inglês', color: '#DC2626', icon: '🇺🇸' }, { id: 'art', name: 'Artista', subject: 'Arte', color: '#EC4899', icon: '🎨' }, { id: 'pe', name: 'Atlético', subject: 'Educação Física', color: '#F97316', icon: '⚽' }, { id: 'philosophy', name: 'Sócrates', subject: 'Filosofia', color: '#6366F1', icon: '🤔' }, { id: 'sociology', name: 'Social', subject: 'Sociologia', color: '#84CC16', icon: '👥' } ];
+        const questions = [ { id: 1, question: "O que é bioeconomia?", options: ["Economia baseada em recursos biológicos", "Economia digital", "Economia tradicional", "Economia industrial"], correct: 0, explanation: "Bioeconomia é um modelo econômico baseado no uso sustentável de recursos biológicos renováveis." }, { id: 2, question: "Qual é o principal objetivo da sustentabilidade?", options: ["Lucro máximo", "Atender necessidades sem comprometer futuras gerações", "Crescimento industrial", "Consumo ilimitado"], correct: 1, explanation: "Sustentabilidade busca equilibrar necessidades atuais sem comprometer as gerações futuras." }, { id: 3, question: "O que são energias renováveis?", options: ["Petróleo e gás", "Solar, eólica e hidrelétrica", "Carvão mineral", "Energia nuclear"], correct: 1, explanation: "Energias renováveis são fontes inesgotáveis como sol, vento e água." }, { id: 4, question: "O que é economia circular?", options: ["Economia em círculos", "Reutilização e reciclagem de materiais", "Economia global", "Economia local"], correct: 1, explanation: "Economia circular minimiza desperdícios através da reutilização e reciclagem." }, { id: 5, question: "Qual é o impacto do desmatamento?", options: ["Melhora o clima", "Reduz biodiversidade e aumenta CO2", "Não tem impacto", "Melhora a economia"], correct: 1, explanation: "Desmatamento reduz biodiversidade e aumenta gases do efeito estufa." }, { id: 6, question: "O que são ODS?", options: ["Organizações de Saúde", "Objetivos de Desenvolvimento Sustentável", "Órgãos de Segurança", "Operações Digitais"], correct: 1, explanation: "ODS são 17 objetivos da ONU para um mundo mais sustentável até 2030." }, { id: 7, question: "Como reduzir a pegada de carbono?", options: ["Usar mais combustíveis fósseis", "Transportes sustentáveis e energia limpa", "Aumentar o consumo", "Ignorar o problema"], correct: 1, explanation: "Transporte sustentável e energia limpa reduzem emissões de carbono." }, { id: 8, question: "O que é agricultura sustentável?", options: ["Uso intensivo de agrotóxicos", "Práticas que preservam o solo e biodiversidade", "Monocultura extensiva", "Agricultura industrial"], correct: 1, explanation: "Agricultura sustentável preserva recursos naturais e biodiversidade." }, { id: 9, question: "Qual a importância da reciclagem?", options: ["Não tem importância", "Reduz lixo e economiza recursos", "Aumenta poluição", "É muito cara"], correct: 1, explanation: "Reciclagem reduz resíduos e economiza recursos naturais." }, { id: 10, question: "O que é aquecimento global?", options: ["Resfriamento da Terra", "Aumento da temperatura média global", "Fenômeno natural", "Mito científico"], correct: 1, explanation: "Aquecimento global é o aumento da temperatura média causado por atividades humanas." }, { id: 11, question: "Como a tecnologia pode ajudar na sustentabilidade?", options: ["Não pode ajudar", "Eficiência energética e monitoramento ambiental", "Só prejudica", "É irrelevante"], correct: 1, explanation: "Tecnologia melhora eficiência e monitora impactos ambientais." }, { id: 12, question: "O que são combustíveis fósseis?", options: ["Energias renováveis", "Petróleo, gás e carvão", "Energia solar", "Biomassa"], correct: 1, explanation: "Combustíveis fósseis são recursos não-renováveis que poluem o ambiente." }, { id: 13, question: "Qual a importância das florestas?", options: ["Só para madeira", "Regulam clima e preservam biodiversidade", "Não são importantes", "Só para turismo"], correct: 1, explanation: "Florestas regulam o clima, purificam ar e preservam biodiversidade." }, { id: 14, question: "O que é consumo consciente?", options: ["Comprar sem pensar", "Escolhas responsáveis considerando impacto ambiental", "Consumir mais", "Não consumir nada"], correct: 1, explanation: "Consumo consciente considera impactos ambientais e sociais das compras." }, { id: 15, question: "Como preservar a água?", options: ["Desperdiçar à vontade", "Uso racional e evitar poluição", "Não se preocupar", "Usar só água mineral"], correct: 1, explanation: "Preservação da água envolve uso racional e prevenção da poluição." } ];
+
+        // CORREÇÃO: Estado inicial ajustado para 'avatar'
+        let gameState = { phase: 'avatar', selectedAvatar: null, score: 0, level: 1, lives: 3, questionsAnswered: 0, environmentLevel: 0, paused: false };
+        let player = { x: 100, y: 400, velocityY: 0, isJumping: false, direction: 'right', isMoving: false, onGround: true };
+        let seeds = []; let platforms = []; let currentQuestion = null; let showFeedback = { show: false, correct: false, message: '' }; let cameraX = 0; let particles = [];
+        let keys = {};
+        
+        const GRAVITY = 0.8; const JUMP_FORCE = -15; const MOVE_SPEED = 5; const GROUND_Y = window.innerHeight - 100; const SCREEN_WIDTH = window.innerWidth; const SCREEN_HEIGHT = window.innerHeight; const PLAYER_WIDTH = 60; const PLAYER_HEIGHT = 60;
+
+        // CORREÇÃO: Removidas referências a elementos que não existem nesta página
+        const screens = {
+            avatar: document.getElementById('avatar-screen'),
+            playing: document.getElementById('game-screen'),
+            gameOver: document.getElementById('gameover-screen')
+        };
+        const avatarGrid = document.getElementById('avatar-grid');
+        const selectAvatarButton = document.getElementById('select-avatar-button');
+        const hudAvatar = document.getElementById('hud-avatar');
+        const scoreElement = document.getElementById('score');
+        const livesElement = document.getElementById('lives');
+        const environmentProgress = document.getElementById('environment-progress');
+        const seedsCollectedElement = document.getElementById('seeds-collected');
+        const gameWorld = document.getElementById('game-world');
+        const questionOverlay = document.getElementById('question-overlay');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackOverlay = document.getElementById('feedback-overlay');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const feedbackBonus = document.getElementById('feedback-bonus');
+        const finalScoreElement = document.getElementById('final-score');
+        const finalSeedsElement = document.getElementById('final-seeds');
+        const finalEnvironmentElement = document.getElementById('final-environment');
+        const restartButton = document.getElementById('restart-button');
+        const menuButton = document.getElementById('menu-button');
+        const pauseButton = document.getElementById('pause-button');
+
+        // CORREÇÃO: Função init() simplificada para esta página
+        function init() {
+            selectAvatarButton.addEventListener('click', startGame);
+            restartButton.addEventListener('click', () => location.reload()); // Reinicia a página atual
+            menuButton.addEventListener('click', () => { window.location.href = 'index.html'; }); // Volta para o menu
+            pauseButton.addEventListener('click', togglePause);
+            
+            window.addEventListener('keydown', (e) => {
+                keys[e.key.toLowerCase()] = true;
+                if (e.key === 'Escape' && gameState.phase === 'playing') {
+                    togglePause();
+                }
+            });
+            window.addEventListener('keyup', (e) => {
+                keys[e.key.toLowerCase()] = false;
+            });
+            
+            populateAvatarGrid();
+            gameLoop();
+        }
+
+        function showScreen(screenName) {
+            Object.values(screens).forEach(screen => {
+                if (screen) screen.classList.remove('active');
+            });
+            
+            if (screens[screenName]) {
+                screens[screenName].classList.add('active');
+                gameState.phase = screenName;
+            }
+            
+            if (screenName === 'playing') {
+                initializeGame();
+            } else if (screenName === 'gameOver') {
+                showGameOver();
+            }
+        }
+
+        function populateAvatarGrid() {
+            avatarGrid.innerHTML = '';
+            avatars.forEach((avatar) => {
+                const card = document.createElement('div');
+                card.className = 'avatar-card';
+                card.style.color = avatar.color;
+                card.innerHTML = `<div class="avatar-icon">${avatar.icon}</div><div class="avatar-name">${avatar.name}</div><div class="avatar-subject">${avatar.subject}</div>`;
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    gameState.selectedAvatar = avatar;
+                    selectAvatarButton.style.display = 'flex';
+                });
+                avatarGrid.appendChild(card);
+            });
+        }
+        
+        // ... (O restante do seu código JavaScript permanece o mesmo) ...
+        // Nenhuma outra alteração é necessária no resto do script.
+        // As funções de lógica do jogo (initializeGame, updatePlayer, renderGame, etc.) estão corretas.
+
+        function initializeGame() { gameState.score = 0; gameState.lives = 3; gameState.questionsAnswered = 0; gameState.environmentLevel = 0; gameState.paused = false; player = { x: 100, y: GROUND_Y, velocityY: 0, isJumping: false, direction: 'right', isMoving: false, onGround: true }; cameraX = 0; particles = []; initializePlatforms(); initializeSeeds(); updateHUD(); hudAvatar.textContent = gameState.selectedAvatar.icon; }
+        function initializePlatforms() { platforms = [ { x: 200, y: GROUND_Y - 80, width: 120, height: 25, type: 'grass' }, { x: 400, y: GROUND_Y - 150, width: 100, height: 25, type: 'wood' }, { x: 650, y: GROUND_Y - 100, width: 140, height: 25, type: 'stone' }, { x: 850, y: GROUND_Y - 200, width: 120, height: 25, type: 'grass' }, { x: 1100, y: GROUND_Y - 120, width: 100, height: 25, type: 'wood' }, { x: 1350, y: GROUND_Y - 180, width: 130, height: 25, type: 'stone' }, { x: 1600, y: GROUND_Y - 80, width: 110, height: 25, type: 'grass' }, { x: 1850, y: GROUND_Y - 220, width: 120, height: 25, type: 'wood' }, { x: 2200, y: GROUND_Y - 150, width: 150, height: 25, type: 'stone' }, { x: 2500, y: GROUND_Y - 100, width: 120, height: 25, type: 'grass' }, ]; }
+        function initializeSeeds() { seeds = []; for (let i = 0; i < 8; i++) { seeds.push({ x: 50 + (i * 350) + Math.random() * 100, y: GROUND_Y - 40, collected: false, questionId: i + 1 }); } const platformSeeds = [ { x: 260, y: GROUND_Y - 110, questionId: 9 }, { x: 450, y: GROUND_Y - 180, questionId: 10 }, { x: 720, y: GROUND_Y - 130, questionId: 11 }, { x: 910, y: GROUND_Y - 230, questionId: 12 }, { x: 1160, y: GROUND_Y - 150, questionId: 13 }, { x: 1420, y: GROUND_Y - 210, questionId: 14 }, { x: 1910, y: GROUND_Y - 250, questionId: 15 }, ]; platformSeeds.forEach(seed => { seeds.push({ x: seed.x, y: seed.y, collected: false, questionId: seed.questionId }); }); }
+        function checkPlatformCollision(playerX, playerY, velocityY) { for (const platform of platforms) { if (playerX + PLAYER_WIDTH > platform.x && playerX < platform.x + platform.width && playerY + PLAYER_HEIGHT >= platform.y && playerY + PLAYER_HEIGHT <= platform.y + platform.height + 10 && velocityY >= 0) { return platform.y - PLAYER_HEIGHT; } } return null; }
+        function startGame() { if (gameState.selectedAvatar) { showScreen('playing'); } }
+        function updateHUD() { scoreElement.textContent = gameState.score; livesElement.textContent = gameState.lives; environmentProgress.style.width = `${(gameState.environmentLevel / 15) * 100}%`; seedsCollectedElement.textContent = `${gameState.questionsAnswered}/15`; }
+        function showQuestion(question) { currentQuestion = question; gameState.phase = 'question'; questionText.textContent = question.question; optionsContainer.innerHTML = ''; question.options.forEach((option, index) => { const button = document.createElement('button'); button.className = 'option-btn'; button.innerHTML = ` <div class="option-letter">${String.fromCharCode(65 + index)}</div> <span>${option}</span> `; button.addEventListener('click', () => answerQuestion(index)); optionsContainer.appendChild(button); }); questionOverlay.style.display = 'flex'; }
+        function answerQuestion(answerIndex) { if (!currentQuestion) return; const isCorrect = answerIndex === currentQuestion.correct; showFeedback = { show: true, correct: isCorrect, message: currentQuestion.explanation }; if (isCorrect) { gameState.score += 100; gameState.questionsAnswered += 1; gameState.environmentLevel = Math.min(15, gameState.environmentLevel + 1); createParticles(player.x, player.y, 10, isCorrect); } else { gameState.lives -= 1; } updateHUD(); questionOverlay.style.display = 'none'; showFeedbackModal(); if (!isCorrect && gameState.lives <= 0) { setTimeout(() => { showScreen('gameOver'); }, 3000); } else if (gameState.questionsAnswered >= 15) { setTimeout(() => { showScreen('gameOver'); }, 3000); } else { setTimeout(() => { feedbackOverlay.style.display = 'none'; gameState.phase = 'playing'; }, 3000); } }
+        function showFeedbackModal() { feedbackOverlay.style.display = 'flex'; if (showFeedback.correct) { feedbackIcon.textContent = '🎉'; feedbackTitle.textContent = 'Resposta Correta!'; feedbackTitle.style.color = '#10b981'; feedbackBonus.textContent = '+100 pontos! O ambiente está melhorando! 🌱'; } else { feedbackIcon.textContent = '😔'; feedbackTitle.textContent = 'Resposta Incorreta'; feedbackTitle.style.color = '#ef4444'; feedbackBonus.textContent = 'Tente novamente na próxima semente!'; } feedbackMessage.textContent = showFeedback.message; }
+        function showGameOver() { finalScoreElement.textContent = gameState.score; finalSeedsElement.textContent = `${gameState.questionsAnswered}/15`; finalEnvironmentElement.textContent = `${gameState.environmentLevel}/15`; }
+        function togglePause() { gameState.paused = !gameState.paused; if (gameState.paused) { pauseButton.innerHTML = '<i class="fas fa-play"></i> Continuar'; } else { pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pausar'; } }
+        function getEnvironmentBackground() { const level = gameState.environmentLevel; if (level === 0) return '#1e3a8a'; if (level <= 3) return '#1e40af'; if (level <= 7) return '#1d4ed8'; if (level <= 11) return '#2563eb'; return '#3b82f6'; }
+        function createParticles(x, y, count, isPositive) { for (let i = 0; i < count; i++) { particles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 0.5) * 10, life: 60, text: isPositive ? ['✨', '🌟', '⭐', '💫'] : ['💥', '❌', '💔'], color: isPositive ? '#fbbf24' : '#ef4444' }); } }
+        function updateParticles() { for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--; if (p.life <= 0) { particles.splice(i, 1); } } }
+        function renderGame() { gameWorld.innerHTML = ''; document.getElementById('game-screen').style.background = `linear-gradient(to bottom, ${getEnvironmentBackground()}, #1e3a8a)`; updateParticles(); particles.forEach(p => { const particleElement = document.createElement('div'); particleElement.className = 'particle'; particleElement.style.left = `${p.x - cameraX}px`; particleElement.style.top = `${p.y}px`; particleElement.style.opacity = p.life / 60; particleElement.style.fontSize = `${1 + (60 - p.life) / 20}rem`; particleElement.textContent = p.text[Math.floor(Math.random() * p.text.length)]; particleElement.style.color = p.color; gameWorld.appendChild(particleElement); }); renderEnvironmentElements(); platforms.forEach((platform, index) => { const platformScreenX = platform.x - cameraX; if (platformScreenX > -200 && platformScreenX < SCREEN_WIDTH + 200) { const platformElement = document.createElement('div'); platformElement.className = 'platform'; platformElement.style.left = `${platformScreenX}px`; platformElement.style.top = `${platform.y}px`; platformElement.style.width = `${platform.width}px`; platformElement.style.height = `${platform.height}px`; if (platform.type === 'grass') { platformElement.style.backgroundColor = '#22c55e'; platformElement.textContent = '🌿'; } else if (platform.type === 'wood') { platformElement.style.backgroundColor = '#a16207'; platformElement.textContent = '🪵'; } else { platformElement.style.backgroundColor = '#6b7280'; platformElement.textContent = '🪨'; } gameWorld.appendChild(platformElement); } }); seeds.forEach((seed, index) => { if (!seed.collected) { const seedScreenX = seed.x - cameraX; if (seedScreenX > -50 && seedScreenX < SCREEN_WIDTH + 50) { const seedElement = document.createElement('div'); seedElement.className = 'seed bounce'; seedElement.style.left = `${seedScreenX}px`; seedElement.style.top = `${seed.y}px`; seedElement.textContent = '🌱'; seedElement.title = 'Clique para coletar'; seedElement.addEventListener('click', () => { if (!seed.collected) { const question = questions.find(q => q.id === seed.questionId); if (question) { showQuestion(question); seed.collected = true; } } }); gameWorld.appendChild(seedElement); } } }); const playerElement = document.createElement('div'); playerElement.className = 'player'; playerElement.style.left = `${player.x - cameraX}px`; playerElement.style.top = `${player.y}px`; if (gameState.selectedAvatar && gameState.selectedAvatar.icon) { playerElement.textContent = gameState.selectedAvatar.icon; } else { playerElement.textContent = '❓'; } if (player.direction === 'left') { playerElement.style.transform = 'scaleX(-1)'; } else { playerElement.style.transform = 'scaleX(1)'; } if (player.isMoving && player.onGround) { playerElement.style.transform += ` translateY(${Math.sin(Date.now() / 100) * 5}px)`; } gameWorld.appendChild(playerElement); }
+        function renderEnvironmentElements() { const level = gameState.environmentLevel; const treeCount = Math.floor(level / 2); for (let i = 0; i < treeCount; i++) { const treeX = (i * 300) + 150 - cameraX; if (treeX > -100 && treeX < SCREEN_WIDTH + 100) { const treeElement = document.createElement('div'); treeElement.className = 'environment-element'; treeElement.style.left = `${treeX}px`; treeElement.style.bottom = '100px'; treeElement.style.fontSize = '3rem'; treeElement.textContent = '🌳'; gameWorld.appendChild(treeElement); } } const flowerCount = Math.floor(level / 3); for (let i = 0; i < flowerCount; i++) { const flowerX = (i * 200) + 100 - cameraX; if (flowerX > -50 && flowerX < SCREEN_WIDTH + 50) { const flowerElement = document.createElement('div'); flowerElement.className = 'environment-element'; flowerElement.style.left = `${flowerX}px`; flowerElement.style.bottom = '80px'; flowerElement.style.fontSize = '1.5rem'; flowerElement.textContent = '🌸'; gameWorld.appendChild(flowerElement); } } for (let i = 0; i < 5; i++) { const cloudX = (i * 400) + (Date.now() / 50) % 400 - cameraX * 0.5; if (cloudX > -100 && cloudX < SCREEN_WIDTH + 100) { const cloudElement = document.createElement('div'); cloudElement.className = 'environment-element'; cloudElement.style.left = `${cloudX}px`; cloudElement.style.top = `${50 + i * 40}px`; cloudElement.style.fontSize = '3rem'; cloudElement.style.opacity = '0.8'; cloudElement.textContent = '☁️'; gameWorld.appendChild(cloudElement); } } }
+        function gameLoop() { if (gameState.phase === 'playing' && !gameState.paused) { updatePlayer(); checkSeedCollision(); updateCamera(); } if (gameState.phase !== 'question' && !gameState.paused) { renderGame(); } requestAnimationFrame(gameLoop); }
+        function updatePlayer() { if (keys['a'] || keys['arrowleft']) { player.x = Math.max(0, player.x - MOVE_SPEED); player.direction = 'left'; player.isMoving = true; } else if (keys['d'] || keys['arrowright']) { player.x = Math.min(SCREEN_WIDTH * 4 - PLAYER_WIDTH, player.x + MOVE_SPEED); player.direction = 'right'; player.isMoving = true; } else { player.isMoving = false; } if ((keys[' '] || keys['w'] || keys['arrowup']) && player.onGround) { player.velocityY = JUMP_FORCE; player.isJumping = true; player.onGround = false; } player.velocityY += GRAVITY; player.y += player.velocityY; const platformY = checkPlatformCollision(player.x, player.y, player.velocityY); if (platformY !== null) { player.y = platformY; player.velocityY = 0; player.isJumping = false; player.onGround = true; } else if (player.y >= GROUND_Y) { player.y = GROUND_Y; player.velocityY = 0; player.isJumping = false; player.onGround = true; } else { player.onGround = false; } }
+        function checkSeedCollision() { seeds.forEach(seed => { if (!seed.collected && Math.abs(player.x - seed.x) < 40 && Math.abs(player.y - (seed.y+20)) < 60) { const question = questions.find(q => q.id === seed.questionId); if (question) { showQuestion(question); createParticles(seed.x, seed.y, 5, true); } seed.collected = true; } }); }
+        function updateCamera() { const targetCameraX = player.x - SCREEN_WIDTH / 3; const maxCameraX = Math.max(0, (SCREEN_WIDTH * 4) - SCREEN_WIDTH); cameraX = Math.max(0, Math.min(maxCameraX, targetCameraX)); }
+        
+        window.addEventListener('load', init);
+        window.addEventListener('resize', () => { location.reload(); });
+    </script>
+</body>
+</html>

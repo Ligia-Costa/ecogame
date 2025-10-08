@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoGame - Jogo Real (Câmera)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --transition: all 0.3s ease;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a, #065f46);
+            color: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        #video-container {
+            position: relative;
+            width: 640px;
+            height: 480px;
+            margin: auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            background: #1f2937;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            transform: scaleX(-1); /* Espelha o vídeo */
+        }
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+        }
+        .btn {
+            padding: 1rem 2rem; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); text-decoration: none; margin-top: 2rem;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-camera"></i> Aventura Real</h1>
+        <p>Permita o acesso à câmera para começar. O jogo usará o movimento da sua cabeça para controlar o personagem.</p>
+        
+        <div id="video-container">
+            <video id="webcam" autoplay muted playsinline></video>
+            <div id="loading-message">Iniciando câmera...</div>
+        </div>
+
+        <a href="index.html" class="btn"><i class="fas fa-arrow-left"></i> Voltar ao Menu</a>
+    </div>
+
+    <script>
+        const videoElement = document.getElementById('webcam');
+        const loadingMessage = document.getElementById('loading-message');
+
+        // Função para iniciar a câmera
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 640, height: 480 },
+                    audio: false
+                });
+                videoElement.srcObject = stream;
+                videoElement.onloadedmetadata = () => {
+                    loadingMessage.style.display = 'none';
+                    // Inicia a detecção de movimento aqui
+                    detectMovement();
+                };
+            } catch (error) {
+                console.error("Erro ao acessar a câmera: ", error);
+                loadingMessage.textContent = "Erro ao acessar a câmera. Verifique as permissões.";
+            }
+        }
+        
+        // Função placeholder para a lógica de detecção de movimento
+        function detectMovement() {
+            console.log("Câmera pronta! A detecção de movimento começaria aqui.");
+            
+            // Exemplo de como a lógica funcionaria:
+            // 1. Carregar uma biblioteca como MediaPipe Face Mesh ou TensorFlow.js PoseNet.
+            // 2. Criar um loop (usando requestAnimationFrame) para analisar cada frame do vídeo.
+            // 3. Em cada frame, detectar a posição do rosto ou corpo.
+            // 4. Se a cabeça estiver no terço esquerdo da tela, move o personagem para a esquerda.
+            // 5. Se estiver no terço direito, move para a direita.
+            // 6. Um movimento brusco para cima poderia ser o pulo.
+            // 7. Esta lógica atualizaria as variáveis de posição do jogador no seu loop de jogo principal.
+            
+            // A implementação completa é complexa e depende de bibliotecas externas,
+            // mas este é o lugar certo para começar.
+        }
+
+        // Inicia o processo quando a página carrega
+        window.addEventListener('load', startCamera);
+    </script>
+</body>
+</html>
