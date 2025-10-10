@@ -42,7 +42,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex; /* MUDANÇA: alterei de 'none' para 'flex' e controlarei a visibilidade com a classe 'active' */
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -106,7 +106,7 @@
             align-items: center;
             gap: 0.5rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            text-decoration: none; /* Adicionado para links */
+            text-decoration: none;
         }
 
         .btn-primary {
@@ -130,19 +130,14 @@
             transform: translateY(0);
         }
         
-        /* O resto dos seus estilos foi omitido para não repetir o prompt, mas devem estar aqui */
-        
-        /* Responsive */
         @media (max-width: 768px) {
             .menu-title {
                 font-size: 2.5rem;
             }
-            
             .menu-buttons {
                 flex-direction: column;
                 align-items: center;
             }
-            
             .btn {
                 width: 100%;
                 max-width: 300px;
@@ -150,7 +145,6 @@
             }
         }
         /* FIM: ESTILOS COMPLETOS FORNECIDOS POR VOCÊ */
-
 
         /* INÍCIO: ESTILOS ADICIONAIS PARA O MODAL DE SELEÇÃO DE MODO */
         .modal-overlay {
@@ -168,7 +162,6 @@
             padding: 2rem;
         }
 
-        /* Usando um ID para a caixa do modal para evitar conflito com a classe .modal do jogo */
         #mode-select-box {
             background: linear-gradient(135deg, #1e293b, #334155);
             border-radius: 20px;
@@ -256,6 +249,41 @@
                 align-items: center;
             }
         }
+
+        /* */
+        #custom-alert-box {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            animation: modalAppear 0.5s ease;
+        }
+
+        #custom-alert-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        #custom-alert-message {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            text-align: left; /* Melhora a legibilidade de listas */
+            white-space: pre-wrap; /* Essencial para manter as quebras de linha do JS */
+            opacity: 0.9;
+        }
+
+        #custom-alert-ok-btn {
+            margin: 0 auto; /* Centraliza o botão OK */
+        }
+        /* */
+
     </style>
 </head>
 <body>
@@ -300,12 +328,25 @@
         </div>
     </div>
 
+    <div id="custom-alert-overlay" class="modal-overlay">
+        <div id="custom-alert-box">
+            <h2 id="custom-alert-title"></h2>
+            <p id="custom-alert-message"></p>
+            <button id="custom-alert-ok-btn" class="btn btn-primary">OK</button>
+        </div>
+    </div>
     <script>
         const startAdventureBtn = document.getElementById('start-adventure-button');
         const creditsButton = document.getElementById('credits-button');
+        const instructionsButton = document.getElementById('instructions-button');
         const modeSelectionOverlay = document.getElementById('mode-selection-overlay');
         const closeModalBtn = document.getElementById('close-modal-button');
-        const instructionsButton = document.getElementById('instructions-button');
+
+        // NOVO: Seletores para o modal de alerta personalizado
+        const customAlertOverlay = document.getElementById('custom-alert-overlay');
+        const customAlertTitle = document.getElementById('custom-alert-title');
+        const customAlertMessage = document.getElementById('custom-alert-message');
+        const customAlertOkBtn = document.getElementById('custom-alert-ok-btn');
 
         startAdventureBtn.addEventListener('click', () => {
             modeSelectionOverlay.style.display = 'flex';
@@ -315,47 +356,68 @@
             modeSelectionOverlay.style.display = 'none';
         });
 
-        // Fechar o modal se clicar fora dele
         modeSelectionOverlay.addEventListener('click', (event) => {
             if (event.target === modeSelectionOverlay) {
                 modeSelectionOverlay.style.display = 'none';
             }
         });
 
+        // NOVO: Função para exibir o modal personalizado
+        function showCustomAlert(title, message) {
+            customAlertTitle.innerText = title;
+            customAlertMessage.innerText = message;
+            customAlertOverlay.style.display = 'flex';
+        }
+
+        // NOVO: Event listener para fechar o modal personalizado com o botão OK
+        customAlertOkBtn.addEventListener('click', () => {
+            customAlertOverlay.style.display = 'none';
+        });
+
+        // NOVO: Event listener para fechar o modal clicando fora da caixa
+        customAlertOverlay.addEventListener('click', (event) => {
+            if (event.target === customAlertOverlay) {
+                customAlertOverlay.style.display = 'none';
+            }
+        });
+
+        // ALTERADO: A função showCredits agora chama o modal personalizado
         function showCredits() {
-            alert(`CRÉDITOS DO ECOGAME
+            const title = "CRÉDITOS DO ECOGAME";
+            const message = `Desenvolvido com ❤️ para promover a educação ambiental
 
-            Desenvolvido com ❤️ para promover a educação ambiental
+🎨 Design e Programação: EcoGame Team
+📚 Conteúdo Educativo: Baseado em ODS da ONU
+🎵 Efeitos Sonoros: Mixkit
 
-            🎨 Design e Programação: EcoGame Team
-            📚 Conteúdo Educativo: Baseado em ODS da ONU
-            🎵 Efeitos Sonoros: Mixkit
-
-            Agradecimentos especiais a todos os educadores
-            que inspiram as futuras gerações a cuidar do nosso planeta!`);
+Agradecimentos especiais a todos os educadores
+que inspiram as futuras gerações a cuidar do nosso planeta!`;
+            showCustomAlert(title, message);
         }
 
         creditsButton.addEventListener('click', showCredits);
 
+        // ALTERADO: O botão de instruções agora chama o modal personalizado
         instructionsButton.addEventListener('click', () => {
-            alert(`INSTRUÇÕES DO ECOGAME
-          🎮 CONTROLES:
-          - Use WASD ou SETAS para mover o personagem
-          - ESPAÇO para pular
-          - ESC para pausar o jogo
+            const title = "INSTRUÇÕES DO ECOGAME";
+            const message = `🎮 CONTROLES:
+- Use WASD ou SETAS para mover o personagem
+- ESPAÇO para pular
+- ESC para pausar o jogo
 
-          🎯 OBJETIVO:
-          - Colete todas as 15 sementes do conhecimento
-          - Responda corretamente às perguntas sobre sustentabilidade
-          - Aumente o nível ambiental do planeta
+🎯 OBJETIVO:
+- Colete todas as 15 sementes do conhecimento
+- Responda corretamente às perguntas sobre sustentabilidade
+- Aumente o nível ambiental do planeta
 
-          🌱 COMO JOGAR:
-          1. Escolha seu avatar educativo
-          2. Mova-se pelo cenário e pule nas plataformas
-          3. Colete as sementes para responder perguntas
-          4. Acumule pontos e melhore o ambiente
+🌱 COMO JOGAR:
+1. Escolha seu avatar educativo
+2. Mova-se pelo cenário e pule nas plataformas
+3. Colete as sementes para responder perguntas
+4. Acumule pontos e melhore o ambiente
 
-          Boa sorte em sua missão sustentável! 🌍`);
+Boa sorte em sua missão sustentável! 🌍`;
+            showCustomAlert(title, message);
         });
     </script>
 </body>
