@@ -220,33 +220,38 @@
   <div id="avatar-selection">
     <h1>Escolha seu Mestre do Saber</h1>
     <div class="grid" id="avatar-grid">
-      <div class="card" data-avatar="calculon">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Calculon">
-        <h3>Calculon</h3>
+      <div class="card" data-avatar="matematica">
+        <img src="julio.png" alt="Julio">
+        <h3>Julio</h3>
         <p>Matemática</p>
       </div>
-      <div class="card" data-avatar="letrinha">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Letrinha">
-        <h3>Letrinha</h3>
-        <p>Português</p>
-      </div>
-      <div class="card" data-avatar="biobot">
-        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048966.png" alt="Biobot">
-        <h3>Biobot</h3>
+      <div class="card" data-avatar="biologia">
+        <img src="mayara.png" alt="Mayara">
+        <h3>Mayara</h3>
         <p>Biologia</p>
       </div>
-      <div class="card" data-avatar="molecula">
-        <img src="https://cdn-icons-png.flaticon.com/512/2889/2889712.png" alt="Molecula">
-        <h3>Molecula</h3>
+      <div class="card" data-avatar="quimica">
+        <img src="Arline.png" alt="Arline">
+        <h3>Arline</h3>
         <p>Química</p>
       </div>
-      <div class="card" data-avatar="quantum">
-        <img src="https://cdn-icons-png.flaticon.com/512/2871/2871745.png" alt="Quantum">
-        <h3>Quantum</h3>
+      <div class="card" data-avatar="fisica">
+        <img src="Romulo.png" alt="Romulo">
+        <h3>Rômulo</h3>
         <p>Física</p>
       </div>
+      <div class="card" data-avatar="historia">
+        <img src="Anderson.png" alt="Anderson">
+        <h3>Anderson</h3>
+        <p>História</p>
+      </div>
+       <div class="card" data-avatar="geografia">
+        <img src="Jesiane.png" alt="Jesiane">
+        <h3>Jesiane</h3>
+        <p>Geografia</p>
+      </div>
     </div>
-    <button id="start-btn" disabled>Iniciar Jogo</button>
+    <button id="start-btn">Iniciar Jogo</button>
   </div>
 
   <div id="game-section">
@@ -302,6 +307,7 @@
 
     // === VARIÁVEIS DE ESTADO ===
     let selectedAvatar = null;
+    let selectedAvatarImage = null;
     let mediaPipeInitialized = false;
     let poseLandmarker;
     let lastVideoTime = -1;
@@ -323,49 +329,61 @@
     };
 
     // --- BANCO DE PERGUNTAS ---
-    const questions = [
-      { question: "Qual é o principal gás responsável pelo efeito estufa?", options: ["Oxigênio", "Nitrogênio", "Dióxido de Carbono", "Hélio"], answer: "Dióxido de Carbono" },
-      { question: "O que é reciclagem?", options: ["Jogar lixo na rua", "Queimar o lixo", "Reaproveitar materiais", "Enterrar o lixo"], answer: "Reaproveitar materiais" },
-      { question: "Qual destes é uma fonte de energia renovável?", options: ["Petróleo", "Carvão", "Energia Solar", "Gás Natural"], answer: "Energia Solar" },
-      { question: "O desmatamento contribui para qual problema ambiental?", options: ["Aumento da biodiversidade", "Purificação do ar", "Aquecimento Global", "Melhora do solo"], answer: "Aquecimento Global" },
-      { question: "Qual a cor do cesto de lixo para descarte de papel?", options: ["Vermelho", "Verde", "Amarelo", "Azul"], answer: "Azul" },
-    ];
+    let gameQuestions = [];
     let currentQuestion = null;
+    let lastPoseResults = null;
+
+    async function loadQuestions() {
+        try {
+            const response = await fetch('questions.json');
+            const allQuestions = await response.json();
+            const subjectKey = selectedAvatar;
+
+            const rawQuestions = allQuestions[subjectKey];
+
+            gameQuestions = rawQuestions.map((q, index) => {
+                const correctAnswerText = q.alternativas.find(alt => alt.startsWith(q.resposta_correta.charAt(0)));
+                return {
+                    question: q.pergunta,
+                    options: q.alternativas.map(opt => opt.substring(3)),
+                    answer: correctAnswerText.substring(3)
+                };
+            });
+        } catch (error) {
+            console.error("Falha ao carregar as perguntas:", error);
+            gameQuestions = [{ question: "Erro ao carregar perguntas.", options: ["OK"], answer: "OK" }];
+        }
+    }
+
 
     // === LÓGICA DA SELEÇÃO DE CARDS ===
     cards.forEach(card => {
-      card.addEventListener('click', () => {
-        // Remove classe selected de todos e adiciona no clicado
-        cards.forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
+        card.addEventListener('click', () => {
+            cards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedAvatar = card.dataset.avatar;
+            avatarNameEl.textContent = card.querySelector('h3').textContent;
 
-        // Atualiza avatar selecionado e texto
-        selectedAvatar = card.dataset.avatar;
-        avatarNameEl.textContent = card.querySelector('h3').textContent;
+            // Carrega a imagem do avatar selecionado
+            selectedAvatarImage = new Image();
+            selectedAvatarImage.src = card.querySelector('img').src;
 
-        // Habilita botão iniciar
-        startBtn.disabled = false; // <-- CORRIGIDO!
-      });
+            startBtn.disabled = false;
+        });
     });
 
     // Ao clicar iniciar: esconde seleção e inicia o jogo (e MediaPipe)
-    startBtn.addEventListener('click', () => {
-      if (!selectedAvatar) return;
+    startBtn.addEventListener('click', async () => {
+      if (!selectedAvatar) {
+        alert("Por favor, escolha um avatar antes de iniciar o jogo.");
+        return;
+      }
 
       avatarSelection.style.display = 'none';
       gameSection.style.display = 'block';
 
-      // Mostra o nome do avatar claramente (caso não tenha texto)
-      if (!avatarNameEl.textContent || avatarNameEl.textContent === '-') {
-        const selectedCard = document.querySelector('.card.selected');
-        if (selectedCard) {
-            avatarNameEl.textContent = selectedCard.querySelector('h3').textContent;
-        } else {
-            avatarNameEl.textContent = selectedAvatar;
-        }
-      }
+      await loadQuestions();
 
-      // Inicializa MediaPipe apenas uma vez
       if (!mediaPipeInitialized) {
         mediaPipeInitialized = true;
         setupMediaPipe();
@@ -412,29 +430,32 @@
 
     // === GAME LOOP PRINCIPAL ===
     function gameLoop() {
-      if (gameState === 'playing') updateGame();
-      drawGame();
-      detectMovement();
-      window.requestAnimationFrame(gameLoop);
+        if (gameState === 'playing') {
+            updateGame();
+        }
+        drawGame();
+        detectMovement();
+        window.requestAnimationFrame(gameLoop);
     }
 
     // === DETECÇÃO DE MOVIMENTO ===
     async function detectMovement() {
-      if (!poseLandmarker || videoElement.readyState < 2) return;
+        if (!poseLandmarker || videoElement.readyState < 2) return;
 
-      const startTimeMs = performance.now();
-      if (lastVideoTime !== videoElement.currentTime) {
-        lastVideoTime = videoElement.currentTime;
-        try {
-          const results = poseLandmarker.detectForVideo(videoElement, startTimeMs);
-          if (results && results.landmarks && results.landmarks.length > 0) {
-            const landmarks = results.landmarks[0];
-            updatePlayerState(landmarks);
-          }
-        } catch (err) {
-          console.warn("Erro na detecção de pose:", err);
+        const startTimeMs = performance.now();
+        if (lastVideoTime !== videoElement.currentTime) {
+            lastVideoTime = videoElement.currentTime;
+            try {
+                const results = poseLandmarker.detectForVideo(videoElement, startTimeMs);
+                lastPoseResults = results; // Salva os resultados para o drawGame
+                if (results && results.landmarks && results.landmarks.length > 0) {
+                    const landmarks = results.landmarks[0];
+                    updatePlayerState(landmarks);
+                }
+            } catch (err) {
+                console.warn("Erro na detecção de pose:", err);
+            }
         }
-      }
     }
 
     function updatePlayerState(landmarks) {
@@ -444,9 +465,11 @@
       const shoulderRight = landmarks[12];
       const shoulderCenterX = (shoulderLeft.x + shoulderRight.x) / 2;
 
-      if (shoulderCenterX > 0.6) player.direction = 'left';
-      else if (shoulderCenterX < 0.4) player.direction = 'right';
-      else player.direction = 'center';
+      // Mapeia a posição X do ombro (0 a 1) para a largura do canvas
+      player.x = (1 - shoulderCenterX) * canvasElement.width - (player.width / 2);
+
+      // Garante que o jogador não saia da tela
+      player.x = Math.max(0, Math.min(canvasElement.width - player.width, player.x));
 
       const wristLeft = landmarks[15];
       const wristRight = landmarks[16];
@@ -462,10 +485,6 @@
 
     // === ATUALIZAÇÃO DO JOGO ===
     function updateGame() {
-      // Movimento do jogador
-      if (player.direction === 'left' && player.x > 0) player.x -= 5;
-      if (player.direction === 'right' && player.x < canvasElement.width - player.width) player.x += 5;
-
       // Movimento e colisão das sementes
       for (let i = seeds.length - 1; i >= 0; i--) {
         const seed = seeds[i];
@@ -489,30 +508,42 @@
 
     // === DESENHO (RENDERIZAÇÃO) ===
     function drawGame() {
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-      drawBackground();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        drawBackground();
 
-      if (gameState !== 'quiz') {
-        // Desenha o jogador
-        canvasCtx.fillStyle = player.color;
-        canvasCtx.fillRect(player.x, player.y, player.width, player.height);
-
-        // Efeito visual de coleta
-        if (player.action === 'collect') {
-          canvasCtx.fillStyle = 'rgba(255, 255, 0, 0.4)';
-          canvasCtx.beginPath();
-          canvasCtx.arc(player.x + player.width / 2, player.y + player.height / 2, player.width, 0, Math.PI * 2);
-          canvasCtx.fill();
+        if (lastPoseResults && lastPoseResults.landmarks) {
+            lastPoseResults.landmarks.forEach(landmarks => {
+                drawUtils.drawConnectors(landmarks, PoseLandmarker.POSE_CONNECTIONS, { color: 'rgba(255,255,255,0.7)', lineWidth: 2 });
+                drawUtils.drawLandmarks(landmarks, { color: 'rgba(255,255,255,0.9)', radius: 3 });
+            });
         }
 
-        // Desenha as sementes
-        seeds.forEach(seed => {
-          canvasCtx.fillStyle = seed.color;
-          canvasCtx.beginPath();
-          canvasCtx.arc(seed.x, seed.y, seed.size, 0, Math.PI * 2);
-          canvasCtx.fill();
-        });
-      }
+        if (gameState !== 'quiz') {
+            // Desenha o jogador
+            if (selectedAvatarImage && selectedAvatarImage.complete) {
+                canvasCtx.drawImage(selectedAvatarImage, player.x, player.y, player.width, player.height);
+            } else {
+                // Fallback se a imagem não carregou
+                canvasCtx.fillStyle = player.color;
+                canvasCtx.fillRect(player.x, player.y, player.width, player.height);
+            }
+
+            // Efeito visual de coleta
+            if (player.action === 'collect') {
+                canvasCtx.fillStyle = 'rgba(255, 255, 0, 0.4)';
+                canvasCtx.beginPath();
+                canvasCtx.arc(player.x + player.width / 2, player.y + player.height / 2, player.width, 0, Math.PI * 2);
+                canvasCtx.fill();
+            }
+
+            // Desenha as sementes
+            seeds.forEach(seed => {
+                canvasCtx.fillStyle = seed.color;
+                canvasCtx.beginPath();
+                canvasCtx.arc(seed.x, seed.y, seed.size, 0, Math.PI * 2);
+                canvasCtx.fill();
+            });
+        }
     }
 
     function drawBackground() {
@@ -560,33 +591,44 @@
     }
 
     function triggerQuiz() {
-      gameState = 'quiz';
-      feedbackEl.textContent = '';
+        gameState = 'quiz';
+        feedbackEl.textContent = '';
 
-      const availableQuestions = questions.filter(q => q !== currentQuestion);
-      currentQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+        const unansweredQuestions = gameQuestions.filter(q => !q.answered);
+        if (unansweredQuestions.length === 0) {
+            // Opcional: Lidar com o caso de todas as perguntas terem sido respondidas
+            console.log("Todas as perguntas foram respondidas!");
+            gameState = 'playing';
+            return;
+        }
 
-      questionEl.textContent = currentQuestion.question;
-      optionsEl.innerHTML = '';
+        currentQuestion = unansweredQuestions[Math.floor(Math.random() * unansweredQuestions.length)];
+        currentQuestion.answered = true; // Marca a pergunta como usada
 
-      currentQuestion.options.forEach(option => {
-        const button = document.createElement('button');
-        button.textContent = option;
-        button.onclick = () => checkAnswer(option);
-        optionsEl.appendChild(button);
-      });
-      quizModal.style.display = 'flex';
+        questionEl.textContent = currentQuestion.question;
+        optionsEl.innerHTML = '';
+
+        // Embaralha as opções antes de exibir
+        const shuffledOptions = [...currentQuestion.options].sort(() => Math.random() - 0.5);
+
+        shuffledOptions.forEach(option => {
+            const button = document.createElement('button');
+            button.textContent = option;
+            button.onclick = () => checkAnswer(option);
+            optionsEl.appendChild(button);
+        });
+        quizModal.style.display = 'flex';
     }
 
     function checkAnswer(selectedOption) {
-      if (selectedOption === currentQuestion.answer) {
-        feedbackEl.textContent = "Correto! O ambiente melhorou!";
-        feedbackEl.style.color = 'var(--primary)';
-        if (environmentLevel < maxEnvLevel) environmentLevel++;
-      } else {
-        feedbackEl.textContent = "Incorreto. Mas não desista!";
-        feedbackEl.style.color = '#ef4444';
-      }
+        if (selectedOption === currentQuestion.answer) {
+            feedbackEl.textContent = "Correto! O ambiente melhorou!";
+            feedbackEl.style.color = 'var(--primary)';
+            if (environmentLevel < maxEnvLevel) environmentLevel++;
+        } else {
+            feedbackEl.textContent = "Incorreto. Mas não desista!";
+            feedbackEl.style.color = '#ef4444';
+        }
 
       // Desabilita os botões para evitar cliques múltiplos
       optionsEl.querySelectorAll('button').forEach(btn => btn.disabled = true);
