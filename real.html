@@ -1,651 +1,156 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EcoGame - Aventura Corporal</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/vision_bundle.js" crossorigin="anonymous"></script>
-  <style>
-    :root {
-      --primary: #10b981;
-      --secondary: #3b82f6;
-      --accent: #f59e0b;
-      --transition: all 0.3s ease;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(120deg, #0f172a, #065f46);
-      color: #f9fafb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-    }
-
-    /* === TELA INICIAL (AVATAR) === */
-    #avatar-selection {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      width: 90%;
-      max-width: 1000px;
-      animation: fadeIn 0.8s ease;
-    }
-
-    #avatar-selection h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: var(--accent);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1.5rem;
-      width: 100%;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 15px;
-      padding: 1.5rem;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      cursor: pointer;
-      transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-      user-select: none;
-      border: 2px solid transparent;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .card img {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 0.8rem;
-    }
-
-    .card h3 {
-      margin: 0;
-      font-size: 1.2rem;
-      color: #fff;
-    }
-
-    .card p {
-      margin: 0.3rem 0 0;
-      font-size: 0.9rem;
-      color: #cbd5e1;
-    }
-
-    .selected {
-      border: 3px solid var(--accent);
-      background: rgba(255, 255, 255, 0.15);
-      transform: scale(1.05);
-      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.25);
-    }
-
-    #start-btn {
-      margin-top: 2rem;
-      padding: 0.8rem 2rem;
-      border: none;
-      border-radius: 10px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    #start-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      background: #888;
-    }
-
-    #start-btn:hover:not(:disabled) {
-      background: #eab308;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* === CONTAINER DO JOGO === */
-    #game-section {
-      display: none;
-      animation: fadeIn 0.8s ease;
-    }
-
-    .container {
-      text-align: center;
-      padding: 2rem;
-      background: rgba(0,0,0,0.3);
-      border-radius: 20px;
-      display: flex;
-      gap: 2rem;
-      align-items: flex-start;
-    }
-
-    .game-info {
-      max-width: 300px;
-      text-align: left;
-    }
-
-    #game-container {
-      position: relative;
-      width: 640px;
-      height: 480px;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-      background: #1f2937;
-    }
-
-    video, canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    video {
-      /* Espelha o vídeo para que o movimento pareça natural para o usuário */
-      transform: scaleX(-1);
-    }
-
-    #loading-message {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 1.2rem;
-      z-index: 10;
-      color: #e5e7eb;
-    }
-
-    /* === MODAL DE QUIZ === */
-    #quiz-modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .quiz-content {
-      background: #2b3a52;
-      padding: 30px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-      box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-      animation: fadeIn 0.5s ease;
-    }
-
-    .quiz-options button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: 2px solid var(--primary);
-      border-radius: 10px;
-      background: transparent;
-      color: #fff;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .quiz-options button:hover { background: rgba(16, 185, 129, 0.2); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoGame - Aventura Corporal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos adicionais para garantir o layout do jogo real */
+        #real-life-mode {
+            width: 100%;
+        }
+        .video-container {
+            width: 640px;
+            height: 480px;
+            max-width: 100%;
+            margin: 20px auto;
+        }
+        .action-indicator {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .timer-container {
+            bottom: 20px;
+            right: 20px;
+        }
+    </style>
 </head>
 <body>
 
-  <div id="avatar-selection">
-    <h1>Escolha seu Mestre do Saber</h1>
-    <div class="grid" id="avatar-grid">
-      <div class="card" data-avatar="matematica">
-        <img src="julio.png" alt="Julio">
-        <h3>Julio</h3>
-        <p>Matemática</p>
-      </div>
-      <div class="card" data-avatar="biologia">
-        <img src="mayara.png" alt="Mayara">
-        <h3>Mayara</h3>
-        <p>Biologia</p>
-      </div>
-      <div class="card" data-avatar="quimica">
-        <img src="Arline.png" alt="Arline">
-        <h3>Arline</h3>
-        <p>Química</p>
-      </div>
-      <div class="card" data-avatar="fisica">
-        <img src="Romulo.png" alt="Romulo">
-        <h3>Rômulo</h3>
-        <p>Física</p>
-      </div>
-      <div class="card" data-avatar="lingua-portuguesa">
-        <img src="Demetrius.png" alt="Demetrius">
-        <h3>Demetrius</h3>
-        <p>Língua Portuguesa</p>
-      </div>
-       <div class="card" data-avatar="geografia">
-        <img src="Jesiane.png" alt="Jesiane">
-        <h3>Jesiane</h3>
-        <p>Geografia</p>
-      </div>
+    <div id="real-life-mode" class="screen active">
+        <div class="app">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">🏃</div>
+                    <h1 class="logo-text">EcoGame: Modo Real</h1>
+                </div>
+            </header>
+
+            <div class="controls-panel">
+                <button id="startBtn" class="btn">▶️ Iniciar Jogo</button>
+                <button id="calibrateBtn" class="btn btn-secondary">📍 Calibrar Posição</button>
+                <div class="progress-container">
+                    <div class="progress-text" id="phase-info">
+                        Fase <span id="phaseIdx">1</span> de <span id="phaseTotal">15</span>: <strong id="phaseName">Energias Renováveis</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div id="score-display" class="score-display">
+                    Pontos: <span id="score">0</span>
+                </div>
+            </div>
+
+            <div class="game-container">
+                <div class="video-container">
+                    <video id="video" autoplay playsinline muted></video>
+                    <canvas id="overlay"></canvas>
+                    <div class="video-overlay">
+                        <div class="action-indicator" id="action-indicator">
+                            <div class="action-icon" id="actionIcon">🙌</div>
+                            <div class="action-text" id="actionText">Levante os braços</div>
+                        </div>
+                        <div class="timer-container">
+                             <div class="timer-text" id="timerText">30s</div>
+                             <div class="timer-bar">
+                                 <div class="timer-progress" id="timerProgress"></div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <button id="start-btn">Iniciar Jogo</button>
-  </div>
 
-  <div id="game-section">
-    <div class="container">
-      <div class="game-info">
-        <h1><i class="fas fa-running"></i> EcoGame Corporal</h1>
-        <p>Use o movimento do seu corpo para guiar o avatar. Levante as mãos para coletar sementes e restaurar nosso mundo!</p>
-        <p><strong>Avatar:</strong> <span id="avatar-name">-</span></p>
-        <p><strong>Pontuação:</strong> <span id="score">0</span></p>
-        <p><strong>Nível do Ambiente:</strong> <span id="env-level">0 (Desolado)</span></p>
-      </div>
-
-      <div id="game-container">
-        <video id="webcam" autoplay muted playsinline></video>
-        <canvas id="game-canvas" width="640" height="480"></canvas>
-        <div id="loading-message">Carregando IA de detecção corporal...</div>
-      </div>
+    <div id="questionModal" class="questionModal">
+        <div class="modalCard">
+            <h3 id="qTitle">Pergunta — Título da Fase</h3>
+            <div class="question-progress">
+                <div class="progress-text" id="questionProgressText">
+                    Pergunta <span id="questionProgress">1/15</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="questionProgressFill"></div>
+                </div>
+            </div>
+            <p id="qText">Texto da pergunta aparecerá aqui...</p>
+            <div id="choices" class="choices">
+                </div>
+            <div class="question-points">
+                Vale <strong id="questionPoints">20</strong> pontos!
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div id="quiz-modal">
-    <div class="quiz-content">
-      <h2 id="question">Pergunta aqui...</h2>
-      <div id="quiz-options" class="quiz-options"></div>
-      <p id="feedback"></p>
+    <div id="final-screen" class="screen">
+         <div class="final-container">
+            <div class="final-icon">🏆</div>
+            <h1>Desafio Concluído!</h1>
+            <p id="final-message">Sua dedicação à sustentabilidade é inspiradora.</p>
+            <div class="final-stats">
+                <div class="final-stat">
+                    <div class="final-stat-value" id="final-score">0</div>
+                    <div class="final-stat-label">Pontuação Final</div>
+                </div>
+                <div class="final-stat">
+                    <div class="final-stat-value" id="final-time">—</div>
+                    <div class="final-stat-label">Tempo</div>
+                </div>
+                 <div class="final-stat">
+                    <div class="final-stat-value" id="final-correct">—</div>
+                    <div class="final-stat-label">Respostas Corretas</div>
+                </div>
+            </div>
+            <div class="final-buttons">
+                <button id="play-again-btn" class="btn">Jogar Novamente</button>
+                <button id="change-mode-btn" class="btn btn-secondary">Mudar de Modo</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    // Acessa os objetos do MediaPipe que foram carregados no escopo global (window.vision)
-    const { PoseLandmarker, FilesetResolver, DrawingUtils } = vision;
+    <div id="mode-selection" class="screen">
+        <p>Volte para a <a href="index.html">página inicial</a> para selecionar outro modo.</p>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Pega o parâmetro 'avatar' da URL
+        const params = new URLSearchParams(window.location.search);
+        const avatarId = params.get('avatar');
 
-    // === SELETORES GERAIS ===
-    const avatarSelection = document.getElementById('avatar-selection');
-    const gameSection = document.getElementById('game-section');
-    const startBtn = document.getElementById('start-btn');
-    const cards = document.querySelectorAll('.card');
-    const avatarNameEl = document.getElementById('avatar-name');
-
-    // --- ELEMENTOS DO JOGO ---
-    const videoElement = document.getElementById('webcam');
-    const canvasElement = document.getElementById('game-canvas');
-    const canvasCtx = canvasElement.getContext('2d');
-    const loadingMessage = document.getElementById('loading-message');
-    const scoreEl = document.getElementById('score');
-    const envLevelEl = document.getElementById('env-level');
-
-    // --- ELEMENTOS DO QUIZ ---
-    const quizModal = document.getElementById('quiz-modal');
-    const questionEl = document.getElementById('question');
-    const optionsEl = document.getElementById('quiz-options');
-    const feedbackEl = document.getElementById('feedback');
-
-    // === VARIÁVEIS DE ESTADO ===
-    let selectedAvatar = null;
-    let selectedAvatarImage = null;
-    let mediaPipeInitialized = false;
-    let poseLandmarker;
-    let lastVideoTime = -1;
-    let gameState = 'playing'; // 'playing', 'quiz'
-    let score = 0;
-    let environmentLevel = 0;
-    const maxEnvLevel = 5;
-    let seeds = [];
-    let drawUtils;
-
-    const player = {
-      x: canvasElement.width / 2,
-      y: canvasElement.height - 60,
-      width: 40,
-      height: 40,
-      color: '#3b82f6',
-      direction: 'center', // 'left', 'right', 'center'
-      action: 'none' // 'none', 'collect'
-    };
-
-    // --- BANCO DE PERGUNTAS ---
-    let gameQuestions = [];
-    let currentQuestion = null;
-    let lastPoseResults = null;
-
-    async function loadQuestions() {
-        try {
-            const response = await fetch('questions.json');
-            const allQuestions = await response.json();
-            const subjectKey = selectedAvatar;
-
-            const rawQuestions = allQuestions[subjectKey];
-
-            gameQuestions = rawQuestions.map((q, index) => {
-                const correctAnswerText = q.alternativas.find(alt => alt.startsWith(q.resposta_correta.charAt(0)));
-                return {
-                    question: q.pergunta,
-                    options: q.alternativas.map(opt => opt.substring(3)),
-                    answer: correctAnswerText.substring(3)
-                };
-            });
-        } catch (error) {
-            console.error("Falha ao carregar as perguntas:", error);
-            gameQuestions = [{ question: "Erro ao carregar perguntas.", options: ["OK"], answer: "OK" }];
-        }
-    }
-
-
-    // === LÓGICA DA SELEÇÃO DE CARDS ===
-    cards.forEach(card => {
-        card.addEventListener('click', () => {
-            cards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedAvatar = card.dataset.avatar;
-            avatarNameEl.textContent = card.querySelector('h3').textContent;
-
-            // Carrega a imagem do avatar selecionado
-            selectedAvatarImage = new Image();
-            selectedAvatarImage.src = card.querySelector('img').src;
-
-            startBtn.disabled = false;
-        });
-    });
-
-    // Ao clicar iniciar: esconde seleção e inicia o jogo (e MediaPipe)
-    startBtn.addEventListener('click', async () => {
-      if (!selectedAvatar) {
-        alert("Por favor, escolha um avatar antes de iniciar o jogo.");
-        return;
-      }
-
-      avatarSelection.style.display = 'none';
-      gameSection.style.display = 'block';
-
-      await loadQuestions();
-
-      if (!mediaPipeInitialized) {
-        mediaPipeInitialized = true;
-        setupMediaPipe();
-      }
-    });
-
-    // === CONFIGURAÇÃO DO MEDIAPIPE (POSELANDMARKER) ===
-    async function setupMediaPipe() {
-      try {
-        const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm");
-        poseLandmarker = await PoseLandmarker.createFromOptions(filesetResolver, {
-          baseOptions: {
-            modelAssetPath: `https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task`,
-            delegate: "GPU"
-          },
-          runningMode: "VIDEO",
-          numPoses: 1
-        });
-        
-        drawUtils = new DrawingUtils(canvasCtx);
-        console.log("MediaPipe PoseLandmarker carregado.");
-        startCamera();
-      } catch (err) {
-        console.error("Erro ao inicializar MediaPipe:", err);
-        loadingMessage.textContent = "Falha ao carregar IA. Verifique o console.";
-      }
-    }
-
-    // === LÓGICA DA CÂMERA ===
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
-        videoElement.srcObject = stream;
-        videoElement.addEventListener('loadeddata', () => {
-          loadingMessage.style.display = 'none';
-          createInitialSeeds();
-          gameLoop();
-        });
-      } catch (error) {
-        console.error("Erro ao acessar a câmera: ", error);
-        loadingMessage.textContent = "Erro ao acessar a câmera. Permita o acesso.";
-      }
-    }
-
-    // === GAME LOOP PRINCIPAL ===
-    function gameLoop() {
-        if (gameState === 'playing') {
-            updateGame();
-        }
-        drawGame();
-        detectMovement();
-        window.requestAnimationFrame(gameLoop);
-    }
-
-    // === DETECÇÃO DE MOVIMENTO ===
-    async function detectMovement() {
-        if (!poseLandmarker || videoElement.readyState < 2) return;
-
-        const startTimeMs = performance.now();
-        if (lastVideoTime !== videoElement.currentTime) {
-            lastVideoTime = videoElement.currentTime;
-            try {
-                const results = poseLandmarker.detectForVideo(videoElement, startTimeMs);
-                lastPoseResults = results; // Salva os resultados para o drawGame
-                if (results && results.landmarks && results.landmarks.length > 0) {
-                    const landmarks = results.landmarks[0];
-                    updatePlayerState(landmarks);
-                }
-            } catch (err) {
-                console.warn("Erro na detecção de pose:", err);
-            }
-        }
-    }
-
-    function updatePlayerState(landmarks) {
-      if (!landmarks || landmarks.length < 17) return;
-
-      const shoulderLeft = landmarks[11];
-      const shoulderRight = landmarks[12];
-      const shoulderCenterX = (shoulderLeft.x + shoulderRight.x) / 2;
-
-      // Mapeia a posição X do ombro (0 a 1) para a largura do canvas
-      player.x = (1 - shoulderCenterX) * canvasElement.width - (player.width / 2);
-
-      // Garante que o jogador não saia da tela
-      player.x = Math.max(0, Math.min(canvasElement.width - player.width, player.x));
-
-      const wristLeft = landmarks[15];
-      const wristRight = landmarks[16];
-
-      if (wristLeft && wristRight && shoulderLeft && shoulderRight) {
-        if (wristLeft.y < shoulderLeft.y && wristRight.y < shoulderRight.y) {
-          player.action = 'collect';
+        if (avatarId) {
+            const subjectName = avatarId.replace(/_/g, ' ');
+            
+            // Simula a seleção de avatar para o AppManager
+            AppManager.selectedAvatar = {
+                subject: subjectName.charAt(0).toUpperCase() + subjectName.slice(1)
+            };
+            
+            // Inicia o jogo diretamente
+            AppManager.startRealLifeGame();
         } else {
-          player.action = 'none';
+            // Se nenhum avatar foi passado, redireciona de volta para a escolha
+            alert('Nenhum avatar selecionado! Por favor, escolha um para começar.');
+            window.location.href = 'avatar.html';
         }
-      }
-    }
-
-    // === ATUALIZAÇÃO DO JOGO ===
-    function updateGame() {
-      // Movimento e colisão das sementes
-      for (let i = seeds.length - 1; i >= 0; i--) {
-        const seed = seeds[i];
-        seed.y += seed.speed;
-        if (seed.y > canvasElement.height) {
-          seeds.splice(i, 1);
-        } else if (player.action === 'collect' &&
-                   player.x < seed.x + seed.size &&
-                   player.x + player.width > seed.x &&
-                   player.y < seed.y + seed.size &&
-                   player.y + player.height > seed.y) {
-          collectSeed(i);
-        }
-      }
-
-      // Gera novas sementes
-      if (seeds.length < 5 && Math.random() < 0.02) {
-        createSeed();
-      }
-    }
-
-    // === DESENHO (RENDERIZAÇÃO) ===
-    function drawGame() {
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        drawBackground();
-
-        if (lastPoseResults && lastPoseResults.landmarks) {
-            lastPoseResults.landmarks.forEach(landmarks => {
-                drawUtils.drawConnectors(landmarks, PoseLandmarker.POSE_CONNECTIONS, { color: 'rgba(255,255,255,0.7)', lineWidth: 2 });
-                drawUtils.drawLandmarks(landmarks, { color: 'rgba(255,255,255,0.9)', radius: 3 });
-            });
-        }
-
-        if (gameState !== 'quiz') {
-            // Desenha o jogador
-            if (selectedAvatarImage && selectedAvatarImage.complete) {
-                canvasCtx.drawImage(selectedAvatarImage, player.x, player.y, player.width, player.height);
-            } else {
-                // Fallback se a imagem não carregou
-                canvasCtx.fillStyle = player.color;
-                canvasCtx.fillRect(player.x, player.y, player.width, player.height);
-            }
-
-            // Efeito visual de coleta
-            if (player.action === 'collect') {
-                canvasCtx.fillStyle = 'rgba(255, 255, 0, 0.4)';
-                canvasCtx.beginPath();
-                canvasCtx.arc(player.x + player.width / 2, player.y + player.height / 2, player.width, 0, Math.PI * 2);
-                canvasCtx.fill();
-            }
-
-            // Desenha as sementes
-            seeds.forEach(seed => {
-                canvasCtx.fillStyle = seed.color;
-                canvasCtx.beginPath();
-                canvasCtx.arc(seed.x, seed.y, seed.size, 0, Math.PI * 2);
-                canvasCtx.fill();
-            });
-        }
-    }
-
-    function drawBackground() {
-      let bgColor, statusText;
-      switch(environmentLevel) {
-        case 0: bgColor = '#5a3a22'; statusText = 'Desolado'; break;
-        case 1: bgColor = '#6b7280'; statusText = 'Primeiros Brotos'; break;
-        case 2: bgColor = '#4ade80'; statusText = 'Vegetação Rasteira'; break;
-        case 3: bgColor = '#22c55e'; statusText = 'Pequenas Árvores'; break;
-        case 4: bgColor = '#16a34a'; statusText = 'Floresta Jovem'; break;
-        case 5: bgColor = '#0077b6'; statusText = 'Cidade Sustentável'; break;
-        default: bgColor = '#5a3a22'; statusText = 'Desolado';
-      }
-      canvasCtx.fillStyle = bgColor;
-      canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
-      envLevelEl.textContent = `${environmentLevel} (${statusText})`;
-    }
-
-    // === SEMENTES & QUIZ ===
-    function createSeed() {
-      seeds.push({
-        x: Math.random() * (canvasElement.width - 20),
-        y: -20,
-        size: 15,
-        speed: 1 + Math.random() * 2,
-        color: '#f59e0b'
-      });
-    }
-
-    function createInitialSeeds() {
-      for(let i = 0; i < 5; i++) {
-        setTimeout(createSeed, i * 500);
-      }
-    }
-
-    function collectSeed(index) {
-      seeds.splice(index, 1);
-      score++;
-      scoreEl.textContent = score;
-
-      // Aciona o quiz a cada 5 pontos
-      if (score > 0 && score % 5 === 0) {
-        triggerQuiz();
-      }
-    }
-
-    function triggerQuiz() {
-        gameState = 'quiz';
-        feedbackEl.textContent = '';
-
-        const unansweredQuestions = gameQuestions.filter(q => !q.answered);
-        if (unansweredQuestions.length === 0) {
-            // Opcional: Lidar com o caso de todas as perguntas terem sido respondidas
-            console.log("Todas as perguntas foram respondidas!");
-            gameState = 'playing';
-            return;
-        }
-
-        currentQuestion = unansweredQuestions[Math.floor(Math.random() * unansweredQuestions.length)];
-        currentQuestion.answered = true; // Marca a pergunta como usada
-
-        questionEl.textContent = currentQuestion.question;
-        optionsEl.innerHTML = '';
-
-        // Embaralha as opções antes de exibir
-        const shuffledOptions = [...currentQuestion.options].sort(() => Math.random() - 0.5);
-
-        shuffledOptions.forEach(option => {
-            const button = document.createElement('button');
-            button.textContent = option;
-            button.onclick = () => checkAnswer(option);
-            optionsEl.appendChild(button);
-        });
-        quizModal.style.display = 'flex';
-    }
-
-    function checkAnswer(selectedOption) {
-        if (selectedOption === currentQuestion.answer) {
-            feedbackEl.textContent = "Correto! O ambiente melhorou!";
-            feedbackEl.style.color = 'var(--primary)';
-            if (environmentLevel < maxEnvLevel) environmentLevel++;
-        } else {
-            feedbackEl.textContent = "Incorreto. Mas não desista!";
-            feedbackEl.style.color = '#ef4444';
-        }
-
-      // Desabilita os botões para evitar cliques múltiplos
-      optionsEl.querySelectorAll('button').forEach(btn => btn.disabled = true);
-
-      setTimeout(() => {
-        quizModal.style.display = 'none';
-        gameState = 'playing';
-      }, 1800);
-    }
-
-    // (opcional) limpa recursos se for necessário
-    window.addEventListener('beforeunload', () => {
-      if (videoElement && videoElement.srcObject) {
-        const tracks = videoElement.srcObject.getTracks();
-        tracks.forEach(t => t.stop());
-      }
     });
   </script>
+
+    <script src="game.js"></script>
+
 </body>
 </html>

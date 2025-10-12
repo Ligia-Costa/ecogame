@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoGame - Escolha seu Mestre do Saber</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Reset Básico e Estilos Globais --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a192f, #06394a);
+            color: #e6eef8;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- Container Principal --- */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f59e0b; /* Amarelo/Laranja do botão */
+            margin-bottom: 40px;
+        }
+
+        /* --- Grid dos Avatares --- */
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        /* --- Cards dos Avatares --- */
+        .avatar-card {
+            background-color: rgba(15, 23, 42, 0.6); /* Fundo escuro semi-transparente */
+            border-radius: 18px;
+            padding: 20px 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-card:hover {
+            transform: translateY(-8px);
+            background-color: rgba(15, 23, 42, 0.9);
+        }
+
+        .avatar-card.selected {
+            border-color: #f59e0b;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .avatar-image {
+            width: 60px; /* Tamanho da imagem */
+            height: 60px;
+            margin: 0 auto 15px auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        
+        .avatar-card.selected .avatar-image {
+            transform: scale(1.1);
+        }
+
+        .avatar-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .avatar-subject {
+            font-size: 0.85rem;
+            color: #cbd5e1; /* Cinza claro para a matéria */
+        }
+        
+        /* --- Botões de Ação --- */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #f59e0b;
+            color: #1f2937;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+             background-color: #ffb74d;
+             transform: translateY(-3px);
+        }
+
+        .btn-primary:disabled {
+            background-color: #52525b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: #f59e0b;
+            border: 2px solid #f59e0b;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f59e0b;
+            color: #1f2937;
+            transform: translateY(-3px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Escolha seu Mestre do Saber</h1>
+
+        <div id="avatar-grid" class="avatar-grid">
+            </div>
+
+        <div class="action-buttons">
+            <a href="index.html" class="btn btn-secondary">Voltar</a>
+            <button id="start-game-btn" class="btn btn-primary" disabled>
+                Iniciar Jogo
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatarGrid = document.getElementById('avatar-grid');
+            const startGameBtn = document.getElementById('start-game-btn');
+            let selectedAvatarId = null;
+
+            const avatars = [
+                { id: 'matematica', name: 'Julio', subject: 'Matemática', img: 'julio.png' },
+                { id: 'biologia', name: 'Mayara', subject: 'Biologia', img: 'mayara.png' },
+                { id: 'quimica', name: 'Arline', subject: 'Química', img: 'Arline.png' },
+                { id: 'fisica', name: 'Rômulo', subject: 'Física', img: 'Romulo.png' },
+                { id: 'lingua_portuguesa', name: 'Demetrius', subject: 'Língua Portuguesa', img: 'Demetrius.png' },
+                { id: 'geografia', name: 'Jesiane', subject: 'Geografia', img: 'Jesiane.png' }
+            ];
+
+            avatars.forEach(avatar => {
+                const card = document.createElement('div');
+                card.className = 'avatar-card';
+                card.dataset.avatarId = avatar.id;
+                
+                card.innerHTML = `
+                    <img src="${avatar.img}" alt="${avatar.name}" class="avatar-image">
+                    <div class="avatar-name">${avatar.name}</div>
+                    <div class="avatar-subject">${avatar.subject}</div>
+                `;
+
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    selectedAvatarId = avatar.id;
+                    startGameBtn.disabled = false;
+                });
+                avatarGrid.appendChild(card);
+            });
+
+            startGameBtn.addEventListener('click', () => {
+                if (selectedAvatarId) {
+                    // Decide para qual jogo redirecionar com base no que for implementado
+                    // Por enquanto, vamos manter o redirecionamento para o 'real.html'
+                    window.location.href = `real.html?avatar=${selectedAvatarId}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
