@@ -13,8 +13,7 @@ const avatarImages = {
     'geografia': 'Jesiane.png',
 };
 
-
-// --- GERENCIADOR DE PERGUNTAS (MODAL) ---
+// --- GERENCIADOR DE PERGUNTAS ---
 const questionManager = {
     modal: document.getElementById('questionModal'),
     title: document.getElementById('qTitle'),
@@ -40,17 +39,15 @@ const questionManager = {
                 setTimeout(() => {
                     this.modal.classList.remove('active');
                     onAnswer(isCorrect, questionObj.explanation);
-                }, 1800); 
+                }, 1800);
             };
             this.choices.appendChild(btn);
         });
     }
 };
 
-
-// --- JOGO VIDA REAL (VERSÃO KINECT ADVENTURES) ---
+// --- JOGO VIDA REAL ---
 const realLifeGame = {
-    // Referências da UI
     video: document.getElementById('video'),
     miniCam: document.getElementById('miniCam'),
     overlay: document.getElementById('overlay'),
@@ -58,30 +55,28 @@ const realLifeGame = {
     startBtn: document.getElementById('startBtn'),
     scoreEl: document.getElementById('score'),
     envStatusEl: document.getElementById('env-status'),
-
-    // NOVO: Referências para o Modal de Feedback
     feedbackOverlay: document.getElementById('feedback-overlay'),
     feedbackIcon: document.getElementById('feedback-icon'),
     feedbackTitle: document.getElementById('feedback-title'),
     feedbackMessage: document.getElementById('feedback-message'),
     feedbackExplanation: document.getElementById('feedback-explanation'),
 
-    // Estado do jogo
-    player: { x: 300, y: 350, width: 60, height: 90, velocityY: 0, onGround: true, image: new Image(), loaded: false },
-    gravity: 0.8,
-    jumpForce: -18,
+    player: { x: 300, y: 350, width: 60, height: 90, image: new Image(), loaded: false },
     environmentLevel: 0,
-    seeds: [],
-    questionBank: [], 
-    allQuestions: {}, 
+    questionBank: [],
+    allQuestions: {},
     isQuestionActive: false,
-
-    // Estado do detector
     detector: null,
     modelReady: false,
     streaming: false,
     playing: false,
     score: 0,
+
+    // estados de movimento
+    movementTarget: "armsUp",
+    detectionProgress: 0,
+    detectionStartTime: null,
+    movementConfirmed: false,
 
     async init() {
         if (!this.video || !this.overlay) return;
@@ -89,47 +84,53 @@ const realLifeGame = {
         if (this.startBtn) this.startBtn.addEventListener('click', () => this.startGame());
 
         const params = new URLSearchParams(window.location.search);
-        const avatarId = params.get('avatar') || 'biologia'; 
+        const avatarId = params.get('avatar') || 'biologia';
         this.player.image.src = avatarImages[avatarId] || avatarImages['biologia'];
         this.player.image.onload = () => { this.player.loaded = true; };
-        this.player.image.onerror = () => { this.player.loaded = true; }; // Garante que o jogo continue mesmo com erro
 
         try {
             await this.loadQuestions(avatarId);
             await this.initCamera();
             await this.loadModel();
-            this.initializeLevel(); // Inicializa o nível DEPOIS da câmera ter as dimensões
             this.loop();
         } catch (e) {
-            console.error('Erro ao iniciar o jogo:', e);
-            alert("Não foi possível iniciar o jogo. Verifique as permissões da câmera e recarregue a página.");
+            alert("Erro ao iniciar o jogo. Verifique as permissões da câmera.");
         }
     },
-    
+
     async loadQuestions(avatarId) {
         try {
             const response = await fetch('questions.json');
             this.allQuestions = await response.json();
-            const subjectQuestions = this.allQuestions[avatarId] || this.allQuestions['biologia']; // Fallback
-            
+            const subjectQuestions = this.allQuestions[avatarId] || this.allQuestions['biologia'];
             this.questionBank = subjectQuestions.map(q => {
-                const correctAnswerLetter = q.resposta_correta.charAt(0);
-                const correctAnswerIndex = correctAnswerLetter.charCodeAt(0) - 65;
-                // A explicação agora vem do próprio JSON (se existir) ou é um texto padrão.
-                const explanation = q.explanation || `A resposta correta é: ${q.alternativas[correctAnswerIndex]}`;
+                const correctIndex = q.resposta_correta.charCodeAt(0) - 65;
+                const explanation = q.explanation || `A resposta correta é: ${q.alternativas[correctIndex]}`;
                 return {
                     name: avatarId.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                    question: { text: q.pergunta, choices: q.alternativas.map(alt => alt.substring(3)), answer: correctAnswerIndex },
-                    explanation: explanation
+                    question: {
+                        text: q.pergunta,
+                        choices: q.alternativas.map(alt => alt.substring(3)),
+                        answer: correctIndex
+                    },
+                    explanation
                 };
             });
-        } catch (error) {
-            console.error('Erro ao carregar o arquivo de perguntas (questions.json):', error);
+        } catch {
+            this.questionBank = [{
+                name: 'Sustentabilidade',
+                question: {
+                    text: 'Qual dessas ações ajuda o meio ambiente?',
+                    choices: ['Jogar lixo no chão', 'Plantar uma árvore', 'Desperdiçar água'],
+                    answer: 1
+                },
+                explanation: 'Plantar árvores melhora o ar e ajuda na recuperação ambiental!'
+            }];
         }
     },
 
     async initCamera() {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         this.video.srcObject = stream;
         this.miniCam.srcObject = stream;
         return new Promise(resolve => {
@@ -138,7 +139,7 @@ const realLifeGame = {
                     this.overlay.width = this.video.videoWidth;
                     this.overlay.height = this.video.videoHeight;
                     this.streaming = true;
-                    this.miniCam.play().catch(e => console.warn("MiniCam could not play:", e));
+                    this.miniCam.play().catch(() => {});
                     resolve();
                 });
             };
@@ -147,74 +148,71 @@ const realLifeGame = {
 
     async loadModel() {
         this.detector = await posenet.load({
-            architecture: 'MobileNetV1', outputStride: 16,
-            inputResolution: { width: 640, height: 480 }, multiplier: 0.75
+            architecture: 'MobileNetV1',
+            outputStride: 16,
+            inputResolution: { width: 640, height: 480 },
+            multiplier: 0.75
         });
         this.modelReady = true;
     },
 
-    initializeLevel() {
-        this.seeds = [];
-        this.environmentLevel = 0;
-        this.score = 0;
-        if (this.scoreEl) this.scoreEl.textContent = this.score;
-        this.updateEnvStatus();
-        
-        const params = new URLSearchParams(window.location.search);
-        const avatarId = params.get('avatar') || 'biologia';
-        this.loadQuestions(avatarId); // Recarrega as perguntas
-
-        for (let i = 0; i < 15; i++) {
-            this.seeds.push({
-                x: 50 + Math.random() * (this.overlay.width - 100),
-                y: 150 + Math.random() * 200,
-                width: 30, height: 30, collected: false
-            });
-        }
-    },
-    
     getKey: (kp, name) => kp.find(p => p.part === name),
 
-    drawBackground() {
-        this.ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
-        const groundY = this.overlay.height - 60;
-        let skyColor1 = '#4a423a', skyColor2 = '#2d211a';
+    detectMovement(pose) {
+        if (!pose || !pose.keypoints) return null;
+        const ls = this.getKey(pose.keypoints, 'leftShoulder');
+        const rs = this.getKey(pose.keypoints, 'rightShoulder');
+        const lw = this.getKey(pose.keypoints, 'leftWrist');
+        const rw = this.getKey(pose.keypoints, 'rightWrist');
+        const lh = this.getKey(pose.keypoints, 'leftHip');
+        const rh = this.getKey(pose.keypoints, 'rightHip');
 
-        if (this.environmentLevel >= 9) { skyColor1 = '#00BFFF'; skyColor2 = '#87CEEB'; } 
-        else if (this.environmentLevel >= 3) { skyColor1 = '#87CEEB'; skyColor2 = '#B0E0E6'; }
-        
-        const sky = this.ctx.createLinearGradient(0, 0, 0, groundY);
-        sky.addColorStop(0, skyColor1);
-        sky.addColorStop(1, skyColor2);
-        this.ctx.fillStyle = sky;
-        this.ctx.fillRect(0, 0, this.overlay.width, this.overlay.height);
-        
-        this.ctx.fillStyle = this.environmentLevel < 3 ? '#2d211a' : (this.environmentLevel < 9 ? '#228B22' : '#006400');
-        this.ctx.fillRect(0, groundY, this.overlay.width, 60);
+        if (!ls || !rs || !lw || !rw || !lh || !rh) return null;
 
-        for (let i = 0; i < this.environmentLevel && i < 15; i++) {
-             if (i >= 9) { 
-                const treeX = (i - 8) * 90;
-                this.ctx.fillStyle = '#8B4513'; this.ctx.fillRect(treeX, groundY - 70, 20, 70);
-                this.ctx.fillStyle = 'green'; this.ctx.beginPath(); this.ctx.arc(treeX + 10, groundY - 70, 40, 0, Math.PI * 2); this.ctx.fill();
-            } else if (i >= 3) {
-                this.ctx.fillStyle = '#32cd32'; this.ctx.fillRect(i * 60, groundY - 20, 5, 20);
-            }
-        }
+        const armsUp = lw.position.y < ls.position.y && rw.position.y < rs.position.y;
+        const squat = lh.position.y > ls.position.y + 80 && rh.position.y > rs.position.y + 80;
+        const tiltLeft = ls.position.x < rs.position.x - 80;
+        const tiltRight = rs.position.x < ls.position.x - 80;
+
+        if (armsUp) return "armsUp";
+        if (squat) return "squat";
+        if (tiltLeft) return "tiltLeft";
+        if (tiltRight) return "tiltRight";
+        return null;
     },
 
-    drawGameElements() {
-        this.ctx.font = '30px Arial';
-        this.seeds.forEach(seed => {
-            if (!seed.collected) { this.ctx.fillText('🌱', seed.x, seed.y); }
-        });
+    drawProgressBar() {
+        if (!this.detectionProgress) return;
+        const width = this.overlay.width * 0.6;
+        const x = (this.overlay.width - width) / 2;
+        const y = this.overlay.height - 30;
+        this.ctx.fillStyle = "rgba(255,255,255,0.2)";
+        this.ctx.fillRect(x, y, width, 10);
+        this.ctx.fillStyle = "lime";
+        this.ctx.fillRect(x, y, width * this.detectionProgress, 10);
+    },
 
-        if (this.player.loaded && this.player.image.complete && this.player.image.naturalHeight !== 0) {
-            this.ctx.drawImage(this.player.image, this.player.x, this.player.y, this.player.width, this.player.height);
-        } else {
-            this.ctx.fillStyle = 'rgba(59, 130, 246, 0.8)'; // Azul semi-transparente
-            this.ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
-        }
+    // --- Sons ---
+    playBeep() {
+        this.playTone(800, 0.2);
+    },
+    playClap() {
+        this.playTone(1000, 0.4);
+    },
+    playBuzzer() {
+        this.playTone(200, 0.6);
+    },
+    playTone(freq, duration) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
+        osc.stop(ctx.currentTime + duration);
     },
 
     async loop() {
@@ -223,100 +221,83 @@ const realLifeGame = {
             return;
         }
 
-        this.drawBackground();
+        this.ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
         let pose = null;
         try {
             pose = await this.detector.estimateSinglePose(this.video, { flipHorizontal: true });
-        } catch (e) { /* Ignora erros de detecção para não travar o jogo */ }
+        } catch {}
 
-        if (this.playing && !this.isQuestionActive && pose && pose.keypoints) {
-            const leftShoulder = this.getKey(pose.keypoints, 'leftShoulder');
-            const rightShoulder = this.getKey(pose.keypoints, 'rightShoulder');
-            const leftWrist = this.getKey(pose.keypoints, 'leftWrist');
-            const rightWrist = this.getKey(pose.keypoints, 'rightWrist');
+        const movement = this.detectMovement(pose);
 
-            if (leftShoulder && rightShoulder && leftShoulder.score > 0.5 && rightShoulder.score > 0.5) {
-                const shoulderMidpoint = (leftShoulder.position.x + rightShoulder.position.x) / 2;
-                this.player.x = shoulderMidpoint - (this.player.width / 2);
-                this.player.x = Math.max(0, Math.min(this.overlay.width - this.player.width, this.player.x));
-            }
-            
-            if (this.player.onGround && leftWrist && rightWrist && leftShoulder && rightShoulder &&
-                leftWrist.score > 0.5 && rightWrist.score > 0.5 &&
-                leftWrist.position.y < leftShoulder.position.y && rightWrist.position.y < rightShoulder.position.y) {
-                this.player.velocityY = this.jumpForce;
-                this.player.onGround = false;
-            }
+        // instrução visual
+        if (!this.playing && !this.isQuestionActive) {
+            this.ctx.fillStyle = "white";
+            this.ctx.font = "bold 26px Poppins";
+            this.ctx.textAlign = "center";
+            const emoji = { armsUp: "🖐", squat: "🧍‍♂️", tiltLeft: "↙️", tiltRight: "↘️" }[this.movementTarget];
+            const label = { armsUp: "Levante os braços!", squat: "Agache!", tiltLeft: "Incline à esquerda!", tiltRight: "Incline à direita!" }[this.movementTarget];
+            this.ctx.fillText(`${emoji} ${label}`, this.overlay.width / 2, this.overlay.height / 2 - 20);
+        }
 
-            this.player.velocityY += this.gravity;
-            this.player.y += this.player.velocityY;
-
-            const groundLevel = this.overlay.height - 60 - this.player.height;
-            if (this.player.y >= groundLevel) {
-                this.player.y = groundLevel;
-                this.player.velocityY = 0;
-                this.player.onGround = true;
-            }
-
-            this.seeds.forEach(seed => {
-                if (!seed.collected && this.isColliding(this.player, seed)) {
-                    seed.collected = true;
+        // progresso de detecção
+        if (!this.movementConfirmed) {
+            if (movement === this.movementTarget) {
+                if (!this.detectionStartTime) this.detectionStartTime = performance.now();
+                const elapsed = (performance.now() - this.detectionStartTime) / 1000;
+                this.detectionProgress = Math.min(elapsed / 1, 1);
+                if (elapsed >= 1) {
+                    this.movementConfirmed = true;
+                    this.playBeep();
                     this.triggerQuestion();
                 }
-            });
+            } else {
+                this.detectionStartTime = null;
+                this.detectionProgress = 0;
+            }
         }
 
-        this.drawGameElements();
-
-        if (!this.playing) {
-            this.ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-            this.ctx.fillRect(0, 0, this.overlay.width, this.overlay.height);
-            this.ctx.fillStyle = "white";
-            this.ctx.font = "bold 24px Poppins";
-            this.ctx.textAlign = "center";
-            this.ctx.fillText("Posicione-se e clique em 'Iniciar Jogo'", this.overlay.width / 2, this.overlay.height / 2);
-            this.ctx.textAlign = "left";
-        }
-        
+        this.drawProgressBar();
         requestAnimationFrame(() => this.loop());
     },
 
-    isColliding: (rect1, rect2) =>
-        rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x &&
-        rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y,
-
     triggerQuestion() {
-        if (this.questionBank.length > 0 && !this.isQuestionActive) {
-            this.isQuestionActive = true;
+        if (this.isQuestionActive) return;
+        this.isQuestionActive = true;
+        this.detectionProgress = 0;
+        this.detectionStartTime = null;
+
+        if (this.questionBank.length > 0) {
             const questionIndex = Math.floor(Math.random() * this.questionBank.length);
             const questionObj = this.questionBank.splice(questionIndex, 1)[0];
 
             questionManager.show(questionObj, (isCorrect, explanation) => {
-                this.showFeedbackModal(isCorrect, explanation); // Chama o novo modal
-
+                this.showFeedbackModal(isCorrect, explanation);
                 if (isCorrect) {
+                    this.playClap();
                     this.score += 100;
                     this.environmentLevel++;
                     if (this.scoreEl) this.scoreEl.textContent = this.score;
                     this.updateEnvStatus();
+                } else {
+                    this.playBuzzer();
                 }
 
-                // A continuação do jogo acontece depois que o modal de feedback some
                 setTimeout(() => {
-                    const remainingSeeds = this.seeds.some(s => !s.collected);
-                    if (!remainingSeeds || this.questionBank.length === 0) {
+                    if (this.questionBank.length === 0) {
                         this.showGameOver();
                     } else {
                         this.isQuestionActive = false;
+                        this.movementConfirmed = false;
+                        const moves = ["armsUp", "squat", "tiltLeft", "tiltRight"];
+                        this.movementTarget = moves[Math.floor(Math.random() * moves.length)];
                     }
-                }, 3000); // Tempo para o jogador ler o feedback
+                }, 3000);
             });
         } else {
-             this.showGameOver();
+            this.showGameOver();
         }
     },
-    
-    // NOVO: Função para controlar o modal de feedback
+
     showFeedbackModal(isCorrect, explanation) {
         this.feedbackOverlay.style.display = 'flex';
         if (isCorrect) {
@@ -331,10 +312,7 @@ const realLifeGame = {
             this.feedbackMessage.textContent = 'Não desanime, o conhecimento é uma jornada!';
         }
         this.feedbackExplanation.textContent = explanation;
-
-        setTimeout(() => {
-            this.feedbackOverlay.style.display = 'none';
-        }, 3000); // O modal some automaticamente após 3 segundos
+        setTimeout(() => { this.feedbackOverlay.style.display = 'none'; }, 3000);
     },
 
     updateEnvStatus() {
@@ -346,21 +324,27 @@ const realLifeGame = {
     },
 
     startGame() {
-        this.playing = true;
+        this.playing = false;
         this.isQuestionActive = false;
-        this.initializeLevel();
+        this.movementTarget = "armsUp";
+        this.movementConfirmed = false;
+        this.detectionProgress = 0;
+        this.detectionStartTime = null;
+        this.environmentLevel = 0;
+        this.score = 0;
+        this.updateEnvStatus();
         if (this.startBtn) this.startBtn.textContent = '♻️ Reiniciar';
+        this.playBeep();
+        alert("Jogo pronto! Levante os braços para começar.");
     },
 
     showGameOver() {
         this.playing = false;
         setTimeout(() => {
             let message = `Fim de Jogo! Pontuação Final: ${this.score}.`;
-            if (this.environmentLevel >= 9) {
+            if (this.environmentLevel >= 9)
                 message += "\nParabéns! Você restaurou completamente o cenário!";
-            } else {
-                message += "\nContinue aprendendo para salvar nosso planeta!";
-            }
+            else message += "\nContinue aprendendo para salvar nosso planeta!";
             alert(message);
         }, 500);
     }
