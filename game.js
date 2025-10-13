@@ -51,12 +51,15 @@ const questionManager = {
 };
 
 const realLifeGame = {
+    // Elementos da UI
     video: document.getElementById('video'),
     miniCam: document.getElementById('miniCam'),
     overlay: document.getElementById('overlay'),
     gameContainer: document.getElementById('real-life-mode'),
     ctx: null,
-    startBtn: document.getElementById('startBtn'),
+    startOverlay: document.getElementById('start-overlay'),
+    startGameBtn: document.getElementById('start-game-btn'),
+    gameHud: document.querySelector('.game-hud'),
     scoreEl: document.getElementById('score'),
     livesEl: document.getElementById('lives'),
     envStatusEl: document.getElementById('env-status'),
@@ -66,7 +69,8 @@ const realLifeGame = {
     feedbackMessage: document.getElementById('feedback-message'),
     feedbackExplanation: document.getElementById('feedback-explanation'),
 
-    player: { x: 300, y: 350, width: 60, height: 90, image: new Image(), loaded: false },
+    // Estado do Jogo
+    player: { x: 0, y: 0, width: 60, height: 90, image: new Image(), loaded: false },
     seeds: [],
     environmentLevel: 0,
     questionBank: [],
@@ -75,6 +79,7 @@ const realLifeGame = {
     score: 0,
     lives: 3,
 
+    // PoseNet
     detector: null,
     modelReady: false,
     streaming: false,
@@ -82,12 +87,15 @@ const realLifeGame = {
     async init() {
         if (!this.video || !this.overlay) return;
         this.ctx = this.overlay.getContext('2d');
-        this.startBtn.addEventListener('click', () => this.startGame());
+        this.startGameBtn.addEventListener('click', () => this.startGame());
 
         const params = new URLSearchParams(window.location.search);
         const avatarId = params.get('avatar') || 'biologia';
         this.player.image.src = avatarImages[avatarId] || avatarImages['biologia'];
-        this.player.image.onload = () => { this.player.loaded = true; };
+        this.player.image.onload = () => { 
+            this.player.loaded = true; 
+            this.resizeCanvas();
+        };
 
         window.addEventListener('resize', () => this.resizeCanvas());
 
@@ -105,10 +113,16 @@ const realLifeGame = {
     resizeCanvas() {
         this.overlay.width = this.gameContainer.clientWidth;
         this.overlay.height = this.gameContainer.clientHeight;
+        
+        if (!this.playing) {
+            this.player.x = this.overlay.width / 2 - this.player.width / 2;
+            this.player.y = this.overlay.height / 2 - this.player.height / 2;
+        }
+
         if (this.playing) {
             this.seeds.forEach(seed => {
                 seed.x = Math.random() * (this.overlay.width - 40) + 20;
-                seed.y = Math.random() * (this.overlay.height * 0.7) + 20;
+                seed.y = Math.random() * (this.overlay.height * 0.8) + 20;
             });
         }
     },
@@ -116,17 +130,15 @@ const realLifeGame = {
     async loadQuestions(avatarId) {
         const response = await fetch('questions.json');
         const allQuestions = await response.json();
-        const subjectQuestions = allQuestions[avatarId] || allQuestions['biologia'];
+        const normalizedAvatarId = avatarId.replace(/\d/g, ''); 
+        const subjectQuestions = allQuestions[normalizedAvatarId] || allQuestions['biologia'];
+        
         this.questionBank = subjectQuestions.map(q => {
             const correctIndex = q.resposta_correta.charCodeAt(0) - 65;
             const explanation = `A resposta correta é: ${q.alternativas[correctIndex]}`;
             return {
-                name: avatarId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                question: {
-                    text: q.pergunta,
-                    choices: q.alternativas.map(alt => alt.substring(3)),
-                    answer: correctIndex
-                },
+                name: normalizedAvatarId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                question: { text: q.pergunta, choices: q.alternativas.map(alt => alt.substring(3)), answer: correctIndex },
                 explanation
             };
         });
@@ -157,6 +169,10 @@ const realLifeGame = {
     },
     
     startGame() {
+        this.startOverlay.style.opacity = '0';
+        setTimeout(() => { this.startOverlay.style.display = 'none'; }, 500);
+        this.gameHud.style.visibility = 'visible';
+
         this.playing = true;
         this.isQuestionActive = false;
         this.environmentLevel = 0;
@@ -169,7 +185,6 @@ const realLifeGame = {
 
         this.updateHud();
         this.createSeeds();
-        this.startBtn.textContent = '♻️ Reiniciar';
         this.playTone(800, 0.2);
     },
 
@@ -179,7 +194,7 @@ const realLifeGame = {
         for (let i = 0; i < totalSeeds; i++) {
             this.seeds.push({
                 x: Math.random() * (this.overlay.width - 40) + 20,
-                y: Math.random() * (this.overlay.height * 0.7) + 20,
+                y: Math.random() * (this.overlay.height * 0.8) + 20,
                 size: 20,
                 collected: false,
                 question: this.questionBank[i]
@@ -198,23 +213,24 @@ const realLifeGame = {
 
     getKey: (kp, name) => kp.find(p => p.part === name),
 
-    // --- LÓGICA DE DETECÇÃO E MOVIMENTO (NOVA VERSÃO) ---
     detectMovement(pose) {
         if (!pose || !pose.keypoints) return;
-        const nose = this.getKey(pose.keypoints, 'nose');
-        
-        // Se o nariz for detectado, ele vira o alvo da posição do avatar
-        if (nose && nose.score > 0.5) {
-            // Mapeia a posição do nariz no vídeo para a posição no canvas
-            const targetX = (1 - (nose.position.x / this.video.videoWidth)) * this.overlay.width;
-            const targetY = (nose.position.y / this.video.videoHeight) * this.overlay.height;
 
-            // Suaviza o movimento para evitar que o avatar "trema" na tela
-            this.player.x += (targetX - this.player.x) * 0.2;
-            this.player.y += (targetY - this.player.y) * 0.2;
+        const leftWrist = this.getKey(pose.keypoints, 'leftWrist');
+        const rightWrist = this.getKey(pose.keypoints, 'rightWrist');
+
+        const lerpFactor = 0.25;
+
+        if (leftWrist && leftWrist.score > 0.4) {
+            const targetX = (1 - (leftWrist.position.x / this.video.videoWidth)) * this.overlay.width - (this.player.width / 2);
+            this.player.x += (targetX - this.player.x) * lerpFactor;
         }
 
-        // Limita o jogador à tela para não sair das bordas
+        if (rightWrist && rightWrist.score > 0.4) {
+            const targetY = (rightWrist.position.y / this.video.videoHeight) * this.overlay.height - (this.player.height / 2);
+            this.player.y += (targetY - this.player.y) * lerpFactor;
+        }
+
         this.player.x = Math.max(0, Math.min(this.overlay.width - this.player.width, this.player.x));
         this.player.y = Math.max(0, Math.min(this.overlay.height - this.player.height, this.player.y));
     },
@@ -226,9 +242,7 @@ const realLifeGame = {
                 const playerCenterY = this.player.y + this.player.height / 2;
                 const distance = Math.sqrt(Math.pow(playerCenterX - seed.x, 2) + Math.pow(playerCenterY - seed.y, 2));
                 
-                if (distance < this.player.width / 2 + seed.size) {
-                    this.triggerQuestion(seed);
-                }
+                if (distance < this.player.width / 2 + seed.size) this.triggerQuestion(seed);
             }
         }
     },
@@ -281,9 +295,9 @@ const realLifeGame = {
 
     drawEnvironment() {
         this.ctx.save();
-        let overlayColor = "rgba(0,0,0,0.5)"; // Devastado
-        if (this.environmentLevel >= 7) overlayColor = "rgba(135, 206, 235, 0.1)"; // Restaurado
-        else if (this.environmentLevel >= 3) overlayColor = "rgba(144, 238, 144, 0.1)"; // Recuperação
+        let overlayColor = "rgba(0,0,0,0.5)";
+        if (this.environmentLevel >= 7) overlayColor = "rgba(135, 206, 235, 0.1)";
+        else if (this.environmentLevel >= 3) overlayColor = "rgba(144, 238, 144, 0.1)";
         
         this.ctx.fillStyle = overlayColor;
         this.ctx.fillRect(0, 0, this.overlay.width, this.overlay.height);
@@ -312,21 +326,18 @@ const realLifeGame = {
             } catch {}
 
             this.ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+            this.drawEnvironment();
             
+            // A lógica de movimento só é chamada se o jogo estiver ativo.
             if (this.playing) {
-                this.drawEnvironment();
                 if (!this.isQuestionActive) {
                     this.detectMovement(pose);
                     this.checkSeedCollision();
                 }
                 this.drawSeeds();
-                this.drawPlayer();
-            } else {
-                 this.ctx.fillStyle = "white";
-                 this.ctx.font = "bold 24px Poppins";
-                 this.ctx.textAlign = "center";
-                 this.ctx.fillText("Clique em 'Iniciar Jogo' para começar!", this.overlay.width / 2, this.overlay.height / 2);
             }
+            // O jogador é sempre desenhado, mas só se move se `playing` for true.
+            this.drawPlayer();
         }
         requestAnimationFrame(() => this.loop());
     },
@@ -353,6 +364,8 @@ const realLifeGame = {
                 message += "\nBom trabalho! Continue aprendendo para um futuro mais verde.";
             }
             alert(message);
+            // Recarrega a página para o estado inicial
+            window.location.reload();
         }, 500);
     },
 
