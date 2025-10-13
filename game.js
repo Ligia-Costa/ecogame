@@ -6,11 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const avatarImages = {
     'lingua_portuguesa': 'Demetrius.png',
+    'lingua_portuguesa2': 'Marieli.png',
     'quimica': 'Arline.png',
     'historia': 'julio.png',
     'biologia': 'mayara.png',
     'fisica': 'Romulo.png',
     'geografia': 'Jesiane.png',
+    'matematica': 'Anderson.png',
+    'matematica2': 'Márcia.png',
+    'ingles': 'Flávia.png',
+    'arte': 'Marcela.png',
+    'educacao_fisica': 'Fabrício.png',
 };
 
 const questionManager = {
