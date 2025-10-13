@@ -247,8 +247,9 @@ const realLifeGame = {
         const seedsToCreate = Math.min(this.seedsPerLevel, this.currentLevelQuestions.length); 
         for (let i = 0; i < seedsToCreate; i++) {
             this.seeds.push({
+                // ALTERADO: Aumentamos a área vertical para espalhar mais as sementes
                 x: Math.random() * (this.overlay.width - 40) + 20,
-                y: Math.random() * (this.overlay.height * 0.8 - 60) + 20, // Evita que a semente apareça muito baixo
+                y: Math.random() * (this.overlay.height * 0.9 - 80) + 40, // Sementes podem aparecer um pouco mais para baixo
                 size: 20, collected: false
             });
         }
@@ -355,78 +356,82 @@ const realLifeGame = {
 
     drawEnvironment() {
         this.ctx.save();
+        
+        // NOVO: Define um preenchimento para tornar o cenário "menor" (mais concentrado)
+        const horizontalPadding = this.overlay.width * 0.1; // 10% de margem em cada lado
+        const effectiveWidth = this.overlay.width - (2 * horizontalPadding);
+
         if (this.currentLevel === 1) { // Desmatamento
             this.ctx.fillStyle = '#8B4513'; // Cor de terra
             this.ctx.fillRect(0, 0, this.overlay.width, this.overlay.height);
-            // Desenha tocos (menores)
+            // ALTERADO: Desenha tocos dentro da área efetiva
             for (let i = 0; i < this.seedsPerLevel; i++) {
-                const xPos = (this.overlay.width / (this.seedsPerLevel + 1)) * (i + 1);
+                const xPos = horizontalPadding + (effectiveWidth / (this.seedsPerLevel - 1) * i) - 20;
                 this.ctx.fillStyle = '#5a2d0c';
-                this.ctx.fillRect(xPos - 20, this.overlay.height - 40, 40, 20); // Base do toco
+                this.ctx.fillRect(xPos, this.overlay.height - 40, 40, 20); // Base do toco
                 this.ctx.fillStyle = '#654321';
-                this.ctx.fillRect(xPos - 15, this.overlay.height - 50, 30, 10); // Parte de cima
+                this.ctx.fillRect(xPos + 5, this.overlay.height - 50, 30, 10); // Parte de cima
             }
-            // Desenha árvores conforme o progresso
+            // ALTERADO: Desenha árvores conforme o progresso na mesma área concentrada
             for (let i = 0; i < this.levelProgress; i++) {
-                const xPos = (this.overlay.width / (this.seedsPerLevel + 1)) * (i + 1);
-                this.ctx.font = `60px Poppins`; // Árvores um pouco menores
+                const xPos = horizontalPadding + (effectiveWidth / (this.seedsPerLevel - 1) * i);
+                this.ctx.font = `60px Poppins`;
                 this.ctx.fillText("🌳", xPos, this.overlay.height - 70);
             }
         }
         else if (this.currentLevel === 2) { // Poluição
-            this.ctx.fillStyle = `rgb(60, 80, 100)`; // Cor de água poluída
+            this.ctx.fillStyle = `rgb(60, 80, 100)`; 
             this.ctx.fillRect(0, 0, this.overlay.width, this.overlay.height);
 
-            // Lixo flutuante (diminui com o progresso)
+            // ALTERADO: Lixo flutuante concentrado no meio
             const remainingTrash = this.seedsPerLevel - this.levelProgress;
             for (let i = 0; i < remainingTrash; i++) {
-                const xPos = (this.overlay.width / (remainingTrash + 1)) * (i + 1);
+                const xPos = horizontalPadding + (effectiveWidth / (remainingTrash + 1)) * (i + 1);
                 this.ctx.font = `30px Poppins`;
-                this.ctx.fillText("🗑️", xPos, 150 + (i % 2 === 0 ? 0 : 50)); // Ícone de lixo
-                this.ctx.fillText("🧴", xPos + 20, 200 + (i % 3 === 0 ? 0 : 30)); // Ícone de garrafa
+                this.ctx.fillText("🗑️", xPos, 150 + (i % 2 === 0 ? 0 : 50)); 
+                this.ctx.fillText("🧴", xPos + 20, 200 + (i % 3 === 0 ? 0 : 30)); 
             }
 
-            // Peixes e água mais clara conforme o progresso
+            // ALTERADO: Peixes e água mais clara na área concentrada
             for (let i = 0; i < this.levelProgress; i++) {
-                const xPos = (this.overlay.width / (this.seedsPerLevel + 1)) * (i + 1);
+                const xPos = horizontalPadding + (effectiveWidth / (this.seedsPerLevel + 1)) * (i + 1);
                 this.ctx.font = `40px Poppins`;
                 this.ctx.fillText("🐠", xPos + (i%2*30), 180 + (i % 2 === 0 ? 0 : 50));
                 this.ctx.fillText("🐬", xPos - (i%2*20), 250 - (i % 2 === 0 ? 0 : 30));
             }
         }
         else if (this.currentLevel === 3) { // Cidades Inteligentes
-            this.ctx.fillStyle = '#1a1a2e'; // Fundo noturno/urbano
+            this.ctx.fillStyle = '#1a1a2e';
             this.ctx.fillRect(0, 0, this.overlay.width, this.overlay.height);
 
-            // Desenha prédios, casas, ruas
-            this.ctx.fillStyle = '#3a3a5e'; // Cor dos prédios
-            this.ctx.fillRect(50, this.overlay.height - 250, 100, 200); // Prédio 1
-            this.ctx.fillRect(200, this.overlay.height - 300, 120, 250); // Prédio 2
-            this.ctx.fillRect(350, this.overlay.height - 200, 90, 150); // Prédio 3 (casa)
-            this.ctx.fillRect(500, this.overlay.height - 280, 110, 230); // Prédio 4
-            this.ctx.fillRect(650, this.overlay.height - 220, 80, 170); // Prédio 5 (casa)
+            // ALTERADO: Prédios desenhados na área concentrada
+            const buildingPositions = [0.1, 0.3, 0.5, 0.7, 0.9];
+            buildingPositions.forEach((pos, index) => {
+                const x = horizontalPadding + (effectiveWidth * pos) - 50;
+                const h = 150 + (index % 2 * 50);
+                this.ctx.fillStyle = '#3a3a5e';
+                this.ctx.fillRect(x, this.overlay.height - (h + 50), 90 + (index % 2 * 20), h);
+            });
 
-            this.ctx.fillStyle = '#555'; // Cor da rua
+            this.ctx.fillStyle = '#555';
             this.ctx.fillRect(0, this.overlay.height - 50, this.overlay.width, 50);
 
-            // Carros (diminuem com o progresso, substituídos por verdes)
+            // Carros
             const remainingCars = this.seedsPerLevel - this.levelProgress;
             for (let i = 0; i < remainingCars; i++) {
-                const xPos = (this.overlay.width / (remainingCars + 1)) * (i + 1);
+                const xPos = horizontalPadding + (effectiveWidth / (remainingCars + 1)) * (i + 1);
                 this.ctx.font = `30px Poppins`;
-                this.ctx.fillText("🚗", xPos, this.overlay.height - 20); // Carro
+                this.ctx.fillText("🚗", xPos, this.overlay.height - 20);
             }
 
-            // Adiciona elementos sustentáveis conforme o progresso
+            // ALTERADO: Elementos sustentáveis sem sol e plantas
             for (let i = 0; i < this.levelProgress; i++) {
-                const xPos = (this.overlay.width / (this.seedsPerLevel + 1)) * (i + 1);
+                const xPos = horizontalPadding + (effectiveWidth / (this.seedsPerLevel + 1)) * (i + 1);
                 this.ctx.font = `40px Poppins`;
                 if (i % 2 === 0) {
-                     this.ctx.fillText("☀️", xPos, 100); // Painel solar em cima dos prédios
-                     this.ctx.fillText("🚲", xPos + 10, this.overlay.height - 20); // Bicicleta
+                     this.ctx.fillText("🚲", xPos + 10, this.overlay.height - 20); // Apenas a Bicicleta
                 } else {
-                    this.ctx.fillText("🌿", xPos, this.overlay.height - 60); // Jardim
-                    this.ctx.fillText("🚌", xPos - 10, this.overlay.height - 20); // Ônibus
+                    this.ctx.fillText("🚌", xPos - 10, this.overlay.height - 20); // Apenas o Ônibus
                 }
             }
         }
