@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoGame - Aventura Corporal</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,6 +19,7 @@
       --card: #0f172a;
       --success: #10b981;
       --danger: #ef4444;
+      --info: #3b82f6;
     }
 
     html, body {
@@ -82,6 +84,10 @@
     }
 
     .btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3); }
+    
+    .btn-secondary {
+        background-color: var(--info);
+    }
 
     .game-container {
       position: relative;
@@ -93,7 +99,6 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
     
-    /* --- NOVA TELA DE INÍCIO --- */
     #start-overlay {
         position: absolute;
         inset: 0;
@@ -120,7 +125,9 @@
         max-width: 400px;
     }
 
-    video#video, canvas#overlay {
+    video#video { display: none; } 
+
+    canvas#overlay {
       position: absolute;
       top: 0;
       left: 0;
@@ -128,8 +135,6 @@
       height: 100%;
       object-fit: cover;
     }
-
-    video#video { transform: scaleX(-1); }
 
     video#miniCam {
       position: absolute;
@@ -171,6 +176,41 @@
       background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
       padding: 1.5rem; max-width: 400px; width: 100%; text-align: center;
     }
+    
+    /* NOVO: Estilos para o Modal de Fim de Jogo */
+    .gameover-modal {
+        background: linear-gradient(135deg, #1e293b, #334155);
+        border-radius: 20px;
+        padding: 2rem 3rem;
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+        border: 1px solid var(--accent);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    #gameover-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+    #gameover-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    #gameover-message {
+        font-size: 1.1rem;
+        color: var(--muted);
+        margin-bottom: 2rem;
+    }
+    #gameover-score {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    #gameover-score span {
+        font-weight: 700;
+        color: var(--accent);
+    }
+
 
     #backBtn {
       position: absolute; top: 16px; left: 16px; z-index: 999;
@@ -178,7 +218,6 @@
       border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 0.9rem; transition: 0.3s;
     }
     #backBtn:hover { background: var(--accent); color: #1f2937; }
-
   </style>
 </head>
 
@@ -190,7 +229,9 @@
       <h1>EcoGame: Aventura Corporal</h1>
     </header>
 
-    <div class="game-hud" style="visibility: hidden;"> <div id="env-status" class="hud-stat"><i class="fa-solid fa-seedling"></i> Cenário: <span>--</span></div>
+    <div class="game-hud" style="visibility: hidden;">
+      <div id="level-display" class="hud-stat"><i class="fa-solid fa-layer-group"></i> Nível: <span id="level">1</span></div>
+      <div id="env-status" class="hud-stat"><i class="fa-solid fa-seedling"></i> Progresso: <span>--</span></div>
       <div id="lives-display" class="hud-stat"><i class="fa-solid fa-heart"></i> Vidas: <span id="lives">3</span></div>
       <div id="score-display" class="hud-stat"><i class="fa-solid fa-star"></i> Pontos: <span id="score">0</span></div>
     </div>
@@ -198,11 +239,11 @@
     <div id="real-life-mode" class="game-container">
       <div id="start-overlay">
         <h2>Prepare-se!</h2>
-        <p>Use suas mãos para mover o avatar. Mão esquerda para os lados, mão direita para cima e para baixo.</p>
+        <p>Aponte o dedo indicador da sua mão direita para a tela para controlar o avatar.</p>
         <button id="start-game-btn" class="btn"><i class="fa-solid fa-play"></i> Iniciar Jogo</button>
       </div>
-      <video id="video" autoplay playsinline muted></video>
-      <canvas id="overlay"></canvas>
+      <video id="video" class="input_video"></video>
+      <canvas id="overlay" class="output_canvas"></canvas>
       <video id="miniCam" autoplay playsinline muted></video>
     </div>
   </div>
@@ -221,6 +262,16 @@
       <h3 id="feedback-title" class="feedback-title"></h3>
       <p id="feedback-message" class="feedback-message"></p>
       <p id="feedback-explanation" class="feedback-explanation"></p>
+    </div>
+  </div>
+
+  <div id="gameover-overlay" class="modal">
+    <div class="gameover-modal">
+        <div id="gameover-icon"></div>
+        <h2 id="gameover-title"></h2>
+        <p id="gameover-message"></p>
+        <p id="gameover-score">Sua pontuação final: <span>0</span></p>
+        <button id="restart-button" class="btn btn-secondary"><i class="fa-solid fa-redo"></i> Jogar Novamente</button>
     </div>
   </div>
 
