@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoGame - Aventura Corporal</title>
 
-  <!-- TensorFlow e PoseNet -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
 
-  <!-- Fonte e ícones -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -48,7 +46,7 @@
     .game-hud {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: space-around;
       align-items: center;
       background: rgba(15, 23, 42, 0.6);
       border-radius: 12px;
@@ -62,7 +60,8 @@
       font-weight: 600;
     }
 
-    .hud-stat span { color: var(--accent); }
+    .hud-stat i { color: var(--accent); }
+    .hud-stat span { color: white; font-weight: bold; }
 
     .btn {
       background-color: var(--accent);
@@ -77,7 +76,6 @@
 
     .btn:hover { transform: scale(1.05); }
 
-    /* Responsividade total do container de jogo */
     .game-container {
       position: relative;
       width: 100%;
@@ -174,7 +172,6 @@
       text-align: center;
     }
 
-    /* Botão de voltar */
     #backBtn {
       background: #1f2937;
       color: white;
@@ -210,7 +207,7 @@
 </head>
 
 <body>
-  <button id="backBtn" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+  <button id="backBtn" onclick="window.location.href='avatar.html'"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
 
   <div class="app-container">
     <header>
@@ -218,8 +215,9 @@
     </header>
 
     <div class="game-hud">
-      <div id="env-status" class="hud-stat">Cenário: <span>--</span></div>
-      <div id="score-display" class="hud-stat">Pontos: <span id="score">0</span></div>
+      <div id="env-status" class="hud-stat"><i class="fa-solid fa-seedling"></i> Cenário: <span>--</span></div>
+      <div id="lives-display" class="hud-stat"><i class="fa-solid fa-heart"></i> Vidas: <span id="lives">3</span></div>
+      <div id="score-display" class="hud-stat"><i class="fa-solid fa-star"></i> Pontos: <span id="score">0</span></div>
       <button id="startBtn" class="btn">▶️ Iniciar Jogo</button>
     </div>
 
@@ -230,7 +228,6 @@
     </div>
   </div>
 
-  <!-- Modal de Perguntas -->
   <div id="questionModal" class="questionModal">
     <div class="q-modal-card">
       <h3 id="qTitle">Desafio do Conhecimento</h3>
@@ -239,7 +236,6 @@
     </div>
   </div>
 
-  <!-- Modal de Feedback -->
   <div id="feedback-overlay" class="feedback-modal-overlay">
     <div class="feedback-modal">
       <div id="feedback-icon" class="feedback-icon"></div>
