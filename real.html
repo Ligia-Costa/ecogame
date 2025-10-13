@@ -25,22 +25,28 @@
       padding: 0;
       height: 100%;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0a192f, #06394a);
+      background: #0a192f;
       color: #e6eef8;
-      overflow-x: hidden;
+      overflow: hidden; /* Previne barras de rolagem */
+      display: flex;
+      flex-direction: column;
     }
 
     .app-container {
-      max-width: 900px;
-      margin: auto;
+      width: 100%;
+      max-width: 1200px; /* Limite para telas muito grandes */
+      margin: 0 auto;
       padding: 16px;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1; /* Faz o container crescer */
     }
 
     header h1 {
       color: var(--accent);
-      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-size: clamp(1.5rem, 4vw, 2.0rem);
       margin-bottom: 1rem;
+      text-align: center;
     }
 
     .game-hud {
@@ -48,15 +54,15 @@
       flex-wrap: wrap;
       justify-content: space-around;
       align-items: center;
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(15, 23, 42, 0.7);
       border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 20px;
-      gap: 10px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      gap: 15px;
     }
 
     .hud-stat {
-      font-size: 1rem;
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
       font-weight: 600;
     }
 
@@ -79,7 +85,7 @@
     .game-container {
       position: relative;
       width: 100%;
-      aspect-ratio: 4/3;
+      flex-grow: 1; /* Ocupa o espaço restante */
       background: #000;
       border-radius: 15px;
       overflow: hidden;
@@ -92,6 +98,7 @@
       left: 0;
       width: 100%;
       height: 100%;
+      object-fit: cover; /* Garante que o vídeo preencha o container */
     }
 
     video#video { transform: scaleX(-1); }
@@ -100,8 +107,8 @@
       position: absolute;
       bottom: 10px;
       right: 10px;
-      width: 25%;
-      max-width: 150px;
+      width: 20%;
+      max-width: 120px;
       border-radius: 8px;
       border: 2px solid var(--accent);
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
@@ -112,103 +119,46 @@
 
     /* Modal de Perguntas */
     .questionModal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(2,6,23,0.8);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      padding: 20px;
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: rgba(2,6,23,0.8); backdrop-filter: blur(5px); z-index: 1000; padding: 20px;
     }
-
     .questionModal.active { display: flex; }
-
     .q-modal-card {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      padding: 30px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
+      background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1); max-width: 500px; width: 100%; text-align: center;
     }
-
     .choices { display: flex; flex-direction: column; gap: 12px; }
-
     .choice {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 12px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      padding: 12px 20px; border-radius: 10px; cursor: pointer; transition: all 0.3s;
     }
-
     .choice:hover { background: rgba(255,255,255,0.1); }
     .choice.correct { background: rgba(16,185,129,0.2); border-color: var(--success); }
     .choice.incorrect { background: rgba(239,68,68,0.2); border-color: var(--danger); }
 
     /* Modal de feedback */
     .feedback-modal-overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(5px);
-      z-index: 1100;
-      padding: 20px;
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1100; padding: 20px;
     }
-
     .feedback-modal {
-      background: linear-gradient(135deg, #1e293b, #334155);
-      border-radius: 20px;
-      padding: 1.5rem;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
+      background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
+      padding: 1.5rem; max-width: 400px; width: 100%; text-align: center;
     }
 
     #backBtn {
-      background: #1f2937;
-      color: white;
-      border: 1px solid var(--muted);
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      border-radius: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: 0.3s;
-      z-index: 999;
+      position: absolute; top: 16px; left: 16px; z-index: 999;
+      background: #1f2937; color: white; border: 1px solid var(--muted);
+      border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 0.9rem; transition: 0.3s;
     }
+    #backBtn:hover { background: var(--accent); color: #1f2937; }
 
-    #backBtn:hover {
-      background: var(--accent);
-      color: #1f2937;
-    }
-
-    @media (max-width: 600px) {
-      .game-hud {
-        flex-direction: column;
-        text-align: center;
-      }
-      video#miniCam {
-        width: 30%;
-        bottom: 5px;
-        right: 5px;
-      }
-    }
   </style>
 </head>
 
 <body>
   <button id="backBtn" onclick="window.location.href='avatar.html'"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-
+  
   <div class="app-container">
     <header>
       <h1>EcoGame: Aventura Corporal</h1>
