@@ -1,38 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicia o jogo em modo "vida real" se o elemento correspondente existir na página.
     if (document.getElementById('real-life-mode')) {
         realLifeGame.init();
     }
 });
 
+// Mapeia os IDs dos avatares para os nomes dos arquivos de imagem correspondentes.
 const avatarImages = {
-    'lingua_portuguesa': 'Demetrius.png', 'lingua_portuguesa2': 'Marieli.png', 'lingua_portuguesa3': 'Lucilene.png',
-    'quimica': 'Arline.png', 'historia': 'julio.png', 'biologia': 'mayara.png',
-    'fisica': 'Romulo.png', 'geografia': 'Jesiane.png', 'matematica': 'Anderson.png',
-    'matematica2': 'Márcia.png', 'ingles': 'Flávia.png', 'arte': 'Marcela.png',
-    'educacao_fisica': 'Fabrício.png',
+    'lingua_portuguesa': 'demetrius.png', 'lingua_portuguesa2': 'marieli.png', 'lingua_portuguesa3': 'lucilene.png',
+    'quimica': 'arline.png', 'historia': 'julio.png', 'biologia': 'mayara.png',
+    'fisica': 'romulo.png', 'geografia': 'jesiane.png', 'matematica': 'anderson.png',
+    'matematica2': 'marcia.png', 'ingles': 'flavia.png', 'arte': 'marcela.png',
+    'educacao_fisica': 'fabricio.png',
 };
 
+// Dados dos avatares que fornecem dicas no jogo.
 const hintAvatarData = {
     joao: { name: 'Tio João', icon: '👨‍🏫' },
     rafa: { name: 'Tio Rafa', icon: '👨‍🔬' },
     isabeli: { name: 'Isabeli', icon: '👩‍🎨' }
 };
 
+// Objeto para gerenciar a exibição e interação com o modal de perguntas.
 const questionManager = {
     modal: document.getElementById('questionModal'),
     title: document.getElementById('qTitle'),
     text: document.getElementById('qText'),
     choices: document.getElementById('choices'),
-    choiceElements: [], 
+    choiceElements: [],
     hintBtn: document.getElementById('q-hint-btn'),
-    
+
+    // Exibe o modal de pergunta com base nos dados fornecidos.
     show(questionObj, onAnswer, hintStatus) {
-        this.choiceElements = []; 
+        this.choiceElements = [];
         this.modal.classList.add('active');
         this.title.textContent = `Desafio: ${questionObj.name}`;
         this.text.textContent = questionObj.question.text;
         this.choices.innerHTML = '';
 
+        // Configura o botão de dica.
         if (hintStatus.show) {
             this.hintBtn.style.display = 'flex';
             this.hintBtn.querySelector('span').textContent = hintStatus.remaining;
@@ -41,13 +47,14 @@ const questionManager = {
             this.hintBtn.style.display = 'none';
         }
 
+        // Cria os botões de alternativa de resposta.
         questionObj.question.choices.forEach((choice, index) => {
             const btn = document.createElement('div');
-            btn.className = 'choice';
-            btn.textContent = choice;
+            btn.className = 'choice gesture-selectable'; // Adiciona a classe para seleção por gesto.
+            btn.innerHTML = `${choice}<div class="selection-progress"></div>`;
             btn.onclick = () => {
-                this.choiceElements.forEach(c => c.onclick = null);
-                this.hintBtn.style.display = 'none';
+                if (this.isAnswerLocked) return;
+                this.isAnswerLocked = true;
 
                 const isCorrect = (index === questionObj.question.answer);
                 btn.classList.add(isCorrect ? 'correct' : 'incorrect');
@@ -56,19 +63,22 @@ const questionManager = {
                 }
                 setTimeout(() => {
                     this.modal.classList.remove('active');
-                    this.choiceElements = []; 
+                    this.isAnswerLocked = false;
                     onAnswer(isCorrect, questionObj.explanation);
                 }, 2500);
             };
             this.choices.appendChild(btn);
-            this.choiceElements.push(btn); 
+            this.choiceElements.push(btn);
         });
+        this.isAnswerLocked = false;
     }
 };
 
+// Objeto principal que controla toda a lógica do "Jogo Real".
 const realLifeGame = {
-    videoInGame: document.getElementById('video-ingame'), // Vídeo para o jogo
-    videoGesture: document.getElementById('video-gesture'), // Vídeo para navegação
+    // ... (declaração de todas as variáveis e elementos DOM)
+    videoInGame: document.getElementById('video-ingame'),
+    videoGesture: document.getElementById('video-gesture'),
     handCursor: document.getElementById('hand-cursor'),
     miniCam: document.getElementById('miniCam'),
     overlay: document.getElementById('overlay'),
@@ -88,7 +98,8 @@ const realLifeGame = {
     gameoverOverlay: document.getElementById('gameover-overlay'),
     levelEl: document.getElementById('level'),
     restartButton: null,
-    
+    backButton: null,
+
     hintModal: document.getElementById('hintModal'),
     hintAvatarsContainer: document.getElementById('hint-avatars'),
     hintResultModal: document.getElementById('hintResultModal'),
@@ -98,29 +109,40 @@ const realLifeGame = {
 
     player: { x: 0, y: 0, width: 60, height: 90, image: new Image(), loaded: false },
     seeds: [],
+    collectibleSeed: null, // Semente que pode ser coletada.
     gameQuestionBank: [],
     currentLevelQuestions: [],
+    
+    // Estados do jogo
     isQuestionActive: false,
+    isHintActive: false,
+    isGameOver: false,
     playing: false,
+
     score: 0,
     lives: 3,
     currentLevel: 1,
     totalLevels: 3,
     levelProgress: 0,
     seedsPerLevel: 5,
-    
+
+    // Controle de gestos
     selectableElements: [],
     hoveredElement: null,
     hoverStartTime: null,
-    SELECTION_TIME_MS: 2000,
+    SELECTION_TIME_MS: 1800, // Tempo para selecionar um item.
+    isSelectionLocked: false,
 
+
+    // Inicializa o jogo.
     async init() {
         this.ctx = this.overlay.getContext('2d');
-        // Não adiciona mais evento de clique, será por gesto
-        // this.startGameBtn.addEventListener('click', () => this.startGame());
         this.restartButton = document.getElementById('restart-button');
-        this.restartButton.addEventListener('click', () => window.location.reload());
+        this.backButton = document.getElementById('backBtn');
 
+        this.restartButton.addEventListener('click', () => this.resetGame());
+        
+        // Carrega o avatar selecionado na tela anterior.
         const params = new URLSearchParams(window.location.search);
         const avatarId = params.get('avatar') || 'biologia';
         this.player.image.src = avatarImages[avatarId] || avatarImages['biologia'];
@@ -128,13 +150,14 @@ const realLifeGame = {
 
         window.addEventListener('resize', () => this.resizeCanvas());
         
+        // Configura eventos para o modal de dicas.
         questionManager.hintBtn.addEventListener('click', () => this.showHintModal());
         this.hintAvatarsContainer.querySelectorAll('.hint-avatar').forEach(avatar => {
             avatar.addEventListener('click', () => this.useHint(avatar.dataset.avatar));
         });
 
-        // Coleta os botões selecionáveis por gesto
-        this.selectableElements = document.querySelectorAll('.gesture-selectable');
+        // Coleta todos os elementos que podem ser selecionados por gestos.
+        this.updateSelectableElements();
 
         try {
             await this.loadAllQuestions(avatarId);
@@ -145,6 +168,12 @@ const realLifeGame = {
         }
     },
 
+    // Atualiza a lista de elementos selecionáveis na tela.
+    updateSelectableElements() {
+        this.selectableElements = document.querySelectorAll('.gesture-selectable');
+    },
+
+    // Ajusta o tamanho do canvas quando a janela é redimensionada.
     resizeCanvas() {
         this.overlay.width = this.gameContainer.clientWidth;
         this.overlay.height = this.gameContainer.clientHeight;
@@ -154,6 +183,7 @@ const realLifeGame = {
         }
     },
 
+    // Carrega as perguntas do arquivo JSON.
     async loadAllQuestions(avatarId) {
         const response = await fetch('questions.json');
         const allJsonQuestions = await response.json();
@@ -165,6 +195,7 @@ const realLifeGame = {
         }
     },
 
+    // Formata a estrutura da pergunta para o formato usado no jogo.
     formatQuestion(q, name) {
         const correctLetter = q.resposta_correta.charAt(0);
         const correctIndex = correctLetter.charCodeAt(0) - 'A'.charCodeAt(0);
@@ -172,12 +203,13 @@ const realLifeGame = {
         return { name: name, question: { text: q.pergunta, choices: q.alternativas.map(alt => alt.substring(3)), answer: correctIndex }, explanation };
     },
 
+    // Configura a detecção de mãos usando a biblioteca MediaPipe.
     setupHandTracking() {
         const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
         hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
         hands.onResults(results => this.onHandResults(results));
 
-        // Usa o vídeo de gestos para a navegação inicial
+        // Usa o vídeo de gestos para a navegação inicial.
         const camera = new Camera(this.videoGesture, {
             onFrame: async () => await hands.send({ image: this.videoGesture }),
             width: 640, height: 480
@@ -185,67 +217,79 @@ const realLifeGame = {
         camera.start();
     },
 
+    // Função chamada a cada quadro de vídeo com os resultados da detecção.
     onHandResults(results) {
-        // Se o jogo está rolando, a lógica é de controle do personagem
+        this.ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+        let handLandmarks = null;
+        if (results.multiHandLandmarks && results.multiHandLandmarks[0]) {
+            handLandmarks = results.multiHandLandmarks[0];
+        }
+
+        // Lógica de controle principal do jogo.
         if (this.playing) {
-            this.ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
-            this.drawEnvironment();
-            if (this.isQuestionActive) {
-                this.handleGestureAnswer(results);
+            this.drawEnvironment(); // Desenha o cenário.
+            
+            // Lógica de interação baseada no estado atual do jogo.
+            if (this.isGameOver) {
+                 this.handleGestureSelection(handLandmarks, [this.restartButton]);
+            } else if (this.isHintActive) {
+                const availableHints = this.hintAvatarsContainer.querySelectorAll('.hint-avatar:not(.used)');
+                this.handleGestureSelection(handLandmarks, Array.from(availableHints));
+            } else if (this.isQuestionActive) {
+                const hintButton = questionManager.hintBtn.classList.contains('disabled') ? [] : [questionManager.hintBtn];
+                this.handleGestureSelection(handLandmarks, [...questionManager.choiceElements, ...hintButton]);
             } else {
-                this.detectMovement(results);
-                this.checkSeedCollision();
+                // Se não há modais ativos, controla o jogador.
+                this.detectMovement(handLandmarks);
+                this.checkSeedCollision(handLandmarks);
             }
             this.drawSeeds();
             this.drawPlayer();
-        } else { // Se o jogo não começou, a lógica é de seleção de botão
-            this.handleButtonSelection(results);
+        } else {
+            // Se o jogo não começou, a lógica é de seleção de botão na tela inicial.
+            this.handleGestureSelection(handLandmarks, [this.startGameBtn, this.backButton]);
         }
     },
-    
-    // NOVO: Lógica separada para seleção de botões antes do jogo
-    handleButtonSelection(results) {
-        this.handCursor.style.opacity = '0';
-        let foundElement = null;
 
-        if (results.multiHandLandmarks && results.multiHandLandmarks[0]) {
-            this.handCursor.style.opacity = '1';
-            const landmarks = results.multiHandLandmarks[0];
-            const controlPoint = landmarks[8];
-            const fingerX = (1 - controlPoint.x) * window.innerWidth;
-            const fingerY = controlPoint.y * window.innerHeight;
-
-            this.handCursor.style.left = `${fingerX}px`;
-            this.handCursor.style.top = `${fingerY}px`;
-
-            this.selectableElements.forEach(element => {
-                const rect = element.getBoundingClientRect();
-                if (fingerX > rect.left && fingerX < rect.right && fingerY > rect.top && fingerY < rect.bottom) {
-                    foundElement = element;
-                }
-            });
+    // Lida com a seleção de botões por gestos.
+    handleGestureSelection(landmarks, elements) {
+        if (!landmarks) {
+            this.hoveredElement = null;
+            this.hoverStartTime = null;
+            this.updateElementStyles(elements);
+            return;
         }
+        
+        this.handCursor.style.opacity = '1';
+        const controlPoint = landmarks[8];
+        const fingerX = (1 - controlPoint.x) * window.innerWidth;
+        const fingerY = controlPoint.y * window.innerHeight;
+        this.handCursor.style.left = `${fingerX}px`;
+        this.handCursor.style.top = `${fingerY}px`;
+        
+        let foundElement = null;
+        elements.forEach(element => {
+            const rect = element.getBoundingClientRect();
+            if (fingerX > rect.left && fingerX < rect.right && fingerY > rect.top && fingerY < rect.bottom) {
+                foundElement = element;
+            }
+        });
 
         if (foundElement) {
             if (this.hoveredElement !== foundElement) {
                 this.hoveredElement = foundElement;
                 this.hoverStartTime = Date.now();
-            } else {
+                this.isSelectionLocked = false;
+            } else if (!this.isSelectionLocked) {
                 const elapsedTime = Date.now() - this.hoverStartTime;
                 const progress = (elapsedTime / this.SELECTION_TIME_MS) * 100;
-                const progressBar = foundElement.querySelector('.selection-progress');
-                if (progressBar) progressBar.style.width = `${Math.min(progress, 100)}%`;
-
+                
                 if (elapsedTime > this.SELECTION_TIME_MS) {
-                    if (!document.body.classList.contains('selection-locked')) {
-                        document.body.classList.add('selection-locked');
-                        const actionType = foundElement.dataset.actionType;
-                        if (actionType === 'start') {
-                            this.startGame();
-                        } else if (actionType === 'navigate') {
-                            window.location.href = foundElement.dataset.actionValue;
-                        }
-                    }
+                    this.isSelectionLocked = true;
+                    // Simula um clique no elemento.
+                    if (foundElement.id === 'start-game-btn') this.startGame();
+                    else if (foundElement.id === 'restart-button') this.resetGame();
+                    else foundElement.click();
                 }
             }
         } else {
@@ -253,21 +297,34 @@ const realLifeGame = {
             this.hoverStartTime = null;
         }
 
-        this.selectableElements.forEach(element => {
-            element.classList.toggle('hovered', element === this.hoveredElement);
-            if (element !== this.hoveredElement) {
-                const progressBar = element.querySelector('.selection-progress');
-                if (progressBar) progressBar.style.width = '0%';
+        this.updateElementStyles(elements);
+    },
+    
+    // Atualiza a aparência dos elementos selecionáveis (borda, barra de progresso).
+    updateElementStyles(elements) {
+        const allSelectables = document.querySelectorAll('.gesture-selectable');
+        allSelectables.forEach(el => {
+            const isHovered = el === this.hoveredElement;
+            el.classList.toggle('hovered', isHovered);
+            
+            const progressBar = el.querySelector('.selection-progress');
+            if (progressBar) {
+                 if (isHovered && this.hoverStartTime && !this.isSelectionLocked) {
+                    const elapsedTime = Date.now() - this.hoverStartTime;
+                    const progress = (elapsedTime / this.SELECTION_TIME_MS) * 100;
+                    progressBar.style.width = `${Math.min(progress, 100)}%`;
+                } else {
+                    progressBar.style.width = '0%';
+                }
             }
         });
     },
 
+    // Inicia o jogo.
     startGame() {
-        // Desliga a lógica de seleção de botão e o cursor
         this.handCursor.style.display = 'none';
         this.playing = true;
 
-        // Inicia a câmera do jogo
         const handsInGame = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
         handsInGame.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
         handsInGame.onResults(results => this.onHandResults(results));
@@ -284,104 +341,43 @@ const realLifeGame = {
         setTimeout(() => { this.startOverlay.style.display = 'none'; }, 500);
         this.gameHud.style.visibility = 'visible';
         
-        this.isQuestionActive = false;
+        this.resetGame();
+        this.playTone(800, 0.2);
+    },
+
+    // Reinicia o jogo para o estado inicial.
+    resetGame() {
         this.score = 0;
         this.lives = 3;
         this.currentLevel = 1;
         this.levelProgress = 0;
         this.hintsRemaining = 3;
         this.usedHints = [];
+        this.isQuestionActive = false;
+        this.isHintActive = false;
+        this.isGameOver = false;
+
+        this.gameoverOverlay.classList.remove('active');
         this.setupLevel();
         this.updateHud();
-        this.playTone(800, 0.2);
     },
 
-    // ... (O resto do arquivo game.js, a partir de setupLevel(), permanece igual ao da resposta anterior) ...
-    handleGestureAnswer(results) {
-        let handDetected = false;
-        if (results.multiHandLandmarks && results.multiHandLandmarks[0]) {
-            const landmarks = results.multiHandLandmarks[0];
-            const controlPoint = landmarks[8];
-            const fingerX = (1 - controlPoint.x) * this.overlay.width;
-            const fingerY = controlPoint.y * this.overlay.height;
-
-            handDetected = true;
-            let choiceFound = -1;
-            let hintBtnFound = false;
-
-            questionManager.choiceElements.forEach((choiceEl, index) => {
-                const rect = choiceEl.getBoundingClientRect();
-                const canvasRect = this.overlay.getBoundingClientRect();
-                if (fingerX > rect.left - canvasRect.left && fingerX < rect.right - canvasRect.left &&
-                    fingerY > rect.top - canvasRect.top && fingerY < rect.bottom - canvasRect.top) {
-                    choiceFound = index;
-                }
-            });
-            
-            const hintBtnEl = questionManager.hintBtn;
-            if (hintBtnEl.style.display !== 'none') {
-                const rect = hintBtnEl.getBoundingClientRect();
-                const canvasRect = this.overlay.getBoundingClientRect();
-                 if (fingerX > rect.left - canvasRect.left && fingerX < rect.right - canvasRect.left &&
-                    fingerY > rect.top - canvasRect.top && fingerY < rect.bottom - canvasRect.top) {
-                    hintBtnFound = true;
-                }
-            }
-            
-            if (choiceFound !== -1) {
-                 if (this.hoveredElement !== choiceFound) { // Usando hoveredElement para consistência
-                    this.hoveredElement = choiceFound;
-                    this.hoverStartTime = Date.now();
-                } else {
-                    if (Date.now() - this.hoverStartTime > this.SELECTION_TIME_MS) {
-                        if (questionManager.choiceElements[choiceFound].onclick) {
-                             questionManager.choiceElements[choiceFound].onclick();
-                             this.hoverStartTime = null;
-                        }
-                    }
-                }
-            } else if (hintBtnFound) {
-                if (this.hoveredElement !== hintBtnEl) {
-                    this.hoveredElement = hintBtnEl;
-                    this.hoverStartTime = Date.now();
-                } else {
-                     if (Date.now() - this.hoverStartTime > this.SELECTION_TIME_MS) {
-                        if (!hintBtnEl.classList.contains('disabled')) {
-                             this.showHintModal();
-                             this.hoverStartTime = null;
-                        }
-                    }
-                }
-            } else {
-                this.hoveredElement = null;
-                this.hoverStartTime = null;
-            }
-        }
-
-        if (!handDetected) {
-            this.hoveredElement = null;
-            this.hoverStartTime = null;
-        }
-
-        questionManager.choiceElements.forEach((el, index) => {
-            el.style.border = (index === this.hoveredElement) ? '2px solid var(--accent)' : '1px solid rgba(255,255,255,0.1)';
-            el.style.transform = (index === this.hoveredElement) ? 'scale(1.03)' : 'scale(1)';
-        });
-        questionManager.hintBtn.style.border = (this.hoveredElement === questionManager.hintBtn) ? '2px solid var(--accent)' : '1px solid transparent';
-    },
-    detectMovement(results) {
-        if (results.multiHandLandmarks && results.multiHandLandmarks[0]) {
-            const landmarks = results.multiHandLandmarks[0];
-            const controlPoint = landmarks[8];
+    // Move o jogador com base na posição da mão.
+    detectMovement(landmarks) {
+        if (landmarks) {
+            const controlPoint = landmarks[8]; // Ponta do dedo indicador.
             const targetX = (1 - controlPoint.x) * this.overlay.width - (this.player.width / 2);
             const targetY = controlPoint.y * this.overlay.height - (this.player.height / 2);
-            const lerpFactor = 0.4;
+            const lerpFactor = 0.4; // Suaviza o movimento.
             this.player.x += (targetX - this.player.x) * lerpFactor;
             this.player.y += (targetY - this.player.y) * lerpFactor;
         }
+        // Limita o jogador dentro da tela.
         this.player.x = Math.max(0, Math.min(this.overlay.width - this.player.width, this.player.x));
         this.player.y = Math.max(0, Math.min(this.overlay.height - this.player.height, this.player.y));
     },
+
+    // Configura um novo nível.
     setupLevel() {
         this.levelProgress = 0;
         this.currentLevelQuestions = [];
@@ -400,6 +396,8 @@ const realLifeGame = {
         this.player.x = this.overlay.width / 2 - this.player.width / 2;
         this.player.y = this.overlay.height * 0.8 - this.player.height;
     },
+
+    // Cria as sementes em posições aleatórias.
     createSeeds() {
         this.seeds = [];
         const seedsToCreate = this.currentLevelQuestions.length;
@@ -411,22 +409,51 @@ const realLifeGame = {
             });
         }
     },
+
+    // Atualiza as informações na tela (pontos, vidas, etc.).
     updateHud() {
         this.scoreEl.textContent = this.score;
         this.livesEl.textContent = this.lives;
         this.levelEl.textContent = this.currentLevel;
         this.envStatusEl.querySelector('span').textContent = `${this.levelProgress} / ${this.currentLevelQuestions.length}`;
     },
-    checkSeedCollision() {
+
+    // Verifica colisão e o gesto de coleta.
+    checkSeedCollision(landmarks) {
+        this.collectibleSeed = null;
+        let isPinching = false;
+
+        // Verifica se o gesto de pinça está sendo feito.
+        if (landmarks) {
+            const thumbTip = landmarks[4];
+            const indexTip = landmarks[8];
+            const distance = Math.sqrt(
+                Math.pow(thumbTip.x - indexTip.x, 2) + 
+                Math.pow(thumbTip.y - indexTip.y, 2)
+            );
+            if (distance < 0.05) { // Limiar para considerar uma pinça.
+                isPinching = true;
+            }
+        }
+        
         for (const seed of this.seeds) {
             if (!seed.collected) {
                 const playerCenterX = this.player.x + this.player.width / 2;
                 const playerCenterY = this.player.y + this.player.height / 2;
                 const distance = Math.sqrt(Math.pow(playerCenterX - seed.x, 2) + Math.pow(playerCenterY - seed.y, 2));
-                if (distance < this.player.width / 2 + seed.size) this.triggerQuestion(seed);
+                
+                if (distance < this.player.width / 2 + seed.size) {
+                    this.collectibleSeed = seed; // Marca a semente como coletável.
+                    if (isPinching) {
+                        this.triggerQuestion(seed); // Dispara a pergunta se houver pinça.
+                    }
+                    break; 
+                }
             }
         }
     },
+
+    // Dispara a exibição de uma pergunta.
     triggerQuestion(seed) {
         if (this.isQuestionActive || this.levelProgress >= this.currentLevelQuestions.length) return;
         this.isQuestionActive = true;
@@ -437,6 +464,8 @@ const realLifeGame = {
             show: this.currentLevel >= 2,
             remaining: this.hintsRemaining
         };
+
+        // Mostra o modal de pergunta e define o que fazer após a resposta.
         questionManager.show(question, (isCorrect, explanation) => {
             this.currentQuestionForHint = null;
             if (isCorrect) {
@@ -464,26 +493,35 @@ const realLifeGame = {
             });
         }, hintStatus);
     },
+
+    // Exibe o modal de dicas.
     showHintModal() {
         if (this.hintsRemaining <= 0 || !this.isQuestionActive) return;
         this.hintAvatarsContainer.querySelectorAll('.hint-avatar').forEach(avatar => {
             avatar.classList.toggle('used', this.usedHints.includes(avatar.dataset.avatar));
         });
+        this.isHintActive = true;
         this.hintModal.classList.add('active');
     },
+
+    // Usa uma dica, revelando a resposta correta.
     useHint(avatarId) {
         if (this.usedHints.includes(avatarId) || this.hintsRemaining <= 0) return;
         this.playTone(1500, 0.2);
         this.hintsRemaining--;
         this.usedHints.push(avatarId);
+        this.isHintActive = false;
         this.hintModal.classList.remove('active');
+        
         const correctAnswerIndex = this.currentQuestionForHint.question.answer;
         const correctAnswerText = this.currentQuestionForHint.question.choices[correctAnswerIndex];
         const avatarData = hintAvatarData[avatarId];
+        
         const resultIcon = document.getElementById('hint-result-icon');
         const resultText = document.getElementById('hint-result-text');
         resultIcon.textContent = avatarData.icon;
         resultText.innerHTML = `${avatarData.name} diz: <br><span>"${correctAnswerText}"</span>`;
+        
         this.hintResultModal.classList.add('active');
         setTimeout(() => {
             this.hintResultModal.classList.remove('active');
@@ -493,6 +531,8 @@ const realLifeGame = {
             }
         }, 3000);
     },
+
+    // Exibe o modal de feedback (resposta correta/incorreta).
     showFeedbackModal(isCorrect, explanation, onEndCallback) {
         this.feedbackOverlay.style.display = 'flex';
         this.feedbackIcon.textContent = isCorrect ? '🎉' : '😔';
@@ -505,25 +545,38 @@ const realLifeGame = {
             if (onEndCallback) onEndCallback();
         }, 2500);
     },
+
+    // Desenha o jogador na tela.
     drawPlayer() {
         if (this.player.loaded) {
             this.ctx.drawImage(this.player.image, this.player.x, this.player.y, this.player.width, this.player.height);
         }
     },
+
+    // Desenha as sementes e o indicador de coleta.
     drawSeeds() {
-        this.ctx.font = "32px Poppins";
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
         for (const seed of this.seeds) {
             if (!seed.collected) {
                 this.ctx.save();
                 this.ctx.filter = 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))';
+                this.ctx.font = "32px Poppins";
                 this.ctx.fillText("🌱", seed.x, seed.y);
                 this.ctx.restore();
             }
         }
+        // Desenha o ícone de pinça se uma semente for coletável.
+        if (this.collectibleSeed) {
+            this.ctx.font = "24px Poppins";
+            this.ctx.fillStyle = "white";
+            this.ctx.fillText("🤏", this.player.x + this.player.width / 2, this.player.y - 20);
+        }
     },
+    
+    // Desenha o cenário do nível atual.
     drawEnvironment() {
+        // (O código para desenhar o ambiente permanece o mesmo)
         this.ctx.save();
         const horizontalPadding = this.overlay.width * 0.1;
         const effectiveWidth = this.overlay.width - (2 * horizontalPadding);
@@ -585,7 +638,10 @@ const realLifeGame = {
         }
         this.ctx.restore();
     },
+
+    // Exibe a tela de fim de jogo.
     showGameOver(isWinner) {
+        this.isGameOver = true;
         this.playing = false;
         const icon = document.getElementById('gameover-icon');
         const title = document.getElementById('gameover-title');
@@ -605,6 +661,8 @@ const realLifeGame = {
         }
         this.gameoverOverlay.classList.add('active');
     },
+
+    // Toca um som simples para feedback de ações.
     playTone(freq, duration) {
         try {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
