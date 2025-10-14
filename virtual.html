@@ -915,60 +915,60 @@
         const avatarsBySubject = {
             'matematica': [
                 { id: 'matematica_1', name: 'A Calculista', subject: 'Matemática', color: '#3B82F6', icon: '🧮', image: 'marcia.png' },
-                { id: 'matematica_2', name: 'Geometra', subject: 'Matemática', color: '#6366F1', icon: '📐', image: 'romulo.png' },
-                { id: 'matematica_3', name: 'Algebrio', subject: 'Matemática', color: '#8B5CF6', icon: '🔢', image: 'anderson.png' }
+                { id: 'matematica_2', name: 'O Preciso', subject: 'Matemática', color: '#6366F1', icon: '📐', image: 'romulo.png' },
+                { id: 'matematica_3', name: 'O Solucionador', subject: 'Matemática', color: '#8B5CF6', icon: '🔢', image: 'anderson.png' }
             ],
             'lingua_portuguesa': [
-                { id: 'portugues_1', name: 'Letrinha', subject: 'Língua Portuguesa', color: '#EF4444', icon: '📚', image: 'lucilene.png' },
-                { id: 'portugues_2', name: 'Gramatica', subject: 'Língua Portuguesa', color: '#DC2626', icon: '📖', image: 'marieli.png' },
-                { id: 'portugues_3', name: 'Literato', subject: 'Língua Portuguesa', color: '#B91C1C', icon: '✍️', image: 'demetrius.png' }
+                { id: 'portugues_1', name: 'A Articulada', subject: 'Língua Portuguesa', color: '#EF4444', icon: '📚', image: 'lucilene.png' },
+                { id: 'portugues_2', name: 'A Eloquente', subject: 'Língua Portuguesa', color: '#DC2626', icon: '📖', image: 'marieli.png' },
+                { id: 'portugues_3', name: 'O Expressivo', subject: 'Língua Portuguesa', color: '#B91C1C', icon: '✍️', image: 'demetrius.png' }
             ],
             'biologia': [
-                { id: 'biologia', name: 'Biobot', subject: 'Biologia', color: '#10B981', icon: '🧬', image: 'mayara.png' }
+                { id: 'biologia', name: 'A Vital', subject: 'Biologia', color: '#10B981', icon: '🧬', image: 'mayara.png' }
             ],
             'fisica': [
-                { id: 'fisica', name: 'Quantum', subject: 'Física', color: '#8B5CF6', icon: '⚛️', image: 'romulo.png' }
+                { id: 'fisica', name: 'O Racional', subject: 'Física', color: '#8B5CF6', icon: '⚛️', image: 'romulo.png' }
             ],
             'quimica': [
-                { id: 'quimica', name: 'Molecula', subject: 'Química', color: '#F59E0B', icon: '🧪', image: 'arline.png' }
+                { id: 'quimica', name: 'A Analítica', subject: 'Química', color: '#F59E0B', icon: '🧪', image: 'arline.png' }
             ],
             'historia': [
-                { id: 'historia', name: 'Chronos', subject: 'História', color: '#92400E', icon: '📜', image: 'julio.png' }
+                { id: 'historia', name: 'O Sábio', subject: 'História', color: '#92400E', icon: '📜', image: 'julio.png' }
             ],
             'geografia': [
-                { id: 'geografia', name: 'Globo', subject: 'Geografia', color: '#059669', icon: '🌍', image: 'jesiane.png' }
+                { id: 'geografia', name: 'A Cartógrafa', subject: 'Geografia', color: '#059669', icon: '🌍', image: 'jesiane.png' }
             ],
             'ingles': [
-                { id: 'ingles', name: 'Wordly', subject: 'Inglês', color: '#DC2626', icon: '🇺🇸', image: 'flavia.png' }
+                { id: 'ingles', name: 'A Gringa', subject: 'Inglês', color: '#DC2626', icon: '🇺🇸', image: 'flavia.png' }
             ],
             'arte': [
                 { id: 'arte', name: 'A Musa Inspiradora', subject: 'Arte', color: '#EC4899', icon: '🎨', image: 'marcela.png' }
             ],
             'educacao_fisica': [
-                { id: 'educacao_fisica', name: 'Atlético', subject: 'Educação Física', color: '#F97316', icon: '⚽', image: 'fabricio.png' }
+                { id: 'educacao_fisica', name: 'O Energético', subject: 'Educação Física', color: '#F97316', icon: '⚽', image: 'fabricio.png' }
             ],
             'filosofia': [
-                { id: 'filosofia', name: 'Sócrates', subject: 'Filosofia', color: '#6366F1', icon: '🤔', image: 'julio.png' }
+                { id: 'filosofia', name: 'O Questionador', subject: 'Filosofia', color: '#6366F1', icon: '🤔', image: 'julio.png' }
             ],
             'sociologia': [
-                { id: 'sociologia', name: 'Social', subject: 'Sociologia', color: '#84CC16', icon: '👥', image: 'julio.png' }
+                { id: 'sociologia', name: 'O Observador', subject: 'Sociologia', color: '#84CC16', icon: '👥', image: 'julio.png' }
             ]
         };
 
         // Matérias disponíveis para seleção inicial
         const subjects = [
-            { id: 'matematica', name: 'Matemática', icon: '🧮', color: '#3B82F6', description: 'Desvende os mistérios dos números e formas' },
-            { id: 'lingua_portuguesa', name: 'Língua Portuguesa', icon: '📚', color: '#EF4444', description: 'Explore a beleza da nossa língua' },
-            { id: 'biologia', name: 'Biologia', icon: '🧬', color: '#10B981', description: 'Descubra os segredos da vida' },
-            { id: 'fisica', name: 'Física', icon: '⚛️', color: '#8B5CF6', description: 'Compreenda as leis do universo' },
-            { id: 'quimica', name: 'Química', icon: '🧪', color: '#F59E0B', description: 'Experimente as transformações da matéria' },
-            { id: 'historia', name: 'História', icon: '📜', color: '#92400E', description: 'Viaje no tempo e conheça nosso passado' },
-            { id: 'geografia', name: 'Geografia', icon: '🌍', color: '#059669', description: 'Explore nosso planeta e suas diversidades' },
-            { id: 'ingles', name: 'Inglês', icon: '🇺🇸', color: '#DC2626', description: 'Conecte-se com o mundo globalizado' },
-            { id: 'arte', name: 'Arte', icon: '🎨', color: '#EC4899', description: 'Expresse sua criatividade e sensibilidade' },
-            { id: 'educacao_fisica', name: 'Educação Física', icon: '⚽', color: '#F97316', description: 'Mova-se e cuide do seu corpo' },
-            { id: 'filosofia', name: 'Filosofia', icon: '🤔', color: '#6366F1', description: 'Pense sobre as grandes questões da vida' },
-            { id: 'sociologia', name: 'Sociologia', icon: '👥', color: '#84CC16', description: 'Entenda as relações sociais' }
+            { id: 'matematica', name: 'Matemática', icon: '🧮', color: '#3B82F6', description: 'Quantifique o equilíbrio do futuro, desenhando caminhos para a inovação verde.' },
+            { id: 'lingua_portuguesa', name: 'Língua Portuguesa', icon: '📚', color: '#EF4444', description: 'Domine a narrativa que inspira a ação e articula o valor da nossa natureza.' },
+            { id: 'biologia', name: 'Biologia', icon: '🧬', color: '#10B981', description: 'Investigue a essência vital, otimizando o uso responsável dos recursos terrestres.' },
+            { id: 'fisica', name: 'Física', icon: '⚛️', color: '#8B5CF6', description: 'Desvende a energia e a matéria para construir tecnologias mais eficientes e limpas.' },
+            { id: 'quimica', name: 'Química', icon: '🧪', color: '#F59E0B', description: 'Transforme elementos, criando ciclos fechados e materiais que respeitam o planeta.' },
+            { id: 'historia', name: 'História', icon: '📜', color: '#92400E', description: 'Analise os legados do passado para forjar um novo modelo de prosperidade e cuidado.' },
+            { id: 'geografia', name: 'Geografia', icon: '🌍', color: '#059669', description: 'Mapeie os territórios e a gestão do espaço para o convívio harmonioso entre espécies.' },
+            { id: 'ingles', name: 'Inglês', icon: '🇺🇸', color: '#DC2626', description: 'Abra a conversa global sobre as práticas de inovação e o futuro do planeta.' },
+            { id: 'arte', name: 'Arte', icon: '🎨', color: '#EC4899', description: 'Use a criatividade para sensibilizar e expressar a importância do nosso meio ambiente.' },
+            { id: 'educacao_fisica', name: 'Educação Física', icon: '⚽', color: '#F97316', description: 'Cultive a saúde individual, o pilar de uma comunidade forte e consciente.' },
+            { id: 'filosofia', name: 'Filosofia', icon: '🤔', color: '#6366F1', description: 'Questione a responsabilidade e o papel humano diante dos limites da Terra.' },
+            { id: 'sociologia', name: 'Sociologia', icon: '👥', color: '#84CC16', description: 'Compreenda as relações humanas e o impacto das escolhas coletivas no ambiente.' }
         ];
 
         // Estado do jogo
