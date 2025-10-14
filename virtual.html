@@ -6,7 +6,6 @@
     <title>EcoGame - Jogo Virtual</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CORREÇÃO: Inseri o CSS completo do seu jogo aqui. */
         * {
             margin: 0;
             padding: 0;
@@ -14,51 +13,387 @@
         }
 
         :root {
-            --primary: #10b981;
+            --primary: #06b6d4;
             --secondary: #3b82f6;
-            --accent: #f59e0b;
+            --accent: #8b5cf6;
             --danger: #ef4444;
-            --dark: #1f2937;
-            --light: #f9fafb;
-            --grass: #22c55e;
-            --wood: #a16207;
-            --stone: #6b7280;
-            --water: #3b82f6;
+            --success: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --ice: #e0f2fe;
+            --frost: #cbd5e1;
+            --glacier: #94a3b8;
             --transition: all 0.3s ease;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3a8a, #065f46);
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             color: var(--light);
-            overflow: hidden;
-            height: 100vh;
+            overflow-x: hidden;
+            min-height: 100vh;
             user-select: none;
         }
 
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
+        /* Container principal responsivo */
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: var(--transition);
-            z-index: 10;
         }
 
-        .active {
+        /* Telas do jogo */
+        .screen {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .screen.active {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tela de Seleção de Matéria - Cores frias */
+        .subject-selection {
+            background: linear-gradient(135deg, #1e3a8a, #3730a3);
+        }
+
+        .subject-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--ice);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 2rem;
+        }
+
+        .subject-card {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.3), rgba(55, 48, 163, 0.2));
+            border: 2px solid rgba(96, 165, 250, 0.3);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .subject-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 35px rgba(6, 182, 212, 0.2);
+        }
+
+        .subject-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+
+        .subject-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--ice);
+        }
+
+        .subject-description {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            color: var(--frost);
+        }
+
+        .subject-count {
+            background: rgba(6, 182, 212, 0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            color: var(--primary);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        /* Tela de Seleção de Avatar - Cores frias */
+        .avatar-screen {
+            background: linear-gradient(135deg, #1e3a8a, #4338ca);
+        }
+
+        .avatar-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--ice);
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-card {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.3), rgba(55, 48, 163, 0.2));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            border: 2px solid rgba(96, 165, 250, 0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .avatar-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(55, 48, 163, 0.3));
+        }
+
+        .avatar-card.selected {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1));
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .avatar-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+
+        .avatar-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 3px solid rgba(96, 165, 250, 0.5);
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .avatar-card.selected .avatar-image {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .avatar-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--ice);
+        }
+
+        .avatar-subject {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            color: var(--frost);
+        }
+
+        /* Tela do Jogo - Cores frias */
+        .game-screen {
+            background: linear-gradient(to bottom, #1e3a8a, #1e1b4b);
+            position: relative;
+            padding: 0;
+            justify-content: flex-start;
+        }
+
+        /* HUD Responsivo */
+        .hud {
+            position: relative;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 0 0 20px 20px;
+            padding: 1rem;
+            color: var(--ice);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            z-index: 100;
+            border-bottom: 1px solid rgba(96, 165, 250, 0.3);
+        }
+
+        .hud-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .hud-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
+        .hud-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--ice);
+        }
+
+        .stat i {
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            width: 120px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Container do Canvas responsivo (MODIFICADO) */
+        .game-canvas-container {
+            flex: 1; /* Faz o container ocupar o espaço vertical restante */
+            width: 100%; /* Ocupa toda a largura */
+            margin-top: 1rem; /* Adiciona um espaço entre a HUD e o canvas */
+            background: #0f172a;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Controles com novo layout */
+        .controls-help {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            color: var(--ice);
+            z-index: 90;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .controls-title {
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--glacier);
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .key-group {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .key-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .key {
+            background: rgba(6, 182, 212, 0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-weight: 600;
+            font-size: 0.85rem;
+            min-width: 45px;
+            text-align: center;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: var(--primary);
+        }
+
+        /* Botões */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .btn {
             padding: 1rem 2rem;
             border: none;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -66,8 +401,9 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             text-decoration: none;
+            min-width: 200px;
         }
 
         .btn-primary {
@@ -76,260 +412,114 @@
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(96, 165, 250, 0.15);
             backdrop-filter: blur(10px);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--ice);
+            border: 1px solid rgba(96, 165, 250, 0.3);
         }
 
         .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
         }
 
         .btn:active {
             transform: translateY(0);
         }
 
-        .avatar-screen {
-            background: linear-gradient(135deg, #7c3aed, #ec4899);
-            padding: 2rem;
-            overflow-y: auto;
+        /* Tela de Game Over - Cores frias */
+        .gameover-screen {
+            background: linear-gradient(135deg, #1e3a8a, #3730a3);
         }
 
-        .avatar-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .avatar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            max-width: 1000px;
+        .gameover-card {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(55, 48, 163, 0.3));
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            max-width: 600px;
             width: 100%;
-            margin-bottom: 2rem;
-        }
-
-        .avatar-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(96, 165, 250, 0.3);
             text-align: center;
-            border: 2px solid transparent;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .avatar-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.2);
+        .gameover-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+            color: var(--primary);
         }
 
-        .avatar-card.selected {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
-            transform: scale(1.05);
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
-        .avatar-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.2));
+        .gameover-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--ice);
         }
 
-        .avatar-name {
-            font-size: 1.3rem;
+        .gameover-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 15px;
+            padding: 1.5rem 1rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            color: var(--accent);
         }
 
-        .avatar-subject {
+        .stat-label {
             font-size: 0.9rem;
             opacity: 0.8;
+            color: var(--frost);
         }
 
-        .game-screen {
-            background: linear-gradient(to bottom, #1e40af, #1e3a8a);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hud {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            right: 1rem;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 1rem;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .hud-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .hud-avatar {
-            font-size: 2.5rem;
-            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
-        }
-
-        .hud-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .progress-bar {
-            width: 150px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            border-radius: 5px;
-            transition: width 0.5s ease;
-        }
-
-        .game-world {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .ground {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to top, #15803d, #166534);
-            z-index: 1;
-            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .ground::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
-        }
-
-        .player {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            font-size: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 30;
-            transition: transform 0.1s;
-            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.3));
-        }
-
-        .platform {
-            position: absolute;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-            transition: transform 0.3s ease;
-        }
-
-        .platform:hover {
-            transform: translateY(-5px);
-        }
-
-        .seed {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
-            cursor: pointer;
-        }
-
-        .environment-element {
-            position: absolute;
-            z-index: 0;
-            transition: transform 0.5s ease;
-        }
-
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            z-index: 40;
-        }
-
+        /* Modais */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(5px);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 200;
-            padding: 2rem;
+            z-index: 1000;
+            padding: 1rem;
         }
 
         .modal {
             background: linear-gradient(135deg, #1e293b, #334155);
             border-radius: 20px;
             padding: 2rem;
-            max-width: 700px;
+            max-width: 600px;
             width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: modalAppear 0.5s ease;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            animation: modalAppear 0.4s ease;
         }
 
         @keyframes modalAppear {
-            from { opacity: 0; transform: scale(0.8) translateY(50px); }
+            from { opacity: 0; transform: scale(0.9) translateY(30px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
@@ -348,6 +538,7 @@
         .modal-title {
             font-size: 1.8rem;
             font-weight: 700;
+            color: var(--ice);
         }
 
         .modal-body {
@@ -358,6 +549,7 @@
             font-size: 1.3rem;
             line-height: 1.5;
             margin-bottom: 1.5rem;
+            color: var(--ice);
         }
 
         .options-grid {
@@ -416,6 +608,7 @@
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
             line-height: 1.5;
+            color: var(--ice);
         }
 
         .feedback-bonus {
@@ -424,269 +617,421 @@
             font-weight: 600;
         }
 
-        .gameover-screen {
-            background: linear-gradient(135deg, #dc2626, #ea580c);
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .gameover-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 3rem;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .gameover-icon {
-            font-size: 5rem;
-            margin-bottom: 1.5rem;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .gameover-title {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-        }
-
-        .gameover-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 1.5rem;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .controls-help {
-            position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            padding: 1rem;
-            color: white;
-            font-size: 0.9rem;
-            z-index: 100;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .controls-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--accent);
-        }
-
-        .control-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .key {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.2rem 0.5rem;
-            border-radius: 5px;
-            font-family: monospace;
-            font-weight: bold;
-        }
-
+        /* Responsividade para dispositivos móveis */
         @media (max-width: 768px) {
-            .menu-title { font-size: 2.5rem; }
-            .menu-buttons { flex-direction: column; align-items: center; }
-            .btn { width: 100%; max-width: 300px; }
-            .avatar-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-            .hud { flex-direction: column; gap: 1rem; align-items: flex-start; }
-            .gameover-stats { grid-template-columns: 1fr; }
+            .game-container {
+                padding: 0.5rem;
+            }
+            
+            .screen {
+                padding: 0.5rem;
+            }
+            
+            .subject-grid,
+            .avatar-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .subject-card,
+            .avatar-card {
+                padding: 1.5rem 1rem;
+            }
+            
+            .hud {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+                border-radius: 0 0 15px 15px;
+            }
+            
+            .hud-section {
+                min-width: 100%;
+                justify-content: space-between;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .controls-help {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                margin: 1rem auto;
+                max-width: 100%;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gameover-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .gameover-card {
+                padding: 2rem 1rem;
+            }
+            
+            .modal {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        @media (max-width: 480px) {
+            .subject-card,
+            .avatar-card {
+                padding: 1rem;
+            }
+            
+            .subject-icon,
+            .avatar-icon {
+                font-size: 2.5rem;
+            }
+            
+            .subject-name,
+            .avatar-name {
+                font-size: 1.1rem;
+            }
+            
+            .hud {
+                padding: 0.8rem;
+            }
+            
+            .hud-avatar {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .stat {
+                font-size: 0.8rem;
+            }
+            
+            .progress-bar {
+                width: 80px;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
         }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
-        }
-
-        .bounce { animation: bounce 2s infinite; }
-        .glow { animation: glow 2s infinite; }
     </style>
 </head>
 <body>
-    
-    <div id="avatar-screen" class="screen active">
-        <h2 class="avatar-title">Escolha seu Avatar Educativo</h2>
-        
-        <div id="avatar-grid" class="avatar-grid">
+    <div class="game-container">
+        <div id="subject-selection" class="screen subject-selection active">
+            <h2 class="subject-title">Escolha sua Matéria</h2>
+            
+            <div class="subject-grid" id="subject-grid">
+                </div>
+            
+            <div class="btn-group">
+                <a href="index.html" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar ao Menu
+                </a>
             </div>
-        
-        <div style="display: flex; gap: 1rem;">
-            <a href="index.html" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Voltar
-            </a>
-            <button id="select-avatar-button" class="btn btn-primary" style="display: none;">
-                <i class="fas fa-rocket"></i> Iniciar Missão
-            </button>
         </div>
-    </div>
 
-    <div id="game-screen" class="screen">
-        <div class="hud">
-            <div class="hud-section">
-                <div id="hud-avatar" class="hud-avatar"></div>
-                <div class="hud-stats">
-                    <div class="stat">
-                        <i class="fas fa-star" style="color: var(--accent);"></i>
-                        Pontuação: <span id="score">0</span>
-                    </div>
-                    <div class="stat">
-                        <i class="fas fa-heart" style="color: var(--danger);"></i>
-                        Vidas: <span id="lives">3</span>
+        <div id="avatar-screen" class="screen avatar-screen">
+            <h2 class="avatar-title">Escolha seu Avatar em <span id="current-subject-name">Matéria</span></h2>
+            
+            <div id="avatar-grid" class="avatar-grid">
+                </div>
+            
+            <div class="btn-group">
+                <button id="back-to-subjects" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar às Matérias
+                </button>
+                <button id="select-avatar-button" class="btn btn-primary" style="display: none;">
+                    <i class="fas fa-rocket"></i> Iniciar Missão
+                </button>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen game-screen">
+            <div class="hud">
+                <div class="hud-section">
+                    <div id="hud-avatar" class="hud-avatar">👨‍🎓</div>
+                    <div class="hud-stats">
+                        <div class="stat">
+                            <i class="fas fa-star"></i>
+                            Pontuação: <span id="score">0</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-heart"></i>
+                            Vidas: <span id="lives">3</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="hud-section">
-                <div class="hud-stats">
-                    <div class="stat">
-                        <i class="fas fa-seedling" style="color: var(--primary);"></i>
-                        Sementes: <span id="seeds-collected">0</span>/15
+                
+                <div class="hud-section">
+                    <div class="hud-stats">
+                        <div class="stat">
+                            <i class="fas fa-seedling"></i>
+                            Sementes: <span id="seeds-collected">0</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-leaf"></i>
+                            Progresso
+                            <div class="progress-bar">
+                                <div id="environment-progress" class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <i class="fas fa-leaf" style="color: var(--primary);"></i>
-                        Nível Ambiental
-                        <div class="progress-bar">
-                            <div id="environment-progress" class="progress-fill" style="width: 0%;"></div>
+                </div>
+                
+                <div class="hud-section" style="justify-content: flex-end; gap: 1rem;">
+                    <button id="back-button" class="btn btn-secondary" style="padding: 0.8rem 1.5rem;">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <button id="pause-button" class="btn btn-secondary" style="padding: 0.8rem 1.5rem;">
+                        <i class="fas fa-pause"></i> Pausar
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-canvas-container">
+                <canvas id="gameCanvas" width="2000" height="600"></canvas>
+            </div>
+
+            <div class="controls-help">
+                <div class="controls-title">Controles</div>
+                <div class="controls-section">
+                    <div class="control-label">Movimento</div>
+                    <div class="key-group">
+                        <div class="key-row">
+                            <span class="key">W</span>
+                            <span class="key">↑</span>
+                        </div>
+                        <div class="key-row">
+                            <span class="key">A</span>
+                            <span class="key">←</span>
+                        </div>
+                        <div class="key-row">
+                            <span class="key">D</span>
+                            <span class="key">→</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="controls-section">
+                    <div class="control-label">Ação</div>
+                    <div class="key-group">
+                        <div class="key-row">
+                            <span class="key large-key">Espaço</span>
+                            <span>Coletar</span>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="hud-section">
-                <button id="pause-button" class="btn btn-secondary" style="padding: 0.5rem 1rem;">
-                    <i class="fas fa-pause"></i> Pausar
-                </button>
-            </div>
         </div>
 
-        <div id="game-world" class="game-world"></div>
-
-        <div class="ground"></div>
-        
-        <div class="controls-help">
-            <div class="controls-title">Controles</div>
-            <div class="control-item"><span class="key">W</span> / <span class="key">↑</span> Pular</div>
-            <div class="control-item"><span class="key">A</span> / <span class="key">←</span> Mover Esquerda</div>
-            <div class="control-item"><span class="key">D</span> / <span class="key">→</span> Mover Direita</div>
-        </div>
-    </div>
-
-    <div id="question-overlay" class="modal-overlay">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-icon">🌱</div>
-                <h3 class="modal-title">Desafio do Conhecimento</h3>
-            </div>
-            <div class="modal-body">
-                <p id="question-text" class="question-text"></p>
-                <div id="options-container" class="options-grid"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="feedback-overlay" class="modal-overlay">
-        <div class="modal feedback-modal">
-            <div id="feedback-icon" class="feedback-icon"></div>
-            <h3 id="feedback-title" class="feedback-title"></h3>
-            <p id="feedback-message" class="feedback-message"></p>
-            <p id="feedback-bonus" class="feedback-bonus"></p>
-        </div>
-    </div>
-
-    <div id="gameover-screen" class="screen">
-        <div class="gameover-card">
-            <div class="gameover-icon">🌍</div>
-            <h2 class="gameover-title">Missão Concluída!</h2>
-            <div class="gameover-stats">
-                <div class="stat-card">
-                    <div id="final-score" class="stat-value">0</div>
-                    <div class="stat-label">Pontuação</div>
+        <div id="gameover-screen" class="screen gameover-screen">
+            <div class="gameover-card">
+                <div class="gameover-icon">🌍</div>
+                <h2 class="gameover-title">Missão Concluída!</h2>
+                <div class="gameover-stats">
+                    <div class="stat-card">
+                        <div id="final-score" class="stat-value">0</div>
+                        <div class="stat-label">Pontuação</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="final-seeds" class="stat-value">0/15</div>
+                        <div class="stat-label">Sementes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="final-environment" class="stat-value">Árido</div>
+                        <div class="stat-label">Nível Ambiental</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div id="final-seeds" class="stat-value">0/15</div>
-                    <div class="stat-label">Sementes</div>
-                </div>
-                <div class="stat-card">
-                    <div id="final-environment" class="stat-value">0/15</div>
-                    <div class="stat-label">Nível Ambiental</div>
+                <div class="btn-group">
+                    <button id="restart-button" class="btn btn-primary">
+                        <i class="fas fa-redo"></i> Jogar Novamente
+                    </button>
+                    <button id="menu-button" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Menu Principal
+                    </button>
                 </div>
             </div>
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button id="restart-button" class="btn btn-primary">
-                    <i class="fas fa-redo"></i> Jogar Novamente
-                </button>
-                <button id="menu-button" class="btn btn-secondary">
-                    <i class="fas fa-home"></i> Menu Principal
-                </button>
+        </div>
+
+        <div id="question-overlay" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <div class="modal-icon">
+                        <img id="question-avatar-img" src="" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
+                    </div>
+                    <h3 class="modal-title">Desafio Educacional</h3>
+                </div>
+                <div class="modal-body">
+                    <div id="question-text" class="question-text"></div>
+                    <div id="options-container" class="options-grid"></div>
+                </div>
+                <div class="modal-footer" style="text-align: right; margin-top: 1rem;">
+                    <button id="hint-button" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                        <i class="fas fa-lightbulb"></i> Dica
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="hint-overlay" class="modal-overlay" style="display: none;">
+            <div class="modal hint-modal" style="text-align: center;">
+                <div class="modal-header">
+                    <div class="modal-icon">
+                        <img id="hint-avatar-img" src="" alt="Avatar da Dica" style="width: 60px; height: 60px; border-radius: 50%;">
+                    </div>
+                    <h3 class="modal-title">Uma Dica para Você!</h3>
+                </div>
+                <div class="modal-body">
+                    <p id="hint-text" style="font-size: 1.2rem; line-height: 1.6;">A resposta correta geralmente está relacionada ao uso consciente dos recursos e à sustentabilidade.</p>
+                </div>
+                <div class="modal-footer" style="margin-top: 1.5rem;">
+                    <button id="close-hint-button" class="btn btn-primary">Entendi!</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="feedback-overlay" class="modal-overlay">
+            <div class="modal feedback-modal">
+                <div id="feedback-icon" class="feedback-icon"></div>
+                <h3 id="feedback-title" class="feedback-title"></h3>
+                <div id="feedback-message" class="feedback-message"></div>
+                <div id="feedback-bonus" class="feedback-bonus"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Dados do jogo
-        const avatars = [ { id: 'math', name: 'Calculon', subject: 'Matemática', color: '#3B82F6', icon: '🧮' }, { id: 'portuguese', name: 'Letrinha', subject: 'Língua Portuguesa', color: '#EF4444', icon: '📚' }, { id: 'biology', name: 'Biobot', subject: 'Biologia', color: '#10B981', icon: '🧬' }, { id: 'physics', name: 'Quantum', subject: 'Física', color: '#8B5CF6', icon: '⚛️' }, { id: 'chemistry', name: 'Molecula', subject: 'Química', color: '#F59E0B', icon: '🧪' }, { id: 'history', name: 'Chronos', subject: 'História', color: '#92400E', icon: '📜' }, { id: 'geography', name: 'Globo', subject: 'Geografia', color: '#059669', icon: '🌍' }, { id: 'english', name: 'Wordly', subject: 'Inglês', color: '#DC2626', icon: '🇺🇸' }, { id: 'art', name: 'Artista', subject: 'Arte', color: '#EC4899', icon: '🎨' }, { id: 'pe', name: 'Atlético', subject: 'Educação Física', color: '#F97316', icon: '⚽' }, { id: 'philosophy', name: 'Sócrates', subject: 'Filosofia', color: '#6366F1', icon: '🤔' }, { id: 'sociology', name: 'Social', subject: 'Sociologia', color: '#84CC16', icon: '👥' } ];
-        const questions = [ { id: 1, question: "O que é bioeconomia?", options: ["Economia baseada em recursos biológicos", "Economia digital", "Economia tradicional", "Economia industrial"], correct: 0, explanation: "Bioeconomia é um modelo econômico baseado no uso sustentável de recursos biológicos renováveis." }, { id: 2, question: "Qual é o principal objetivo da sustentabilidade?", options: ["Lucro máximo", "Atender necessidades sem comprometer futuras gerações", "Crescimento industrial", "Consumo ilimitado"], correct: 1, explanation: "Sustentabilidade busca equilibrar necessidades atuais sem comprometer as gerações futuras." }, { id: 3, question: "O que são energias renováveis?", options: ["Petróleo e gás", "Solar, eólica e hidrelétrica", "Carvão mineral", "Energia nuclear"], correct: 1, explanation: "Energias renováveis são fontes inesgotáveis como sol, vento e água." }, { id: 4, question: "O que é economia circular?", options: ["Economia em círculos", "Reutilização e reciclagem de materiais", "Economia global", "Economia local"], correct: 1, explanation: "Economia circular minimiza desperdícios através da reutilização e reciclagem." }, { id: 5, question: "Qual é o impacto do desmatamento?", options: ["Melhora o clima", "Reduz biodiversidade e aumenta CO2", "Não tem impacto", "Melhora a economia"], correct: 1, explanation: "Desmatamento reduz biodiversidade e aumenta gases do efeito estufa." }, { id: 6, question: "O que são ODS?", options: ["Organizações de Saúde", "Objetivos de Desenvolvimento Sustentável", "Órgãos de Segurança", "Operações Digitais"], correct: 1, explanation: "ODS são 17 objetivos da ONU para um mundo mais sustentável até 2030." }, { id: 7, question: "Como reduzir a pegada de carbono?", options: ["Usar mais combustíveis fósseis", "Transportes sustentáveis e energia limpa", "Aumentar o consumo", "Ignorar o problema"], correct: 1, explanation: "Transporte sustentável e energia limpa reduzem emissões de carbono." }, { id: 8, question: "O que é agricultura sustentável?", options: ["Uso intensivo de agrotóxicos", "Práticas que preservam o solo e biodiversidade", "Monocultura extensiva", "Agricultura industrial"], correct: 1, explanation: "Agricultura sustentável preserva recursos naturais e biodiversidade." }, { id: 9, question: "Qual a importância da reciclagem?", options: ["Não tem importância", "Reduz lixo e economiza recursos", "Aumenta poluição", "É muito cara"], correct: 1, explanation: "Reciclagem reduz resíduos e economiza recursos naturais." }, { id: 10, question: "O que é aquecimento global?", options: ["Resfriamento da Terra", "Aumento da temperatura média global", "Fenômeno natural", "Mito científico"], correct: 1, explanation: "Aquecimento global é o aumento da temperatura média causado por atividades humanas." }, { id: 11, question: "Como a tecnologia pode ajudar na sustentabilidade?", options: ["Não pode ajudar", "Eficiência energética e monitoramento ambiental", "Só prejudica", "É irrelevante"], correct: 1, explanation: "Tecnologia melhora eficiência e monitora impactos ambientais." }, { id: 12, question: "O que são combustíveis fósseis?", options: ["Energias renováveis", "Petróleo, gás e carvão", "Energia solar", "Biomassa"], correct: 1, explanation: "Combustíveis fósseis são recursos não-renováveis que poluem o ambiente." }, { id: 13, question: "Qual a importância das florestas?", options: ["Só para madeira", "Regulam clima e preservam biodiversidade", "Não são importantes", "Só para turismo"], correct: 1, explanation: "Florestas regulam o clima, purificam ar e preservam biodiversidade." }, { id: 14, question: "O que é consumo consciente?", options: ["Comprar sem pensar", "Escolhas responsáveis considerando impacto ambiental", "Consumir mais", "Não consumir nada"], correct: 1, explanation: "Consumo consciente considera impactos ambientais e sociais das compras." }, { id: 15, question: "Como preservar a água?", options: ["Desperdiçar à vontade", "Uso racional e evitar poluição", "Não se preocupar", "Usar só água mineral"], correct: 1, explanation: "Preservação da água envolve uso racional e prevenção da poluição." } ];
+        // Dados dos avatares por matéria
+        const avatarsBySubject = {
+            'matematica': [
+                { id: 'matematica_1', name: 'Calculon', subject: 'Matemática', color: '#3B82F6', icon: '🧮', image: 'marcia.png' },
+                { id: 'matematica_2', name: 'Geometra', subject: 'Matemática', color: '#6366F1', icon: '📐', image: 'romulo.png' },
+                { id: 'matematica_3', name: 'Algebrio', subject: 'Matemática', color: '#8B5CF6', icon: '🔢', image: 'anderson.png' }
+            ],
+            'lingua_portuguesa': [
+                { id: 'portugues_1', name: 'Letrinha', subject: 'Língua Portuguesa', color: '#EF4444', icon: '📚', image: 'lucilene.png' },
+                { id: 'portugues_2', name: 'Gramatica', subject: 'Língua Portuguesa', color: '#DC2626', icon: '📖', image: 'marieli.png' },
+                { id: 'portugues_3', name: 'Literato', subject: 'Língua Portuguesa', color: '#B91C1C', icon: '✍️', image: 'demetrius.png' }
+            ],
+            'biologia': [
+                { id: 'biologia', name: 'Biobot', subject: 'Biologia', color: '#10B981', icon: '🧬', image: 'mayara.png' }
+            ],
+            'fisica': [
+                { id: 'fisica', name: 'Quantum', subject: 'Física', color: '#8B5CF6', icon: '⚛️', image: 'romulo.png' }
+            ],
+            'quimica': [
+                { id: 'quimica', name: 'Molecula', subject: 'Química', color: '#F59E0B', icon: '🧪', image: 'arline.png' }
+            ],
+            'historia': [
+                { id: 'historia', name: 'Chronos', subject: 'História', color: '#92400E', icon: '📜', image: 'julio.png' }
+            ],
+            'geografia': [
+                { id: 'geografia', name: 'Globo', subject: 'Geografia', color: '#059669', icon: '🌍', image: 'jesiane.png' }
+            ],
+            'ingles': [
+                { id: 'ingles', name: 'Wordly', subject: 'Inglês', color: '#DC2626', icon: '🇺🇸', image: 'flavia.png' }
+            ],
+            'arte': [
+                { id: 'arte', name: 'Artista', subject: 'Arte', color: '#EC4899', icon: '🎨', image: 'marcela.png' }
+            ],
+            'educacao_fisica': [
+                { id: 'educacao_fisica', name: 'Atlético', subject: 'Educação Física', color: '#F97316', icon: '⚽', image: 'fabricio.png' }
+            ],
+            'filosofia': [
+                { id: 'filosofia', name: 'Sócrates', subject: 'Filosofia', color: '#6366F1', icon: '🤔', image: 'julio.png' }
+            ],
+            'sociologia': [
+                { id: 'sociologia', name: 'Social', subject: 'Sociologia', color: '#84CC16', icon: '👥', image: 'julio.png' }
+            ]
+        };
 
-        // CORREÇÃO: Estado inicial ajustado para 'avatar'
-        let gameState = { phase: 'avatar', selectedAvatar: null, score: 0, level: 1, lives: 3, questionsAnswered: 0, environmentLevel: 0, paused: false };
-        let player = { x: 100, y: 400, velocityY: 0, isJumping: false, direction: 'right', isMoving: false, onGround: true };
-        let seeds = []; let platforms = []; let currentQuestion = null; let showFeedback = { show: false, correct: false, message: '' }; let cameraX = 0; let particles = [];
+        // Matérias disponíveis para seleção inicial
+        const subjects = [
+            { id: 'matematica', name: 'Matemática', icon: '🧮', color: '#3B82F6', description: 'Desvende os mistérios dos números e formas' },
+            { id: 'lingua_portuguesa', name: 'Língua Portuguesa', icon: '📚', color: '#EF4444', description: 'Explore a beleza da nossa língua' },
+            { id: 'biologia', name: 'Biologia', icon: '🧬', color: '#10B981', description: 'Descubra os segredos da vida' },
+            { id: 'fisica', name: 'Física', icon: '⚛️', color: '#8B5CF6', description: 'Compreenda as leis do universo' },
+            { id: 'quimica', name: 'Química', icon: '🧪', color: '#F59E0B', description: 'Experimente as transformações da matéria' },
+            { id: 'historia', name: 'História', icon: '📜', color: '#92400E', description: 'Viaje no tempo e conheça nosso passado' },
+            { id: 'geografia', name: 'Geografia', icon: '🌍', color: '#059669', description: 'Explore nosso planeta e suas diversidades' },
+            { id: 'ingles', name: 'Inglês', icon: '🇺🇸', color: '#DC2626', description: 'Conecte-se com o mundo globalizado' },
+            { id: 'arte', name: 'Arte', icon: '🎨', color: '#EC4899', description: 'Expresse sua criatividade e sensibilidade' },
+            { id: 'educacao_fisica', name: 'Educação Física', icon: '⚽', color: '#F97316', description: 'Mova-se e cuide do seu corpo' },
+            { id: 'filosofia', name: 'Filosofia', icon: '🤔', color: '#6366F1', description: 'Pense sobre as grandes questões da vida' },
+            { id: 'sociologia', name: 'Sociologia', icon: '👥', color: '#84CC16', description: 'Entenda as relações sociais' }
+        ];
+
+        // Estado do jogo
+        let gameState = {
+            phase: 'subject', // Agora começa na seleção de matéria
+            selectedSubject: null,
+            selectedAvatar: null,
+            score: 0,
+            level: 1,
+            lives: 3,
+            questionsAnswered: 0,
+            totalQuestions: 15,
+            environmentLevel: 0,
+            paused: false,
+            environmentState: 'árido'
+        };
+
+        // Variáveis do jogo
+        let gameQuestions = [];
+        let player = {
+            x: 100,
+            y: 400,
+            width: 60, // Aumentado de 40 para 60
+            height: 80, // Aumentado de 60 para 80
+            velocityX: 0,
+            velocityY: 0,
+            speed: 5,
+            jumpForce: -15,
+            isJumping: false,
+            direction: 'right'
+        };
+        let platforms = [];
+        let seeds = [];
+        let currentQuestion = null;
         let keys = {};
-        
-        const GRAVITY = 0.8; const JUMP_FORCE = -15; const MOVE_SPEED = 5; const GROUND_Y = window.innerHeight - 100; const SCREEN_WIDTH = window.innerWidth; const SCREEN_HEIGHT = window.innerHeight; const PLAYER_WIDTH = 60; const PLAYER_HEIGHT = 60;
+        let camera = { x: 0, y: 0 };
+        let particles = [];
+        let playerImage = new Image();
+        let hudAvatarImage = new Image();
 
-        // CORREÇÃO: Removidas referências a elementos que não existem nesta página
+        // Constantes do jogo
+        const GRAVITY = 0.8;
+        const GROUND_LEVEL = 500;
+
+        // Elementos DOM
         const screens = {
+            subject: document.getElementById('subject-selection'),
             avatar: document.getElementById('avatar-screen'),
             playing: document.getElementById('game-screen'),
             gameOver: document.getElementById('gameover-screen')
         };
+        const subjectGrid = document.getElementById('subject-grid');
+        const currentSubjectName = document.getElementById('current-subject-name');
+        const backToSubjectsButton = document.getElementById('back-to-subjects');
         const avatarGrid = document.getElementById('avatar-grid');
         const selectAvatarButton = document.getElementById('select-avatar-button');
-        const hudAvatar = document.getElementById('hud-avatar');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
         const livesElement = document.getElementById('lives');
-        const environmentProgress = document.getElementById('environment-progress');
+        const levelElement = document.getElementById('level');
         const seedsCollectedElement = document.getElementById('seeds-collected');
-        const gameWorld = document.getElementById('game-world');
+        const environmentProgress = document.getElementById('environment-progress');
         const questionOverlay = document.getElementById('question-overlay');
         const questionText = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
@@ -701,52 +1046,93 @@
         const restartButton = document.getElementById('restart-button');
         const menuButton = document.getElementById('menu-button');
         const pauseButton = document.getElementById('pause-button');
+        const hintButton = document.getElementById('hint-button');
+        const hintOverlay = document.getElementById('hint-overlay');
+        const closeHintButton = document.getElementById('close-hint-button');
+        const hintAvatarImg = document.getElementById('hint-avatar-img');
+        const hintAvatars = ['joao.png', 'rafael.png'];
 
-        // CORREÇÃO: Função init() simplificada para esta página
+        // Inicialização do jogo
         function init() {
-            selectAvatarButton.addEventListener('click', startGame);
-            restartButton.addEventListener('click', () => location.reload()); // Reinicia a página atual
-            menuButton.addEventListener('click', () => { window.location.href = 'index.html'; }); // Volta para o menu
-            pauseButton.addEventListener('click', togglePause);
+            console.log('Inicializando jogo...');
             
+            // Event listeners
+            selectAvatarButton.addEventListener('click', startGame);
+            backToSubjectsButton.addEventListener('click', () => showScreen('subject'));
+            restartButton.addEventListener('click', restartGame);
+            menuButton.addEventListener('click', () => window.location.href = 'index.html');
+            pauseButton.addEventListener('click', togglePause);
+
+            // FUNCIONALIDADE DO BOTÃO VOLTAR (ADICIONADA)
+            const backButton = document.getElementById('back-button');
+            backButton.addEventListener('click', () => {
+                showScreen('subject'); 
+            });
+
+            // Lógica do botão de dica
+            hintButton.addEventListener('click', () => {
+                // Escolhe um avatar aleatório para a dica
+                const randomAvatar = hintAvatars[Math.floor(Math.random() * hintAvatars.length)];
+                hintAvatarImg.src = randomAvatar;
+                hintOverlay.style.display = 'flex';
+            });
+
+            closeHintButton.addEventListener('click', () => {
+                hintOverlay.style.display = 'none';
+            });
+            
+            // Controles de teclado
             window.addEventListener('keydown', (e) => {
                 keys[e.key.toLowerCase()] = true;
-                if (e.key === 'Escape' && gameState.phase === 'playing') {
-                    togglePause();
-                }
+                if (e.key === 'Escape') togglePause();
             });
+            
             window.addEventListener('keyup', (e) => {
                 keys[e.key.toLowerCase()] = false;
             });
             
-            populateAvatarGrid();
-            gameLoop();
+            // Popula as grades
+            populateSubjectGrid();
+            
+            console.log('Jogo inicializado');
         }
 
-        function showScreen(screenName) {
-            Object.values(screens).forEach(screen => {
-                if (screen) screen.classList.remove('active');
+        function populateSubjectGrid() {
+            subjectGrid.innerHTML = '';
+            subjects.forEach(subject => {
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.style.borderColor = subject.color;
+                card.innerHTML = `
+                    <div class="subject-icon">${subject.icon}</div>
+                    <div class="subject-name">${subject.name}</div>
+                    <div class="subject-description">${subject.description}</div>
+                    <div class="subject-count">
+                        ${avatarsBySubject[subject.id].length} avatar(s) disponível(is)
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    selectSubject(subject);
+                });
+                subjectGrid.appendChild(card);
             });
-            
-            if (screens[screenName]) {
-                screens[screenName].classList.add('active');
-                gameState.phase = screenName;
-            }
-            
-            if (screenName === 'playing') {
-                initializeGame();
-            } else if (screenName === 'gameOver') {
-                showGameOver();
-            }
         }
 
-        function populateAvatarGrid() {
+        function populateAvatarGrid(subjectId) {
+            const avatars = avatarsBySubject[subjectId];
             avatarGrid.innerHTML = '';
-            avatars.forEach((avatar) => {
+            
+            avatars.forEach(avatar => {
                 const card = document.createElement('div');
                 card.className = 'avatar-card';
-                card.style.color = avatar.color;
-                card.innerHTML = `<div class="avatar-icon">${avatar.icon}</div><div class="avatar-name">${avatar.name}</div><div class="avatar-subject">${avatar.subject}</div>`;
+                card.innerHTML = `
+                    <div class="avatar-icon">${avatar.icon}</div>
+                    <div class="avatar-image">
+                        <img src="${avatar.image}" alt="${avatar.name}" class="avatar-image">
+                    </div>
+                    <div class="avatar-name">${avatar.name}</div>
+                    <div class="avatar-subject">${avatar.subject}</div>
+                `;
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
@@ -756,34 +1142,690 @@
                 avatarGrid.appendChild(card);
             });
         }
-        
-        // ... (O restante do seu código JavaScript permanece o mesmo) ...
-        // Nenhuma outra alteração é necessária no resto do script.
-        // As funções de lógica do jogo (initializeGame, updatePlayer, renderGame, etc.) estão corretas.
 
-        function initializeGame() { gameState.score = 0; gameState.lives = 3; gameState.questionsAnswered = 0; gameState.environmentLevel = 0; gameState.paused = false; player = { x: 100, y: GROUND_Y, velocityY: 0, isJumping: false, direction: 'right', isMoving: false, onGround: true }; cameraX = 0; particles = []; initializePlatforms(); initializeSeeds(); updateHUD(); hudAvatar.textContent = gameState.selectedAvatar.icon; }
-        function initializePlatforms() { platforms = [ { x: 200, y: GROUND_Y - 80, width: 120, height: 25, type: 'grass' }, { x: 400, y: GROUND_Y - 150, width: 100, height: 25, type: 'wood' }, { x: 650, y: GROUND_Y - 100, width: 140, height: 25, type: 'stone' }, { x: 850, y: GROUND_Y - 200, width: 120, height: 25, type: 'grass' }, { x: 1100, y: GROUND_Y - 120, width: 100, height: 25, type: 'wood' }, { x: 1350, y: GROUND_Y - 180, width: 130, height: 25, type: 'stone' }, { x: 1600, y: GROUND_Y - 80, width: 110, height: 25, type: 'grass' }, { x: 1850, y: GROUND_Y - 220, width: 120, height: 25, type: 'wood' }, { x: 2200, y: GROUND_Y - 150, width: 150, height: 25, type: 'stone' }, { x: 2500, y: GROUND_Y - 100, width: 120, height: 25, type: 'grass' }, ]; }
-        function initializeSeeds() { seeds = []; for (let i = 0; i < 8; i++) { seeds.push({ x: 50 + (i * 350) + Math.random() * 100, y: GROUND_Y - 40, collected: false, questionId: i + 1 }); } const platformSeeds = [ { x: 260, y: GROUND_Y - 110, questionId: 9 }, { x: 450, y: GROUND_Y - 180, questionId: 10 }, { x: 720, y: GROUND_Y - 130, questionId: 11 }, { x: 910, y: GROUND_Y - 230, questionId: 12 }, { x: 1160, y: GROUND_Y - 150, questionId: 13 }, { x: 1420, y: GROUND_Y - 210, questionId: 14 }, { x: 1910, y: GROUND_Y - 250, questionId: 15 }, ]; platformSeeds.forEach(seed => { seeds.push({ x: seed.x, y: seed.y, collected: false, questionId: seed.questionId }); }); }
-        function checkPlatformCollision(playerX, playerY, velocityY) { for (const platform of platforms) { if (playerX + PLAYER_WIDTH > platform.x && playerX < platform.x + platform.width && playerY + PLAYER_HEIGHT >= platform.y && playerY + PLAYER_HEIGHT <= platform.y + platform.height + 10 && velocityY >= 0) { return platform.y - PLAYER_HEIGHT; } } return null; }
-        function startGame() { if (gameState.selectedAvatar) { showScreen('playing'); } }
-        function updateHUD() { scoreElement.textContent = gameState.score; livesElement.textContent = gameState.lives; environmentProgress.style.width = `${(gameState.environmentLevel / 15) * 100}%`; seedsCollectedElement.textContent = `${gameState.questionsAnswered}/15`; }
-        function showQuestion(question) { currentQuestion = question; gameState.phase = 'question'; questionText.textContent = question.question; optionsContainer.innerHTML = ''; question.options.forEach((option, index) => { const button = document.createElement('button'); button.className = 'option-btn'; button.innerHTML = ` <div class="option-letter">${String.fromCharCode(65 + index)}</div> <span>${option}</span> `; button.addEventListener('click', () => answerQuestion(index)); optionsContainer.appendChild(button); }); questionOverlay.style.display = 'flex'; }
-        function answerQuestion(answerIndex) { if (!currentQuestion) return; const isCorrect = answerIndex === currentQuestion.correct; showFeedback = { show: true, correct: isCorrect, message: currentQuestion.explanation }; if (isCorrect) { gameState.score += 100; gameState.questionsAnswered += 1; gameState.environmentLevel = Math.min(15, gameState.environmentLevel + 1); createParticles(player.x, player.y, 10, isCorrect); } else { gameState.lives -= 1; } updateHUD(); questionOverlay.style.display = 'none'; showFeedbackModal(); if (!isCorrect && gameState.lives <= 0) { setTimeout(() => { showScreen('gameOver'); }, 3000); } else if (gameState.questionsAnswered >= 15) { setTimeout(() => { showScreen('gameOver'); }, 3000); } else { setTimeout(() => { feedbackOverlay.style.display = 'none'; gameState.phase = 'playing'; }, 3000); } }
-        function showFeedbackModal() { feedbackOverlay.style.display = 'flex'; if (showFeedback.correct) { feedbackIcon.textContent = '🎉'; feedbackTitle.textContent = 'Resposta Correta!'; feedbackTitle.style.color = '#10b981'; feedbackBonus.textContent = '+100 pontos! O ambiente está melhorando! 🌱'; } else { feedbackIcon.textContent = '😔'; feedbackTitle.textContent = 'Resposta Incorreta'; feedbackTitle.style.color = '#ef4444'; feedbackBonus.textContent = 'Tente novamente na próxima semente!'; } feedbackMessage.textContent = showFeedback.message; }
-        function showGameOver() { finalScoreElement.textContent = gameState.score; finalSeedsElement.textContent = `${gameState.questionsAnswered}/15`; finalEnvironmentElement.textContent = `${gameState.environmentLevel}/15`; }
-        function togglePause() { gameState.paused = !gameState.paused; if (gameState.paused) { pauseButton.innerHTML = '<i class="fas fa-play"></i> Continuar'; } else { pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pausar'; } }
-        function getEnvironmentBackground() { const level = gameState.environmentLevel; if (level === 0) return '#1e3a8a'; if (level <= 3) return '#1e40af'; if (level <= 7) return '#1d4ed8'; if (level <= 11) return '#2563eb'; return '#3b82f6'; }
-        function createParticles(x, y, count, isPositive) { for (let i = 0; i < count; i++) { particles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 0.5) * 10, life: 60, text: isPositive ? ['✨', '🌟', '⭐', '💫'] : ['💥', '❌', '💔'], color: isPositive ? '#fbbf24' : '#ef4444' }); } }
-        function updateParticles() { for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--; if (p.life <= 0) { particles.splice(i, 1); } } }
-        function renderGame() { gameWorld.innerHTML = ''; document.getElementById('game-screen').style.background = `linear-gradient(to bottom, ${getEnvironmentBackground()}, #1e3a8a)`; updateParticles(); particles.forEach(p => { const particleElement = document.createElement('div'); particleElement.className = 'particle'; particleElement.style.left = `${p.x - cameraX}px`; particleElement.style.top = `${p.y}px`; particleElement.style.opacity = p.life / 60; particleElement.style.fontSize = `${1 + (60 - p.life) / 20}rem`; particleElement.textContent = p.text[Math.floor(Math.random() * p.text.length)]; particleElement.style.color = p.color; gameWorld.appendChild(particleElement); }); renderEnvironmentElements(); platforms.forEach((platform, index) => { const platformScreenX = platform.x - cameraX; if (platformScreenX > -200 && platformScreenX < SCREEN_WIDTH + 200) { const platformElement = document.createElement('div'); platformElement.className = 'platform'; platformElement.style.left = `${platformScreenX}px`; platformElement.style.top = `${platform.y}px`; platformElement.style.width = `${platform.width}px`; platformElement.style.height = `${platform.height}px`; if (platform.type === 'grass') { platformElement.style.backgroundColor = '#22c55e'; platformElement.textContent = '🌿'; } else if (platform.type === 'wood') { platformElement.style.backgroundColor = '#a16207'; platformElement.textContent = '🪵'; } else { platformElement.style.backgroundColor = '#6b7280'; platformElement.textContent = '🪨'; } gameWorld.appendChild(platformElement); } }); seeds.forEach((seed, index) => { if (!seed.collected) { const seedScreenX = seed.x - cameraX; if (seedScreenX > -50 && seedScreenX < SCREEN_WIDTH + 50) { const seedElement = document.createElement('div'); seedElement.className = 'seed bounce'; seedElement.style.left = `${seedScreenX}px`; seedElement.style.top = `${seed.y}px`; seedElement.textContent = '🌱'; seedElement.title = 'Clique para coletar'; seedElement.addEventListener('click', () => { if (!seed.collected) { const question = questions.find(q => q.id === seed.questionId); if (question) { showQuestion(question); seed.collected = true; } } }); gameWorld.appendChild(seedElement); } } }); const playerElement = document.createElement('div'); playerElement.className = 'player'; playerElement.style.left = `${player.x - cameraX}px`; playerElement.style.top = `${player.y}px`; if (gameState.selectedAvatar && gameState.selectedAvatar.icon) { playerElement.textContent = gameState.selectedAvatar.icon; } else { playerElement.textContent = '❓'; } if (player.direction === 'left') { playerElement.style.transform = 'scaleX(-1)'; } else { playerElement.style.transform = 'scaleX(1)'; } if (player.isMoving && player.onGround) { playerElement.style.transform += ` translateY(${Math.sin(Date.now() / 100) * 5}px)`; } gameWorld.appendChild(playerElement); }
-        function renderEnvironmentElements() { const level = gameState.environmentLevel; const treeCount = Math.floor(level / 2); for (let i = 0; i < treeCount; i++) { const treeX = (i * 300) + 150 - cameraX; if (treeX > -100 && treeX < SCREEN_WIDTH + 100) { const treeElement = document.createElement('div'); treeElement.className = 'environment-element'; treeElement.style.left = `${treeX}px`; treeElement.style.bottom = '100px'; treeElement.style.fontSize = '3rem'; treeElement.textContent = '🌳'; gameWorld.appendChild(treeElement); } } const flowerCount = Math.floor(level / 3); for (let i = 0; i < flowerCount; i++) { const flowerX = (i * 200) + 100 - cameraX; if (flowerX > -50 && flowerX < SCREEN_WIDTH + 50) { const flowerElement = document.createElement('div'); flowerElement.className = 'environment-element'; flowerElement.style.left = `${flowerX}px`; flowerElement.style.bottom = '80px'; flowerElement.style.fontSize = '1.5rem'; flowerElement.textContent = '🌸'; gameWorld.appendChild(flowerElement); } } for (let i = 0; i < 5; i++) { const cloudX = (i * 400) + (Date.now() / 50) % 400 - cameraX * 0.5; if (cloudX > -100 && cloudX < SCREEN_WIDTH + 100) { const cloudElement = document.createElement('div'); cloudElement.className = 'environment-element'; cloudElement.style.left = `${cloudX}px`; cloudElement.style.top = `${50 + i * 40}px`; cloudElement.style.fontSize = '3rem'; cloudElement.style.opacity = '0.8'; cloudElement.textContent = '☁️'; gameWorld.appendChild(cloudElement); } } }
-        function gameLoop() { if (gameState.phase === 'playing' && !gameState.paused) { updatePlayer(); checkSeedCollision(); updateCamera(); } if (gameState.phase !== 'question' && !gameState.paused) { renderGame(); } requestAnimationFrame(gameLoop); }
-        function updatePlayer() { if (keys['a'] || keys['arrowleft']) { player.x = Math.max(0, player.x - MOVE_SPEED); player.direction = 'left'; player.isMoving = true; } else if (keys['d'] || keys['arrowright']) { player.x = Math.min(SCREEN_WIDTH * 4 - PLAYER_WIDTH, player.x + MOVE_SPEED); player.direction = 'right'; player.isMoving = true; } else { player.isMoving = false; } if ((keys[' '] || keys['w'] || keys['arrowup']) && player.onGround) { player.velocityY = JUMP_FORCE; player.isJumping = true; player.onGround = false; } player.velocityY += GRAVITY; player.y += player.velocityY; const platformY = checkPlatformCollision(player.x, player.y, player.velocityY); if (platformY !== null) { player.y = platformY; player.velocityY = 0; player.isJumping = false; player.onGround = true; } else if (player.y >= GROUND_Y) { player.y = GROUND_Y; player.velocityY = 0; player.isJumping = false; player.onGround = true; } else { player.onGround = false; } }
-        function checkSeedCollision() { seeds.forEach(seed => { if (!seed.collected && Math.abs(player.x - seed.x) < 40 && Math.abs(player.y - (seed.y+20)) < 60) { const question = questions.find(q => q.id === seed.questionId); if (question) { showQuestion(question); createParticles(seed.x, seed.y, 5, true); } seed.collected = true; } }); }
-        function updateCamera() { const targetCameraX = player.x - SCREEN_WIDTH / 3; const maxCameraX = Math.max(0, (SCREEN_WIDTH * 4) - SCREEN_WIDTH); cameraX = Math.max(0, Math.min(maxCameraX, targetCameraX)); }
-        
+        function selectSubject(subject) {
+            gameState.selectedSubject = subject;
+            currentSubjectName.textContent = subject.name;
+            populateAvatarGrid(subject.id);
+            showScreen('avatar');
+        }
+
+        async function startGame() {
+            if (!gameState.selectedAvatar) {
+                alert('Por favor, selecione um avatar!');
+                return;
+            }
+            
+            console.log('Iniciando jogo com:', gameState.selectedAvatar);
+            await loadQuestions();
+            initializeGame();
+            showScreen('playing');
+            gameLoop();
+        }
+
+        async function loadQuestions() {
+            try {
+                console.log('Carregando perguntas para:', gameState.selectedSubject.id);
+                const response = await fetch('questions.json');
+                const allQuestions = await response.json();
+                
+                const rawQuestions = allQuestions[gameState.selectedSubject.id];
+                
+                if (!rawQuestions) {
+                    throw new Error(`Não há perguntas para ${gameState.selectedSubject.id}`);
+                }
+                
+                // Processar as primeiras 15 perguntas
+                gameQuestions = rawQuestions.slice(0, 15).map((q, index) => {
+                    const correctAnswerChar = q.resposta_correta.trim().charAt(0).toUpperCase();
+                    const correctIndex = q.alternativas.findIndex(alt => 
+                        alt.trim().charAt(0).toUpperCase() === correctAnswerChar
+                    );
+
+                    return {
+                        id: index + 1,
+                        question: q.pergunta,
+                        options: [...q.alternativas],
+                        correct: correctIndex,
+                        explanation: `Resposta correta: ${q.alternativas[correctIndex]}`
+                    };
+                });
+
+                console.log(`Carregadas ${gameQuestions.length} perguntas de ${gameState.selectedSubject.name}`);
+                
+            } catch (error) {
+                console.error('Erro ao carregar perguntas:', error);
+                // Perguntas de fallback
+                gameQuestions = Array.from({ length: 15 }, (_, i) => ({
+                    id: i + 1,
+                    question: `Pergunta ${i + 1} sobre ${gameState.selectedSubject.name}: Qual é o principal conceito de sustentabilidade?`,
+                    options: [
+                        "A) Uso responsável dos recursos naturais",
+                        "B) Exploração máxima dos recursos",
+                        "C) Ignorar impactos ambientais", 
+                        "D) Foco apenas no lucro"
+                    ],
+                    correct: 0,
+                    explanation: "A sustentabilidade envolve o uso responsável dos recursos naturais."
+                }));
+            }
+        }
+
+        function collectSeed(seed) {
+            seed.collected = true;
+            createParticles(seed.x, seed.y, 10, '#FFD700');
+            
+            // Mostrar pergunta
+            const questionIndex = seed.questionId - 1;
+            
+            if (gameQuestions[questionIndex]) {
+                const question = gameQuestions[questionIndex];
+                showQuestion(question, seed);
+            } else {
+                // SE NÃO HOUVER PERGUNTA, CONSIDERAR CORRETA E DAR PONTOS
+                console.warn(`Nenhuma pergunta encontrada para a semente ${seed.questionId}`);
+                gameState.score += 10;
+                gameState.questionsAnswered++;
+                showFeedback(true, "Parabéns! Você coletou uma semente especial!", "+10 pontos!");
+                
+                if (gameState.questionsAnswered >= gameState.totalQuestions) {
+                    setTimeout(() => completeLevel(), 1500);
+                }
+                updateHUD();
+            }
+        }
+
+        // Função para melhor distribuição das sementes com mais plataformas
+        function createSeeds(){
+            seeds = [];
+            let seedCount = 0;
+            
+            // Colocar 1 semente em cada plataforma flutuante (10 plataformas flutuantes)
+            for (let i = 1; i < platforms.length; i++) { // Começa do 1 para pular o chão
+                // Posicionar semente em posição variada na plataforma (não sempre no centro)
+                const platform = platforms[i];
+                let xPos;
+                
+                // Alternar entre esquerda, centro e direita da plataforma
+                const positionType = i % 3;
+                if (positionType === 0) {
+                    xPos = platform.x + 20; // Esquerda
+                } else if (positionType === 1) {
+                    xPos = platform.x + platform.width / 2 - 10; // Centro
+                } else {
+                    xPos = platform.x + platform.width - 40; // Direita
+                }
+                
+                seeds.push({
+                    x: xPos,
+                    y: platform.y - 40,
+                    width: 20,
+                    height: 20,
+                    collected: false,
+                    questionId: seedCount + 1,
+                    color: '#FFD700',
+                    platformIndex: i
+                });
+                seedCount++;
+            }
+            
+            // Colocar as sementes restantes no chão (plataforma 0) - BEM ESPALHADAS NO CHÃO DE 2000
+            const remainingSeeds = 15 - seedCount;
+            const groundPlatform = platforms[0];
+            
+            // Posições pré-definidas para as sementes do chão (bem espaçadas em 2000px)
+            const groundPositions = [
+                300,   // Começa mais adiante
+                500,   // 
+                1000,   // 
+                1200,   // 
+                1400,  // Meio
+                1500,  // 
+                1750,  // 
+                
+            ];
+            
+            for (let i = 0; i < remainingSeeds; i++) {
+                const xPos = groundPositions[i % groundPositions.length] + (Math.random() * 40 - 20);
+                
+                seeds.push({
+                    x: Math.max(20, Math.min(groundPlatform.width - 40, xPos)),
+                    y: groundPlatform.y - 40,
+                    width: 20,
+                    height: 20,
+                    collected: false,
+                    questionId: seedCount + 1,
+                    color: '#FFD700',
+                    platformIndex: 0
+                });
+                seedCount++;
+            }}
+
+        function updateEnvironmentState() {
+            const seeds = gameState.questionsAnswered;
+            if (seeds < 4) {
+                gameState.environmentState = 'árido';
+            } else if (seeds < 8) {
+                gameState.environmentState = 'brotando';
+            } else if (seeds < 12) {
+                gameState.environmentState = 'crescendo';
+            } else {
+                gameState.environmentState = 'exuberante';
+            }
+        }
+
+        function initializeGame() {
+            console.log('Inicializando mundo do jogo...');
+            
+            // Resetar estado
+            gameState.score = 0;
+            gameState.lives = 3;
+            gameState.questionsAnswered = 0;
+            gameState.environmentLevel = 0;
+            gameState.paused = false;
+            updateEnvironmentState();
+            
+            // Resetar jogador
+            player.x = 100;
+            player.y = 400;
+            player.width = 150;  
+            player.height = 150;
+            player.velocityX = 0;
+            player.velocityY = 0;
+            player.isJumping = false;
+            
+            // Carregar imagem do avatar selecionado
+            if (gameState.selectedAvatar && gameState.selectedAvatar.image) {
+                playerImage.src = gameState.selectedAvatar.image;
+                hudAvatarImage.src = gameState.selectedAvatar.image;
+                console.log('Carregando imagem do avatar:', gameState.selectedAvatar.image);
+            }
+            
+            // Criar plataformas - MAIS PLATAFORMAS ADICIONADAS
+            platforms = [
+                // Chão principal ESTENDIDO
+                { x: 0, y: GROUND_LEVEL, width: 2000, height: 100, color: '#8B4513' },
+                
+                // Plataformas flutuantes BEM ESPAÇADAS
+                { x: 150, y: 320, width: 100, height: 20, color: '#A0522D' },
+                { x: 400, y: 250, width: 100, height: 20, color: '#A0522D' },
+                { x: 650, y: 350, width: 100, height: 20, color: '#A0522D' },
+                { x: 900, y: 280, width: 100, height: 20, color: '#A0522D' },
+                { x: 1150, y: 200, width: 100, height: 20, color: '#A0522D' },
+                { x: 1400, y: 320, width: 100, height: 20, color: '#A0522D' },
+                { x: 1650, y: 180, width: 100, height: 20, color: '#A0522D' },
+                { x: 250, y: 150, width: 100, height: 20, color: '#A0522D' },
+                { x: 750, y: 180, width: 100, height: 20, color: '#A0522D' },
+                { x: 1250, y: 380, width: 100, height: 20, color: '#A0522D' }
+            ];
+            
+            // Criar sementes com distribuição melhorada
+            createSeeds();
+            
+            // Resetar câmera
+            camera.x = 0;
+            
+            updateHUD();
+            console.log('Mundo do jogo inicializado');
+        }
+
+        function updateHUD() {
+            scoreElement.textContent = gameState.score;
+            livesElement.textContent = gameState.lives;
+            seedsCollectedElement.textContent = `${gameState.questionsAnswered}/${gameState.totalQuestions}`;
+            environmentProgress.style.width = `${(gameState.questionsAnswered / gameState.totalQuestions) * 100}%`;
+            
+            // Atualizar imagem do HUD
+            const hudAvatar = document.getElementById('hud-avatar');
+            if (gameState.selectedAvatar && gameState.selectedAvatar.image) {
+                hudAvatar.innerHTML = `<img src="${gameState.selectedAvatar.image}" alt="${gameState.selectedAvatar.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            } else {
+                hudAvatar.textContent = gameState.selectedAvatar?.icon || '👨‍🎓';
+            }
+        }
+
+        function showScreen(screenName) {
+            Object.values(screens).forEach(screen => {
+                if (screen) screen.classList.remove('active');
+            });
+            if (screens[screenName]) {
+                screens[screenName].classList.add('active');
+                gameState.phase = screenName;
+            }
+        }
+
+        // Loop principal do jogo
+        function gameLoop() {
+            if (gameState.phase === 'playing' && !gameState.paused) {
+                update();
+            }
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function update() {
+            updatePlayer();
+            updateCamera();
+            checkCollisions();
+            updateParticles();
+        }
+
+        function updatePlayer() {
+            // Movimento horizontal
+            player.velocityX = 0;
+            
+            if (keys['a'] || keys['arrowleft']) {
+                player.velocityX = -player.speed;
+                player.direction = 'left';
+            }
+            if (keys['d'] || keys['arrowright']) {
+                player.velocityX = player.speed;
+                player.direction = 'right';
+            }
+            
+            // Pulo
+            if ((keys['w'] || keys['arrowup'] || keys[' ']) && !player.isJumping) {
+                player.velocityY = player.jumpForce;
+                player.isJumping = true;
+            }
+            
+            // Aplicar gravidade
+            player.velocityY += GRAVITY;
+            
+            // Atualizar posição
+            player.x += player.velocityX;
+            player.y += player.velocityY;
+            
+            // Colisão com plataformas
+            player.isJumping = true;
+            platforms.forEach(platform => {
+                if (player.x < platform.x + platform.width &&
+                    player.x + player.width > platform.x &&
+                    player.y + player.height > platform.y &&
+                    player.y < platform.y + platform.height &&
+                    player.velocityY > 0) {
+                    
+                    player.y = platform.y - player.height;
+                    player.velocityY = 0;
+                    player.isJumping = false;
+                }
+            });
+            
+            // Limites do mundo
+            if (player.x < 0) player.x = 0;
+            if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+            if (player.y > canvas.height - player.height) {
+                player.y = canvas.height - player.height;
+                player.velocityY = 0;
+                player.isJumping = false;
+            }
+        }
+
+        function updateCamera() {
+            camera.x = player.x - canvas.width / 3;
+            camera.x = Math.max(0, Math.min(camera.x, 2000 - canvas.width));
+        }
+
+        function checkCollisions() {
+            seeds.forEach(seed => {
+                if (!seed.collected &&
+                    player.x < seed.x + seed.width &&
+                    player.x + player.width > seed.x &&
+                    player.y < seed.y + seed.height &&
+                    player.y + player.height > seed.y) {
+                    
+                    collectSeed(seed);
+                }
+            });
+        }
+
+        function collectSeed(seed) {
+            seed.collected = true;
+            createParticles(seed.x, seed.y, 15, '#FFD700');
+            
+            // Efeito sonoro visual
+            gameState.score += 5; // Pontos por coletar
+            updateHUD();
+            
+            // Mostrar pergunta
+            const questionIndex = seed.questionId - 1;
+            
+            if (gameQuestions[questionIndex]) {
+                const question = gameQuestions[questionIndex];
+                showQuestion(question, seed);
+            } else {
+                // SE NÃO HOUVER PERGUNTA, CONSIDERAR CORRETA E DAR PONTOS
+                console.warn(`Nenhuma pergunta encontrada para a semente ${seed.questionId}`);
+                gameState.score += 10;
+                gameState.questionsAnswered++;
+                showFeedback(true, "Parabéns! Você coletou uma semente especial!", "+10 pontos!");
+                
+                if (gameState.questionsAnswered >= gameState.totalQuestions) {
+                    setTimeout(() => completeLevel(), 1500);
+                }
+                updateHUD();
+            }
+        }
+
+        function showQuestion(question, seed) {
+            currentQuestion = { question, seed };
+            gameState.phase = 'question';
+
+            // Define a imagem do avatar da pergunta como isabeli.png
+            const avatarImg = document.getElementById('question-avatar-img');
+            if (avatarImg) {
+                avatarImg.src = 'isabeli.png';
+            }
+            
+            questionText.textContent = question.question;
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <span>${option}</span>
+                `;
+                button.addEventListener('click', () => answerQuestion(index));
+                optionsContainer.appendChild(button);
+            });
+            
+            questionOverlay.style.display = 'flex';
+        }
+
+        function answerQuestion(selectedIndex) {
+            const isCorrect = (selectedIndex === currentQuestion.question.correct);
+            
+            if (isCorrect) {
+                // Resposta correta
+                gameState.score += 10;
+                gameState.questionsAnswered++;
+                updateEnvironmentState();
+                showFeedback(true, currentQuestion.question.explanation, "+10 pontos!");
+                
+                if (gameState.questionsAnswered >= gameState.totalQuestions) {
+                    setTimeout(() => completeLevel(), 5000); // 2s feedback + 3s de visualização
+                }
+            } else {
+                // Resposta incorreta
+                gameState.lives--;
+                showFeedback(false, currentQuestion.question.explanation, "-1 vida!");
+                
+                if (gameState.lives <= 0) {
+                    setTimeout(() => showGameOver(), 1500);
+                } else {
+                    // Devolve a semente para poder coletar novamente
+                    currentQuestion.seed.collected = false;
+                }
+            }
+            
+            updateHUD();
+            questionOverlay.style.display = 'none';
+        }
+
+        function showFeedback(isCorrect, message, bonus) {
+            feedbackIcon.textContent = isCorrect ? '🎉' : '❌';
+            feedbackTitle.textContent = isCorrect ? 'Resposta Correta!' : 'Resposta Incorreta';
+            feedbackTitle.style.color = isCorrect ? '#10B981' : '#EF4444';
+            feedbackMessage.textContent = message;
+            feedbackBonus.textContent = bonus;
+            feedbackOverlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                feedbackOverlay.style.display = 'none';
+                if (gameState.lives > 0 && gameState.questionsAnswered < gameState.totalQuestions) {
+                    gameState.phase = 'playing';
+                }
+            }, 2000);
+        }
+
+        function completeLevel() {
+            showGameOver();
+        }
+
+        function showGameOver() {
+            finalScoreElement.textContent = gameState.score;
+            finalSeedsElement.textContent = `${gameState.questionsAnswered}/15`;
+            finalEnvironmentElement.textContent = gameState.environmentState.charAt(0).toUpperCase() + gameState.environmentState.slice(1);
+            showScreen('gameOver');
+        }
+
+        function createParticles(x, y, count, color) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    life: 30,
+                    color: color
+                });
+            }
+        }
+
+        function drawClouds() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(200, 100, 30, 0, Math.PI * 2);
+            ctx.arc(240, 100, 40, 0, Math.PI * 2);
+            ctx.arc(280, 100, 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(600, 80, 40, 0, Math.PI * 2);
+            ctx.arc(650, 80, 50, 0, Math.PI * 2);
+            ctx.arc(700, 80, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(1200, 120, 35, 0, Math.PI * 2);
+            ctx.arc(1250, 120, 45, 0, Math.PI * 2);
+            ctx.arc(1300, 120, 35, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2;
+                p.life--;
+                
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+        // Renderização
+        function render() {
+            // Define cores e elementos com base no estado do ambiente
+            let skyColor, groundColor, platformColor;
+            switch (gameState.environmentState) {
+                case 'brotando':
+                    skyColor = '#2a4d6e';
+                    groundColor = '#6B8E23';
+                    platformColor = '#556B2F';
+                    break;
+                case 'crescendo':
+                    skyColor = '#3b82f6';
+                    groundColor = '#228B22';
+                    platformColor = '#006400';
+                    break;
+                case 'exuberante':
+                    skyColor = '#add8e6'; // Azul bebê
+                    groundColor = '#32CD32';
+                    platformColor = '#2E8B57';
+                    break;
+                case 'árido':
+                default:
+                    skyColor = '#1e1b4b';
+                    groundColor = '#8B4513';
+                    platformColor = '#A0522D';
+                    break;
+            }
+
+            // Limpar canvas
+            ctx.fillStyle = skyColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Desenha nuvens apenas no estágio exuberante, antes da câmera
+            if (gameState.environmentState === 'exuberante') {
+                drawClouds();
+            }
+
+            // Aplicar transformação da câmera
+            ctx.save();
+            ctx.translate(-camera.x, 0);
+
+            // Desenhar plataformas com a cor do estado atual
+            platforms.forEach(platform => {
+                const isGround = platform.y === GROUND_LEVEL;
+                ctx.fillStyle = isGround ? groundColor : platformColor;
+                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            });
+
+            // Desenhar elementos do ambiente
+            const groundY = platforms[0].y;
+            for (let x = 0; x < platforms[0].width; x += 50) {
+                if (gameState.environmentState === 'brotando') {
+                    // Desenha pequenos brotos
+                    ctx.fillStyle = 'lightgreen';
+                    ctx.fillRect(x + 20, groundY - 5, 3, 5);
+                } else if (gameState.environmentState === 'crescendo') {
+                    // Desenha grama e flores pequenas
+                    ctx.fillStyle = 'green';
+                    ctx.fillRect(x + 10, groundY - 10, 3, 10);
+                    ctx.fillRect(x + 30, groundY - 15, 3, 15);
+                    if (x % 100 === 0) {
+                        ctx.fillStyle = 'pink';
+                        ctx.beginPath();
+                        ctx.arc(x + 25, groundY - 20, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                } else if (gameState.environmentState === 'exuberante') {
+                    // Desenha grama e flores
+                    ctx.fillStyle = 'green';
+                    ctx.fillRect(x + 10, groundY - 10, 3, 10);
+                    ctx.fillRect(x + 30, groundY - 15, 3, 15);
+                    // Flor
+                    ctx.fillStyle = 'purple';
+                    ctx.beginPath();
+                    ctx.arc(x + 40, groundY - 20, 5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Desenha uma árvore a cada 200 pixels
+                    if (x % 200 === 0) {
+                        // Tronco
+                        ctx.fillStyle = '#8B4513'; // Marrom
+                        ctx.fillRect(x + 50, groundY - 80, 20, 80); // Tronco maior
+                        // Copa
+                        ctx.fillStyle = 'darkgreen';
+                        ctx.beginPath();
+                        ctx.arc(x + 60, groundY - 100, 40, 0, Math.PI * 2); // Copa maior
+                        ctx.fill();
+                    }
+
+                    // Desenha um pássaro a cada 300 pixels
+                    if (x % 300 === 0) {
+                        ctx.fillStyle = 'black';
+                        ctx.beginPath();
+                        ctx.moveTo(x + 100, 100);
+                        ctx.lineTo(x + 110, 110);
+                        ctx.lineTo(x + 120, 100);
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            // Desenhar sementes com efeito de brilho
+            seeds.forEach(seed => {
+                if (!seed.collected) {
+                    // Efeito de pulsação
+                    seed.glow = (seed.glow + 0.1) % (Math.PI * 2);
+                    const glowIntensity = Math.sin(seed.glow) * 0.3 + 0.7;
+                    
+                    ctx.fillStyle = `rgba(255, 215, 0, ${glowIntensity})`;
+                    ctx.beginPath();
+                    ctx.arc(seed.x + seed.width/2, seed.y + seed.height/2, seed.width/2, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Brilho interno
+                    ctx.fillStyle = `rgba(255, 255, 255, ${glowIntensity * 0.6})`;
+                    ctx.beginPath();
+                    ctx.arc(seed.x + seed.width/2, seed.y + seed.height/2, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Contorno
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${glowIntensity * 0.8})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(seed.x + seed.width/2, seed.y + seed.height/2, seed.width/2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            });
+            
+            // Desenhar partículas
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life / 30;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+            
+            // Desenhar jogador com imagem do avatar (MAIOR)
+            if (playerImage.complete && playerImage.naturalHeight !== 0) {
+                // Usar imagem do avatar
+                ctx.save();
+                if (player.direction === 'left') {
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(playerImage, -player.x - player.width, player.y, player.width, player.height);
+                } else {
+                    ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+                }
+                ctx.restore();
+            } else {
+                // Fallback para desenho básico se a imagem não carregar
+                ctx.fillStyle = gameState.selectedAvatar?.color || '#3B82F6';
+                ctx.fillRect(player.x, player.y, player.width, player.height);
+                
+                // Desenhar rosto simples
+                ctx.fillStyle = '#FFF';
+                ctx.beginPath();
+                ctx.arc(player.x + player.width/2, player.y + 25, 12, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Olhos
+                ctx.fillStyle = '#000';
+                if (player.direction === 'right') {
+                    ctx.fillRect(player.x + 35, player.y + 22, 5, 5);
+                } else {
+                    ctx.fillRect(player.x + 20, player.y + 22, 5, 5);
+                }
+            }
+            
+            ctx.restore();
+        }
+
+        function togglePause() {
+            gameState.paused = !gameState.paused;
+            pauseButton.innerHTML = gameState.paused ? 
+                '<i class="fas fa-play"></i> Continuar' : 
+                '<i class="fas fa-pause"></i> Pausar';
+        }
+
+        function restartGame() {
+            gameState.level = 1;
+            initializeGame();
+            showScreen('playing');
+        }
+
+        // Iniciar o jogo quando a página carregar
         window.addEventListener('load', init);
-        window.addEventListener('resize', () => { location.reload(); });
     </script>
 </body>
 </html>
