@@ -7,13 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
     <style>
-        /* --- Reset Básico e Estilos Globais --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Poppins', sans-serif;
@@ -25,153 +24,134 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            overflow: hidden;
         }
 
-        /* --- Container Principal --- */
+        .gesture-elements {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999; pointer-events: none;
+        }
+        
+        #video { display: none; }
+
+        #hand-cursor {
+            position: absolute; width: 20px; height: 20px; background-color: #f59e0b;
+            border-radius: 50%; border: 2px solid white;
+            box-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b;
+            transform: translate(-50%, -50%); transition: transform 0.1s ease-out;
+            opacity: 0;
+        }
+        
+        #back-button {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 100;
+        }
+
         .container {
-            width: 100%;
-            max-width: 900px;
-            text-align: center;
+            width: 100%; max-width: 900px; text-align: center;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #f59e0b; /* Amarelo/Laranja do botão */
-            margin-bottom: 40px;
-        }
+        h1 { font-size: 2.5rem; font-weight: 700; color: #f59e0b; margin-bottom: 1rem; }
+        h2 { font-size: 1.2rem; color: #cbd5e1; margin-bottom: 2.5rem; font-weight: 400; }
 
-        /* --- Grid dos Avatares --- */
         .avatar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px; margin-bottom: 3rem;
         }
 
-        /* --- Cards dos Avatares --- */
-        .avatar-card {
-            background-color: rgba(15, 23, 42, 0.6); /* Fundo escuro semi-transparente */
-            border-radius: 18px;
-            padding: 20px 15px;
-            cursor: pointer;
+        .gesture-selectable {
+            background-color: rgba(15, 23, 42, 0.6);
             border: 2px solid transparent;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .avatar-card:hover {
+        .avatar-card { 
+            padding: 20px 15px;
+            border-radius: 18px;
+        }
+
+        .selection-progress {
+            position: absolute; bottom: 0; left: 0; height: 5px;
+            width: 0%; background-color: #f59e0b; transition: width 0.1s linear;
+        }
+        
+        .gesture-selectable.hovered {
             transform: translateY(-8px);
-            background-color: rgba(15, 23, 42, 0.9);
-        }
-
-        .avatar-card.selected {
             border-color: #f59e0b;
             box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
         }
 
         .avatar-image {
-            width: 60px; /* Tamanho da imagem */
-            height: 60px;
-            margin: 0 auto 15px auto;
-            object-fit: contain;
-            transition: transform 0.3s ease;
+            width: 60px; height: 60px; margin: 0 auto 15px auto;
+            object-fit: contain; transition: transform 0.3s ease;
         }
-        
-        .avatar-card.selected .avatar-image {
-            transform: scale(1.1);
-        }
+        .avatar-card.hovered .avatar-image { transform: scale(1.1); }
 
-        .avatar-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-
-        .avatar-subject {
-            font-size: 0.85rem;
-            color: #cbd5e1; /* Cinza claro para a matéria */
-        }
-        
-        /* --- Botões de Ação --- */
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+        .avatar-name { font-weight: 600; font-size: 1.1rem; color: #fff; margin-bottom: 4px; }
+        .avatar-subject { font-size: 0.85rem; color: #cbd5e1; }
 
         .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
+            padding: 12px 30px; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+            cursor: pointer; text-decoration: none; display: inline-block;
             transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: #f59e0b;
-            color: #1f2937;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-             background-color: #ffb74d;
-             transform: translateY(-3px);
-        }
-
-        .btn-primary:disabled {
-            background-color: #52525b;
-            cursor: not-allowed;
-            opacity: 0.6;
         }
         
         .btn-secondary {
-            background-color: transparent;
-            color: #f59e0b;
-            border: 2px solid #f59e0b;
+            background-color: transparent; color: #f59e0b; border: 2px solid #f59e0b;
         }
         
-        .btn-secondary:hover {
+        #back-button.gesture-selectable {
+            border-radius: 10px;
+            background-color: transparent;
+        }
+        #back-button.gesture-selectable.hovered {
             background-color: #f59e0b;
             color: #1f2937;
-            transform: translateY(-3px);
         }
 
     </style>
 </head>
 <body>
+    <div class="gesture-elements">
+        <video id="video"></video>
+        <div id="hand-cursor"></div>
+    </div>
+    
+    <a href="index.html" id="back-button" class="btn btn-secondary gesture-selectable" data-action-type="navigate" data-action-value="index.html">
+        Voltar ao Menu
+        <div class="selection-progress"></div>
+    </a>
+
     <div class="container">
         <h1>Escolha seu Mestre do Saber</h1>
-
-        <div id="avatar-grid" class="avatar-grid">
-            </div>
-
-        <div class="action-buttons">
-            <a href="index.html" class="btn btn-secondary">Voltar</a>
-            <button id="start-game-btn" class="btn btn-primary" disabled>
-                Iniciar Jogo
-            </button>
-        </div>
+        <h2>Aponte com o dedo indicador para um avatar para selecioná-lo.</h2>
+        <div id="avatar-grid" class="avatar-grid"></div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const avatarGrid = document.getElementById('avatar-grid');
-            const startGameBtn = document.getElementById('start-game-btn');
-            let selectedAvatarId = null;
+            const videoElement = document.getElementById('video');
+            const handCursor = document.getElementById('hand-cursor');
+
+            let selectableElements = [];
+            let hoveredElement = null;
+            let hoverStartTime = null;
+            const SELECTION_TIME_MS = 2000;
 
             const avatars = [
-                { id: 'historia', name: 'Julio', subject: 'História', img: 'julio.png' },
+                 { id: 'historia', name: 'Julio', subject: 'História', img: 'julio.png' },
                 { id: 'biologia', name: 'Mayara', subject: 'Biologia', img: 'mayara.png' },
                 { id: 'quimica', name: 'Arline', subject: 'Química', img: 'Arline.png' },
                 { id: 'fisica', name: 'Romulo', subject: 'Física', img: 'Romulo.png' },
                 { id: 'lingua_portuguesa', name: 'Demetrius', subject: 'Língua Portuguesa', img: 'Demetrius.png' },
                 { id: 'lingua_portuguesa2', name: 'Marieli', subject: 'Língua Portuguesa', img: 'Marieli.png' },
+                { id: 'lingua_portuguesa3', name: 'Lucilene', subject: 'Língua Portuguesa', img: 'Lucilene.png' },
                 { id: 'geografia', name: 'Jesiane', subject: 'Geografia', img: 'Jesiane.png' },
                 { id: 'matematica', name: 'Anderson', subject: 'Matemática', img: 'Anderson.png' },
                 { id: 'matematica2', name: 'Márcia', subject: 'Matemática', img: 'Márcia.png' },
@@ -179,34 +159,101 @@
                 { id: 'arte', name: 'Marcela', subject: 'Arte', img: 'Marcela.png' },
                 { id: 'educacao_fisica', name: 'Fabrício', subject: 'Educação Física', img: 'Fabrício.png' }
             ];
-
+            
             avatars.forEach(avatar => {
                 const card = document.createElement('div');
-                card.className = 'avatar-card';
-                card.dataset.avatarId = avatar.id;
+                card.className = 'avatar-card gesture-selectable'; 
+                card.dataset.actionType = 'select-avatar';
+                card.dataset.actionValue = avatar.id;
                 
                 card.innerHTML = `
                     <img src="${avatar.img}" alt="${avatar.name}" class="avatar-image">
                     <div class="avatar-name">${avatar.name}</div>
                     <div class="avatar-subject">${avatar.subject}</div>
+                    <div class="selection-progress"></div>
                 `;
-
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                    selectedAvatarId = avatar.id;
-                    startGameBtn.disabled = false;
-                });
                 avatarGrid.appendChild(card);
             });
 
-            startGameBtn.addEventListener('click', () => {
-                if (selectedAvatarId) {
-                    // Decide para qual jogo redirecionar com base no que for implementado
-                    // Por enquanto, vamos manter o redirecionamento para o 'real.html'
-                    window.location.href = `real.html?avatar=${selectedAvatarId}`;
-                }
+            selectableElements = document.querySelectorAll('.gesture-selectable');
+
+            const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+            hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
+            hands.onResults(onResults);
+
+            const camera = new Camera(videoElement, {
+                onFrame: async () => await hands.send({ image: videoElement }),
+                width: 640, height: 480
             });
+            camera.start().catch(err => {
+                console.error("Erro ao iniciar a câmera:", err);
+                alert("Não foi possível acessar a câmera. Por favor, verifique as permissões no seu navegador.");
+            });
+
+            function onResults(results) {
+                handCursor.style.opacity = '0';
+                let foundElement = null;
+                
+                if (results.multiHandLandmarks && results.multiHandLandmarks[0]) {
+                    handCursor.style.opacity = '1';
+                    const landmarks = results.multiHandLandmarks[0];
+                    const controlPoint = landmarks[8];
+                    
+                    const fingerX = (1 - controlPoint.x) * window.innerWidth;
+                    // ALTERADO: Removi a inversão do eixo Y para um controle direto.
+                    const fingerY = controlPoint.y * window.innerHeight;
+                    
+                    handCursor.style.left = `${fingerX}px`;
+                    handCursor.style.top = `${fingerY}px`;
+                    
+                    selectableElements.forEach(element => {
+                        const rect = element.getBoundingClientRect();
+                        if (fingerX > rect.left && fingerX < rect.right && fingerY > rect.top && fingerY < rect.bottom) {
+                            foundElement = element;
+                        }
+                    });
+                }
+                
+                if (foundElement) {
+                    if (hoveredElement !== foundElement) {
+                        hoveredElement = foundElement;
+                        hoverStartTime = Date.now();
+                    } else {
+                        const elapsedTime = Date.now() - hoverStartTime;
+                        const progress = (elapsedTime / SELECTION_TIME_MS) * 100;
+                        const progressBar = foundElement.querySelector('.selection-progress');
+                        if(progressBar) progressBar.style.width = `${Math.min(progress, 100)}%`;
+
+                        if (elapsedTime > SELECTION_TIME_MS) {
+                            if (!document.body.classList.contains('selection-locked')) {
+                                document.body.classList.add('selection-locked');
+                                handCursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                                handCursor.style.backgroundColor = '#10b981';
+                                
+                                const actionType = foundElement.dataset.actionType;
+                                const actionValue = foundElement.dataset.actionValue;
+                                
+                                if (actionType === 'select-avatar') {
+                                    window.location.href = `real.html?avatar=${actionValue}`;
+                                } else if (actionType === 'navigate') {
+                                    window.location.href = actionValue;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    hoveredElement = null;
+                    hoverStartTime = null;
+                }
+
+                selectableElements.forEach(element => {
+                    element.classList.toggle('hovered', element === hoveredElement);
+                    if (element !== hoveredElement) {
+                        const progressBar = element.querySelector('.selection-progress');
+                        if (progressBar) progressBar.style.width = '0%';
+                    }
+                });
+            }
         });
     </script>
 </body>
