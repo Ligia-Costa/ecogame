@@ -23,131 +23,106 @@
     }
 
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Poppins', sans-serif;
-      background: #0a192f;
-      color: #e6eef8;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif;
+      background: #0a192f; color: #e6eef8; overflow: hidden; display: flex; flex-direction: column;
+    }
+    
+    /* NOVO: Elementos para gestos e cursor */
+    .gesture-elements {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 9999; pointer-events: none;
+    }
+    #video-gesture { display: none; }
+    #hand-cursor {
+        position: absolute; width: 20px; height: 20px; background-color: var(--accent);
+        border-radius: 50%; border: 2px solid white;
+        box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+        transform: translate(-50%, -50%); transition: transform 0.1s ease-out;
+        opacity: 0;
     }
 
     .app-container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
+      width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px;
+      display: flex; flex-direction: column; flex-grow: 1;
     }
 
     header h1 {
-      color: var(--accent);
-      font-size: clamp(1.5rem, 4vw, 2.0rem);
-      margin-bottom: 1rem;
-      text-align: center;
+      color: var(--accent); font-size: clamp(1.5rem, 4vw, 2.0rem);
+      margin-bottom: 1rem; text-align: center;
     }
 
     .game-hud {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      align-items: center;
-      background: rgba(15, 23, 42, 0.7);
-      border-radius: 12px;
-      padding: 10px 16px;
-      margin-bottom: 16px;
-      gap: 15px;
+      display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center;
+      background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 10px 16px;
+      margin-bottom: 16px; gap: 15px;
     }
 
-    .hud-stat {
-      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-      font-weight: 600;
-    }
-
+    .hud-stat { font-size: clamp(0.9rem, 2.5vw, 1.1rem); font-weight: 600; }
     .hud-stat i { color: var(--accent); }
     .hud-stat span { color: white; font-weight: bold; }
 
     .btn {
-      background-color: var(--accent);
-      color: #1f2937;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-      font-size: 1rem;
-    }
-
-    .btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3); }
-    
-    .btn-secondary {
-        background-color: var(--info);
+      border: none; border-radius: 8px; cursor: pointer; font-weight: 600; 
+      transition: all 0.3s; font-size: 1rem; text-decoration: none; display: inline-block;
     }
 
     .game-container {
-      position: relative;
-      width: 100%;
-      flex-grow: 1;
-      background: #000;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      position: relative; width: 100%; flex-grow: 1; background: #000;
+      border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
     
     #start-overlay {
-        position: absolute;
-        inset: 0;
-        background-color: rgba(10, 25, 47, 0.8);
-        backdrop-filter: blur(5px);
-        z-index: 20;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        transition: opacity 0.5s ease;
+        position: absolute; inset: 0; background-color: rgba(10, 25, 47, 0.8); backdrop-filter: blur(5px);
+        z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center;
+        text-align: center; transition: opacity 0.5s ease;
     }
-
-    #start-overlay h2 {
-        font-size: 2.5rem;
-        color: var(--accent);
-        margin-bottom: 1rem;
+    #start-overlay h2 { font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem; }
+    #start-overlay p { font-size: 1.1rem; margin-bottom: 2rem; max-width: 400px; }
+    
+    /* NOVO: Classe comum para itens selecionáveis por gesto */
+    .gesture-selectable {
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+    .gesture-selectable.hovered {
+        transform: scale(1.05);
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+    }
+    .selection-progress {
+        position: absolute; bottom: 0; left: 0; height: 5px;
+        width: 0%; background-color: var(--accent); transition: width 0.1s linear;
     }
     
-    #start-overlay p {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-        max-width: 400px;
+    #start-game-btn { 
+        padding: 12px 24px;
+        background-color: var(--accent);
+        color: #1f2937;
+    }
+    #start-game-btn.hovered {
+        background-color: #ffb74d;
     }
 
-    video#video { display: none; } 
-
-    canvas#overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    #backBtn {
+      position: absolute; top: 16px; left: 16px; z-index: 999;
+      background: #1f2937; color: white; border: 1px solid var(--muted);
+      padding: 8px 14px;
     }
+     #backBtn.hovered {
+        background: var(--accent);
+        color: #1f2937;
+        border-color: var(--accent);
+     }
+
+
+    video#video-ingame { display: none; } 
+    canvas#overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 
     video#miniCam {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      width: 20%;
-      max-width: 120px;
-      border-radius: 8px;
-      border: 2px solid var(--accent);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      transform: scaleX(-1);
-      background: black;
-      z-index: 10;
+      position: absolute; bottom: 10px; right: 10px; width: 20%; max-width: 120px;
+      border-radius: 8px; border: 2px solid var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transform: scaleX(-1); background: black; z-index: 10;
     }
 
     .modal {
@@ -155,19 +130,32 @@
       background: rgba(2,6,23,0.8); backdrop-filter: blur(5px); z-index: 1000; padding: 20px;
     }
     .modal.active { display: flex; }
+    
+    /* Estilos dos modais (pergunta, feedback, gameover, dica) permanecem os mesmos */
     .q-modal-card {
       background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px; border-radius: 20px;
       border: 1px solid rgba(255,255,255,0.1); max-width: 500px; width: 100%; text-align: center;
     }
+    .q-header {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+    }
+    .q-header h3 { flex-grow: 1; }
+    #q-hint-btn {
+        background: var(--info); color: white; border-radius: 8px; padding: 8px 12px;
+        cursor: pointer; font-size: 0.9rem; transition: 0.3s; display: none;
+        border: 1px solid transparent;
+    }
+    #q-hint-btn.disabled { background: #555; cursor: not-allowed; opacity: 0.6; }
+    #qText { font-size: 1.2rem; line-height: 1.6; }
     .choices { display: flex; flex-direction: column; gap: 12px; }
     .choice {
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      padding: 12px 20px; border-radius: 10px; cursor: pointer; transition: all 0.3s;
+      padding: 14px 22px; border-radius: 10px; cursor: pointer; transition: all 0.3s;
+      font-size: 1rem;
     }
     .choice:hover { background: rgba(255,255,255,0.1); }
     .choice.correct { background: rgba(16,185,129,0.2); border-color: var(--success); }
     .choice.incorrect { background: rgba(239,68,68,0.2); border-color: var(--danger); }
-
     .feedback-modal-overlay {
       position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
       background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1100; padding: 20px;
@@ -176,53 +164,50 @@
       background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
       padding: 1.5rem; max-width: 400px; width: 100%; text-align: center;
     }
-    
-    /* NOVO: Estilos para o Modal de Fim de Jogo */
     .gameover-modal {
-        background: linear-gradient(135deg, #1e293b, #334155);
-        border-radius: 20px;
-        padding: 2rem 3rem;
-        max-width: 500px;
-        width: 100%;
+        background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
+        padding: 2rem 3rem; max-width: 500px; width: 100%; text-align: center;
+        border: 1px solid var(--accent); box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    #gameover-icon { font-size: 4rem; margin-bottom: 1rem; }
+    #gameover-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
+    #gameover-message { font-size: 1.1rem; color: var(--muted); margin-bottom: 2rem; }
+    #gameover-score { font-size: 1.5rem; margin-bottom: 2rem; }
+    #gameover-score span { font-weight: 700; color: var(--accent); }
+    .hint-modal-card {
+        background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px; border-radius: 20px;
+        border: 1px solid var(--info); max-width: 600px; width: 100%; text-align: center;
+    }
+    .hint-avatars { display: flex; justify-content: space-around; gap: 20px; margin-top: 20px; }
+    .hint-avatar {
+        background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 15px; padding: 20px; cursor: pointer; transition: all 0.3s ease; flex: 1;
+    }
+    .hint-avatar:hover { transform: translateY(-5px); border-color: var(--info); }
+    .hint-avatar.used { opacity: 0.4; cursor: not-allowed; transform: none; border-color: rgba(255,255,255,0.2); }
+    .hint-avatar-icon { font-size: 3rem; }
+    .hint-avatar-name { font-weight: 600; margin-top: 10px; }
+    .hint-result-modal {
         text-align: center;
-        border: 1px solid var(--accent);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
+        padding: 2rem; max-width: 450px; width: 100%;
     }
-    #gameover-icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-    }
-    #gameover-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-    #gameover-message {
-        font-size: 1.1rem;
-        color: var(--muted);
-        margin-bottom: 2rem;
-    }
-    #gameover-score {
-        font-size: 1.5rem;
-        margin-bottom: 2rem;
-    }
-    #gameover-score span {
-        font-weight: 700;
-        color: var(--accent);
-    }
-
-
-    #backBtn {
-      position: absolute; top: 16px; left: 16px; z-index: 999;
-      background: #1f2937; color: white; border: 1px solid var(--muted);
-      border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 0.9rem; transition: 0.3s;
-    }
-    #backBtn:hover { background: var(--accent); color: #1f2937; }
+    #hint-result-icon { font-size: 4rem; margin-bottom: 1rem; }
+    #hint-result-text { font-size: 1.2rem; font-weight: 600; }
+    #hint-result-text span { color: var(--success); display: block; margin-top: 0.5rem; }
   </style>
 </head>
 
 <body>
-  <button id="backBtn" onclick="window.location.href='avatar.html'"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+  <div class="gesture-elements">
+      <video id="video-gesture"></video>
+      <div id="hand-cursor"></div>
+  </div>
+
+  <button id="backBtn" class="btn gesture-selectable" data-action-type="navigate" data-action-value="avatar.html">
+      <i class="fa-solid fa-arrow-left"></i> Voltar
+      <div class="selection-progress"></div>
+  </button>
   
   <div class="app-container">
     <header>
@@ -230,50 +215,70 @@
     </header>
 
     <div class="game-hud" style="visibility: hidden;">
-      <div id="level-display" class="hud-stat"><i class="fa-solid fa-layer-group"></i> Nível: <span id="level">1</span></div>
-      <div id="env-status" class="hud-stat"><i class="fa-solid fa-seedling"></i> Progresso: <span>--</span></div>
-      <div id="lives-display" class="hud-stat"><i class="fa-solid fa-heart"></i> Vidas: <span id="lives">3</span></div>
-      <div id="score-display" class="hud-stat"><i class="fa-solid fa-star"></i> Pontos: <span id="score">0</span></div>
+        <div id="level-display" class="hud-stat"><i class="fa-solid fa-layer-group"></i> Nível: <span id="level">1</span></div>
+        <div id="env-status" class="hud-stat"><i class="fa-solid fa-seedling"></i> Progresso: <span>--</span></div>
+        <div id="lives-display" class="hud-stat"><i class="fa-solid fa-heart"></i> Vidas: <span id="lives">3</span></div>
+        <div id="score-display" class="hud-stat"><i class="fa-solid fa-star"></i> Pontos: <span id="score">0</span></div>
     </div>
 
     <div id="real-life-mode" class="game-container">
       <div id="start-overlay">
         <h2>Prepare-se!</h2>
         <p>Aponte o dedo indicador da sua mão direita para a tela para controlar o avatar.</p>
-        <button id="start-game-btn" class="btn"><i class="fa-solid fa-play"></i> Iniciar Jogo</button>
+        <button id="start-game-btn" class="btn gesture-selectable" data-action-type="start">
+            <i class="fa-solid fa-play"></i> Iniciar Jogo
+            <div class="selection-progress"></div>
+        </button>
       </div>
-      <video id="video" class="input_video"></video>
-      <canvas id="overlay" class="output_canvas"></canvas>
+      <video id="video-ingame" class="input_video"></video> <canvas id="overlay" class="output_canvas"></canvas>
       <video id="miniCam" autoplay playsinline muted></video>
     </div>
   </div>
-
-  <div id="questionModal" class="modal">
-    <div class="q-modal-card">
-      <h3 id="qTitle">Desafio do Conhecimento</h3>
-      <p id="qText">Texto da pergunta...</p>
-      <div id="choices" class="choices"></div>
+    
+    <div id="questionModal" class="modal">
+        <div class="q-modal-card">
+            <div class="q-header">
+                <h3 id="qTitle">Desafio do Conhecimento</h3>
+                <div id="q-hint-btn"><i class="fa-solid fa-lightbulb"></i> Dica (<span>3</span>)</div>
+            </div>
+            <p id="qText">Texto da pergunta...</p>
+            <div id="choices" class="choices"></div>
+        </div>
     </div>
-  </div>
-
-  <div id="feedback-overlay" class="feedback-modal-overlay">
-    <div class="feedback-modal">
-      <div id="feedback-icon" class="feedback-icon"></div>
-      <h3 id="feedback-title" class="feedback-title"></h3>
-      <p id="feedback-message" class="feedback-message"></p>
-      <p id="feedback-explanation" class="feedback-explanation"></p>
+    <div id="hintModal" class="modal">
+        <div class="hint-modal-card">
+            <h3>Pedir Ajuda aos Sábios</h3>
+            <p>Escolha um dos sábios para revelar a resposta correta. Cada um só pode ser usado uma vez!</p>
+            <div id="hint-avatars" class="hint-avatars">
+                <div class="hint-avatar" data-avatar="joao"><div class="hint-avatar-icon">👨‍🏫</div><div class="hint-avatar-name">Tio João</div></div>
+                <div class="hint-avatar" data-avatar="rafa"><div class="hint-avatar-icon">👨‍🔬</div><div class="hint-avatar-name">Tio Rafa</div></div>
+                <div class="hint-avatar" data-avatar="isabeli"><div class="hint-avatar-icon">👩‍🎨</div><div class="hint-avatar-name">Isabeli</div></div>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <div id="gameover-overlay" class="modal">
-    <div class="gameover-modal">
-        <div id="gameover-icon"></div>
-        <h2 id="gameover-title"></h2>
-        <p id="gameover-message"></p>
-        <p id="gameover-score">Sua pontuação final: <span>0</span></p>
-        <button id="restart-button" class="btn btn-secondary"><i class="fa-solid fa-redo"></i> Jogar Novamente</button>
+    <div id="hintResultModal" class="modal">
+        <div class="hint-result-modal">
+            <div id="hint-result-icon">👨‍🏫</div>
+            <p id="hint-result-text">Tio João diz: <br><span>"A resposta correta é a alternativa X"</span></p>
+        </div>
     </div>
-  </div>
+    <div id="feedback-overlay" class="feedback-modal-overlay">
+        <div class="feedback-modal">
+            <div id="feedback-icon" class="feedback-icon"></div>
+            <h3 id="feedback-title" class="feedback-title"></h3>
+            <p id="feedback-message" class="feedback-message"></p>
+            <p id="feedback-explanation" class="feedback-explanation"></p>
+        </div>
+    </div>
+    <div id="gameover-overlay" class="modal">
+        <div class="gameover-modal">
+            <div id="gameover-icon"></div>
+            <h2 id="gameover-title"></h2>
+            <p id="gameover-message"></p>
+            <p id="gameover-score">Sua pontuação final: <span>0</span></p>
+            <button id="restart-button" class="btn btn-secondary"><i class="fa-solid fa-redo"></i> Jogar Novamente</button>
+        </div>
+    </div>
 
   <script src="game.js"></script>
 </body>
