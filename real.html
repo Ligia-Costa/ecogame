@@ -29,7 +29,6 @@
       background: #0a192f; color: #e6eef8; overflow: hidden; display: flex; flex-direction: column;
     }
     
-    /* NOVO: Elementos para gestos e cursor */
     .gesture-elements {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         z-index: 9999; pointer-events: none;
@@ -65,11 +64,30 @@
 
     .btn {
       border: none; border-radius: 8px; cursor: pointer; font-weight: 600; 
-      transition: all 0.3s; font-size: 1rem; text-decoration: none; display: inline-block;
+      transition: all 0.3s; font-size: 1rem; text-decoration: none; display: inline-flex;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    
+    .btn-primary {
+      background-color: var(--accent);
+      color: #1f2937;
+    }
+     .btn-primary.hovered {
+        background-color: #ffb74d;
     }
 
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+     .btn-secondary.hovered {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+
     .game-container {
-      position: relative; width: 100%; flex-grow: 1; background: #000;
+      position: relative; width: 100%; flex-grow: 1; background: transparent;
       border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
     
@@ -81,7 +99,6 @@
     #start-overlay h2 { font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem; }
     #start-overlay p { font-size: 1.1rem; margin-bottom: 2rem; max-width: 400px; }
     
-    /* NOVO: Classe comum para itens selecionáveis por gesto */
     .gesture-selectable {
         border: 2px solid transparent;
         position: relative;
@@ -99,11 +116,6 @@
     
     #start-game-btn { 
         padding: 12px 24px;
-        background-color: var(--accent);
-        color: #1f2937;
-    }
-    #start-game-btn.hovered {
-        background-color: #ffb74d;
     }
 
     #backBtn {
@@ -119,7 +131,7 @@
 
 
     video#video-ingame { display: none; } 
-    canvas#overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    canvas#overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
     video#miniCam {
       position: absolute; bottom: 10px; right: 10px; width: 20%; max-width: 120px;
@@ -133,23 +145,16 @@
     }
     .modal.active { display: flex; }
     
-    /* Estilos dos modais (pergunta, feedback, gameover, dica) permanecem os mesmos */
     .q-modal-card {
       background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px; border-radius: 20px;
       border: 1px solid rgba(255,255,255,0.1); max-width: 500px; width: 100%; text-align: center;
     }
     .q-header {
-        display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+        display: flex; justify-content: center; align-items: center; margin-bottom: 1rem;
     }
-    .q-header h3 { flex-grow: 1; }
-    #q-hint-btn {
-        background: var(--info); color: white; border-radius: 8px; padding: 8px 12px;
-        cursor: pointer; font-size: 0.9rem; transition: 0.3s; display: none;
-        border: 1px solid transparent;
-    }
-    #q-hint-btn.disabled { background: #555; cursor: not-allowed; opacity: 0.6; }
-    #qText { font-size: 1.2rem; line-height: 1.6; }
-    .choices { display: flex; flex-direction: column; gap: 12px; }
+    #qTitle { flex-grow: 1; }
+    #qText { font-size: 1.2rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .choices { display: flex; flex-direction: column; gap: 12px; margin-bottom: 1.5rem; }
     .choice {
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
       padding: 14px 22px; border-radius: 10px; cursor: pointer; transition: all 0.3s;
@@ -158,6 +163,14 @@
     .choice:hover { background: rgba(255,255,255,0.1); }
     .choice.correct { background: rgba(16,185,129,0.2); border-color: var(--success); }
     .choice.incorrect { background: rgba(239,68,68,0.2); border-color: var(--danger); }
+    
+    #q-hint-btn {
+        background: var(--info); color: white; border-radius: 8px; padding: 10px 18px;
+        cursor: pointer; font-size: 0.9rem; transition: 0.3s; display: none;
+        border: 1px solid transparent; width: 100%;
+    }
+    #q-hint-btn.disabled { background: #555; cursor: not-allowed; opacity: 0.6; }
+
     .feedback-modal-overlay {
       position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
       background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1100; padding: 20px;
@@ -166,6 +179,7 @@
       background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
       padding: 1.5rem; max-width: 400px; width: 100%; text-align: center;
     }
+    
     .gameover-modal {
         background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
         padding: 2rem 3rem; max-width: 500px; width: 100%; text-align: center;
@@ -176,6 +190,9 @@
     #gameover-message { font-size: 1.1rem; color: var(--muted); margin-bottom: 2rem; }
     #gameover-score { font-size: 1.5rem; margin-bottom: 2rem; }
     #gameover-score span { font-weight: 700; color: var(--accent); }
+    .gameover-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;}
+    #restart-button, #change-avatar-button { padding: 12px 24px; }
+    
     .hint-modal-card {
         background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px; border-radius: 20px;
         border: 1px solid var(--info); max-width: 600px; width: 100%; text-align: center;
@@ -187,14 +204,15 @@
     }
     .hint-avatar:hover { transform: translateY(-5px); border-color: var(--info); }
     .hint-avatar.used { opacity: 0.4; cursor: not-allowed; transform: none; border-color: rgba(255,255,255,0.2); }
-    .hint-avatar-icon { font-size: 3rem; }
+    .hint-avatar-icon { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;}
     .hint-avatar-name { font-weight: 600; margin-top: 10px; }
+    
     .hint-result-modal {
         text-align: center;
         background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
         padding: 2rem; max-width: 450px; width: 100%;
     }
-    #hint-result-icon { font-size: 4rem; margin-bottom: 1rem; }
+    #hint-result-icon { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; }
     #hint-result-text { font-size: 1.2rem; font-weight: 600; }
     #hint-result-text span { color: var(--success); display: block; margin-top: 0.5rem; }
   </style>
@@ -227,7 +245,7 @@
       <div id="start-overlay">
         <h2>Prepare-se!</h2>
         <p>Aponte o dedo indicador da sua mão direita para a tela para controlar o avatar.</p>
-        <button id="start-game-btn" class="btn gesture-selectable" data-action-type="start">
+        <button id="start-game-btn" class="btn btn-primary gesture-selectable" data-action-type="start">
             <i class="fa-solid fa-play"></i> Iniciar Jogo
             <div class="selection-progress"></div>
         </button>
@@ -241,10 +259,13 @@
         <div class="q-modal-card">
             <div class="q-header">
                 <h3 id="qTitle">Desafio do Conhecimento</h3>
-                <div id="q-hint-btn"><i class="fa-solid fa-lightbulb"></i> Dica (<span>3</span>)</div>
             </div>
             <p id="qText">Texto da pergunta...</p>
             <div id="choices" class="choices"></div>
+            <button id="q-hint-btn" class="btn gesture-selectable">
+                <i class="fa-solid fa-lightbulb"></i> Dica (<span>3</span>)
+                <div class="selection-progress"></div>
+            </button>
         </div>
     </div>
     <div id="hintModal" class="modal">
@@ -252,16 +273,28 @@
             <h3>Pedir Ajuda aos Sábios</h3>
             <p>Escolha um dos sábios para revelar a resposta correta. Cada um só pode ser usado uma vez!</p>
             <div id="hint-avatars" class="hint-avatars">
-                <div class="hint-avatar" data-avatar="joao"><div class="hint-avatar-icon">👨‍🏫</div><div class="hint-avatar-name">Tio João</div></div>
-                <div class="hint-avatar" data-avatar="rafa"><div class="hint-avatar-icon">👨‍🔬</div><div class="hint-avatar-name">Tio Rafa</div></div>
-                <div class="hint-avatar" data-avatar="isabeli"><div class="hint-avatar-icon">👩‍🎨</div><div class="hint-avatar-name">Isabeli</div></div>
+                <div class="hint-avatar gesture-selectable" data-avatar="joao">
+                    <img src="joao.png" alt="Avatar Tio João" class="hint-avatar-icon">
+                    <div class="hint-avatar-name">Tio João</div>
+                    <div class="selection-progress"></div>
+                </div>
+                <div class="hint-avatar gesture-selectable" data-avatar="rafa">
+                    <img src="rafael.png" alt="Avatar Tio Rafa" class="hint-avatar-icon">
+                    <div class="hint-avatar-name">Tio Rafa</div>
+                    <div class="selection-progress"></div>
+                </div>
+                <div class="hint-avatar gesture-selectable" data-avatar="isabeli">
+                    <img src="isabeli.png" alt="Avatar Isabeli" class="hint-avatar-icon">
+                    <div class="hint-avatar-name">Isabeli</div>
+                    <div class="selection-progress"></div>
+                </div>
             </div>
         </div>
     </div>
     <div id="hintResultModal" class="modal">
         <div class="hint-result-modal">
-            <div id="hint-result-icon">👨‍🏫</div>
-            <p id="hint-result-text">Tio João diz: <br><span>"A resposta correta é a alternativa X"</span></p>
+            <img id="hint-result-icon" src="" alt="Sábio" class="hint-result-icon">
+            <p id="hint-result-text"></p>
         </div>
     </div>
     <div id="feedback-overlay" class="feedback-modal-overlay">
@@ -278,7 +311,16 @@
             <h2 id="gameover-title"></h2>
             <p id="gameover-message"></p>
             <p id="gameover-score">Sua pontuação final: <span>0</span></p>
-            <button id="restart-button" class="btn btn-secondary"><i class="fa-solid fa-redo"></i> Jogar Novamente</button>
+            <div class="gameover-buttons">
+                <button id="restart-button" class="btn btn-secondary gesture-selectable">
+                    <i class="fa-solid fa-redo"></i> Jogar Novamente
+                    <div class="selection-progress"></div>
+                </button>
+                <button id="change-avatar-button" class="btn btn-primary gesture-selectable">
+                    <i class="fa-solid fa-user-astronaut"></i> Trocar Avatar
+                    <div class="selection-progress"></div>
+                </button>
+            </div>
         </div>
     </div>
 

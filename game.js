@@ -16,9 +16,9 @@ const avatarImages = {
 
 // Dados dos avatares que fornecem dicas no jogo.
 const hintAvatarData = {
-    joao: { name: 'Tio João', icon: '👨‍🏫' },
-    rafa: { name: 'Tio Rafa', icon: '👨‍🔬' },
-    isabeli: { name: 'Isabeli', icon: '👩‍🎨' }
+    joao: { name: 'Tio João', img: 'joao.png' },
+    rafa: { name: 'Tio Rafa', img: 'rafael.png' },
+    isabeli: { name: 'Isabeli', img: 'isabeli.png' }
 };
 
 // Objeto para gerenciar a exibição e interação com o modal de perguntas.
@@ -40,7 +40,7 @@ const questionManager = {
 
         // Configura o botão de dica.
         if (hintStatus.show) {
-            this.hintBtn.style.display = 'flex';
+            this.hintBtn.style.display = 'inline-flex';
             this.hintBtn.querySelector('span').textContent = hintStatus.remaining;
             this.hintBtn.classList.toggle('disabled', hintStatus.remaining <= 0);
         } else {
@@ -76,7 +76,6 @@ const questionManager = {
 
 // Objeto principal que controla toda a lógica do "Jogo Real".
 const realLifeGame = {
-    // ... (declaração de todas as variáveis e elementos DOM)
     videoInGame: document.getElementById('video-ingame'),
     videoGesture: document.getElementById('video-gesture'),
     handCursor: document.getElementById('hand-cursor'),
@@ -109,11 +108,10 @@ const realLifeGame = {
 
     player: { x: 0, y: 0, width: 60, height: 90, image: new Image(), loaded: false },
     seeds: [],
-    collectibleSeed: null, // Semente que pode ser coletada.
+    collectibleSeed: null,
     gameQuestionBank: [],
     currentLevelQuestions: [],
     
-    // Estados do jogo
     isQuestionActive: false,
     isHintActive: false,
     isGameOver: false,
@@ -126,15 +124,13 @@ const realLifeGame = {
     levelProgress: 0,
     seedsPerLevel: 5,
 
-    // Controle de gestos
     selectableElements: [],
     hoveredElement: null,
     hoverStartTime: null,
-    SELECTION_TIME_MS: 1800, // Tempo para selecionar um item.
+    SELECTION_TIME_MS: 1800,
     isSelectionLocked: false,
 
 
-    // Inicializa o jogo.
     async init() {
         this.ctx = this.overlay.getContext('2d');
         this.restartButton = document.getElementById('restart-button');
@@ -142,7 +138,6 @@ const realLifeGame = {
 
         this.restartButton.addEventListener('click', () => this.resetGame());
         
-        // Carrega o avatar selecionado na tela anterior.
         const params = new URLSearchParams(window.location.search);
         const avatarId = params.get('avatar') || 'biologia';
         this.player.image.src = avatarImages[avatarId] || avatarImages['biologia'];
@@ -150,13 +145,11 @@ const realLifeGame = {
 
         window.addEventListener('resize', () => this.resizeCanvas());
         
-        // Configura eventos para o modal de dicas.
         questionManager.hintBtn.addEventListener('click', () => this.showHintModal());
         this.hintAvatarsContainer.querySelectorAll('.hint-avatar').forEach(avatar => {
             avatar.addEventListener('click', () => this.useHint(avatar.dataset.avatar));
         });
 
-        // Coleta todos os elementos que podem ser selecionados por gestos.
         this.updateSelectableElements();
 
         try {
@@ -168,12 +161,10 @@ const realLifeGame = {
         }
     },
 
-    // Atualiza a lista de elementos selecionáveis na tela.
     updateSelectableElements() {
         this.selectableElements = document.querySelectorAll('.gesture-selectable');
     },
 
-    // Ajusta o tamanho do canvas quando a janela é redimensionada.
     resizeCanvas() {
         this.overlay.width = this.gameContainer.clientWidth;
         this.overlay.height = this.gameContainer.clientHeight;
@@ -183,7 +174,6 @@ const realLifeGame = {
         }
     },
 
-    // Carrega as perguntas do arquivo JSON.
     async loadAllQuestions(avatarId) {
         const response = await fetch('questions.json');
         const allJsonQuestions = await response.json();
@@ -195,7 +185,6 @@ const realLifeGame = {
         }
     },
 
-    // Formata a estrutura da pergunta para o formato usado no jogo.
     formatQuestion(q, name) {
         const correctLetter = q.resposta_correta.charAt(0);
         const correctIndex = correctLetter.charCodeAt(0) - 'A'.charCodeAt(0);
@@ -203,13 +192,11 @@ const realLifeGame = {
         return { name: name, question: { text: q.pergunta, choices: q.alternativas.map(alt => alt.substring(3)), answer: correctIndex }, explanation };
     },
 
-    // Configura a detecção de mãos usando a biblioteca MediaPipe.
     setupHandTracking() {
         const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
         hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
         hands.onResults(results => this.onHandResults(results));
 
-        // Usa o vídeo de gestos para a navegação inicial.
         const camera = new Camera(this.videoGesture, {
             onFrame: async () => await hands.send({ image: this.videoGesture }),
             width: 640, height: 480
@@ -217,7 +204,6 @@ const realLifeGame = {
         camera.start();
     },
 
-    // Função chamada a cada quadro de vídeo com os resultados da detecção.
     onHandResults(results) {
         this.ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
         let handLandmarks = null;
@@ -225,35 +211,36 @@ const realLifeGame = {
             handLandmarks = results.multiHandLandmarks[0];
         }
 
-        // Lógica de controle principal do jogo.
         if (this.playing) {
-            this.drawEnvironment(); // Desenha o cenário.
+            this.drawEnvironment();
             
-            // Lógica de interação baseada no estado atual do jogo.
-            if (this.isGameOver) {
-                 this.handleGestureSelection(handLandmarks, [this.restartButton]);
-            } else if (this.isHintActive) {
-                const availableHints = this.hintAvatarsContainer.querySelectorAll('.hint-avatar:not(.used)');
-                this.handleGestureSelection(handLandmarks, Array.from(availableHints));
-            } else if (this.isQuestionActive) {
-                const hintButton = questionManager.hintBtn.classList.contains('disabled') ? [] : [questionManager.hintBtn];
-                this.handleGestureSelection(handLandmarks, [...questionManager.choiceElements, ...hintButton]);
+            if (this.isGameOver || this.isHintActive || this.isQuestionActive) {
+                this.handCursor.style.display = 'block';
+                if (this.isGameOver) {
+                    this.handleGestureSelection(handLandmarks, [this.restartButton, this.backButton]);
+                } else if (this.isHintActive) {
+                    const availableHints = this.hintAvatarsContainer.querySelectorAll('.hint-avatar:not(.used)');
+                    this.handleGestureSelection(handLandmarks, Array.from(availableHints));
+                } else if (this.isQuestionActive) {
+                    const hintButton = (questionManager.hintBtn.style.display === 'none' || questionManager.hintBtn.classList.contains('disabled')) ? [] : [questionManager.hintBtn];
+                    this.handleGestureSelection(handLandmarks, [...questionManager.choiceElements, ...hintButton]);
+                }
             } else {
-                // Se não há modais ativos, controla o jogador.
+                this.handCursor.style.display = 'none';
                 this.detectMovement(handLandmarks);
                 this.checkSeedCollision(handLandmarks);
             }
             this.drawSeeds();
             this.drawPlayer();
         } else {
-            // Se o jogo não começou, a lógica é de seleção de botão na tela inicial.
+            this.handCursor.style.display = 'block';
             this.handleGestureSelection(handLandmarks, [this.startGameBtn, this.backButton]);
         }
     },
 
-    // Lida com a seleção de botões por gestos.
     handleGestureSelection(landmarks, elements) {
         if (!landmarks) {
+            this.handCursor.style.opacity = '0';
             this.hoveredElement = null;
             this.hoverStartTime = null;
             this.updateElementStyles(elements);
@@ -282,11 +269,9 @@ const realLifeGame = {
                 this.isSelectionLocked = false;
             } else if (!this.isSelectionLocked) {
                 const elapsedTime = Date.now() - this.hoverStartTime;
-                const progress = (elapsedTime / this.SELECTION_TIME_MS) * 100;
                 
                 if (elapsedTime > this.SELECTION_TIME_MS) {
                     this.isSelectionLocked = true;
-                    // Simula um clique no elemento.
                     if (foundElement.id === 'start-game-btn') this.startGame();
                     else if (foundElement.id === 'restart-button') this.resetGame();
                     else foundElement.click();
@@ -300,7 +285,6 @@ const realLifeGame = {
         this.updateElementStyles(elements);
     },
     
-    // Atualiza a aparência dos elementos selecionáveis (borda, barra de progresso).
     updateElementStyles(elements) {
         const allSelectables = document.querySelectorAll('.gesture-selectable');
         allSelectables.forEach(el => {
@@ -320,9 +304,7 @@ const realLifeGame = {
         });
     },
 
-    // Inicia o jogo.
     startGame() {
-        this.handCursor.style.display = 'none';
         this.playing = true;
 
         const handsInGame = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
@@ -345,7 +327,6 @@ const realLifeGame = {
         this.playTone(800, 0.2);
     },
 
-    // Reinicia o jogo para o estado inicial.
     resetGame() {
         this.score = 0;
         this.lives = 3;
@@ -362,22 +343,19 @@ const realLifeGame = {
         this.updateHud();
     },
 
-    // Move o jogador com base na posição da mão.
     detectMovement(landmarks) {
         if (landmarks) {
-            const controlPoint = landmarks[8]; // Ponta do dedo indicador.
+            const controlPoint = landmarks[8];
             const targetX = (1 - controlPoint.x) * this.overlay.width - (this.player.width / 2);
             const targetY = controlPoint.y * this.overlay.height - (this.player.height / 2);
-            const lerpFactor = 0.4; // Suaviza o movimento.
+            const lerpFactor = 0.4;
             this.player.x += (targetX - this.player.x) * lerpFactor;
             this.player.y += (targetY - this.player.y) * lerpFactor;
         }
-        // Limita o jogador dentro da tela.
         this.player.x = Math.max(0, Math.min(this.overlay.width - this.player.width, this.player.x));
         this.player.y = Math.max(0, Math.min(this.overlay.height - this.player.height, this.player.y));
     },
 
-    // Configura um novo nível.
     setupLevel() {
         this.levelProgress = 0;
         this.currentLevelQuestions = [];
@@ -397,7 +375,6 @@ const realLifeGame = {
         this.player.y = this.overlay.height * 0.8 - this.player.height;
     },
 
-    // Cria as sementes em posições aleatórias.
     createSeeds() {
         this.seeds = [];
         const seedsToCreate = this.currentLevelQuestions.length;
@@ -410,7 +387,6 @@ const realLifeGame = {
         }
     },
 
-    // Atualiza as informações na tela (pontos, vidas, etc.).
     updateHud() {
         this.scoreEl.textContent = this.score;
         this.livesEl.textContent = this.lives;
@@ -418,12 +394,10 @@ const realLifeGame = {
         this.envStatusEl.querySelector('span').textContent = `${this.levelProgress} / ${this.currentLevelQuestions.length}`;
     },
 
-    // Verifica colisão e o gesto de coleta.
     checkSeedCollision(landmarks) {
         this.collectibleSeed = null;
         let isPinching = false;
 
-        // Verifica se o gesto de pinça está sendo feito.
         if (landmarks) {
             const thumbTip = landmarks[4];
             const indexTip = landmarks[8];
@@ -431,7 +405,7 @@ const realLifeGame = {
                 Math.pow(thumbTip.x - indexTip.x, 2) + 
                 Math.pow(thumbTip.y - indexTip.y, 2)
             );
-            if (distance < 0.05) { // Limiar para considerar uma pinça.
+            if (distance < 0.05) {
                 isPinching = true;
             }
         }
@@ -443,9 +417,9 @@ const realLifeGame = {
                 const distance = Math.sqrt(Math.pow(playerCenterX - seed.x, 2) + Math.pow(playerCenterY - seed.y, 2));
                 
                 if (distance < this.player.width / 2 + seed.size) {
-                    this.collectibleSeed = seed; // Marca a semente como coletável.
+                    this.collectibleSeed = seed;
                     if (isPinching) {
-                        this.triggerQuestion(seed); // Dispara a pergunta se houver pinça.
+                        this.triggerQuestion(seed);
                     }
                     break; 
                 }
@@ -453,7 +427,6 @@ const realLifeGame = {
         }
     },
 
-    // Dispara a exibição de uma pergunta.
     triggerQuestion(seed) {
         if (this.isQuestionActive || this.levelProgress >= this.currentLevelQuestions.length) return;
         this.isQuestionActive = true;
@@ -465,7 +438,6 @@ const realLifeGame = {
             remaining: this.hintsRemaining
         };
 
-        // Mostra o modal de pergunta e define o que fazer após a resposta.
         questionManager.show(question, (isCorrect, explanation) => {
             this.currentQuestionForHint = null;
             if (isCorrect) {
@@ -494,7 +466,6 @@ const realLifeGame = {
         }, hintStatus);
     },
 
-    // Exibe o modal de dicas.
     showHintModal() {
         if (this.hintsRemaining <= 0 || !this.isQuestionActive) return;
         this.hintAvatarsContainer.querySelectorAll('.hint-avatar').forEach(avatar => {
@@ -504,7 +475,6 @@ const realLifeGame = {
         this.hintModal.classList.add('active');
     },
 
-    // Usa uma dica, revelando a resposta correta.
     useHint(avatarId) {
         if (this.usedHints.includes(avatarId) || this.hintsRemaining <= 0) return;
         this.playTone(1500, 0.2);
@@ -519,7 +489,7 @@ const realLifeGame = {
         
         const resultIcon = document.getElementById('hint-result-icon');
         const resultText = document.getElementById('hint-result-text');
-        resultIcon.textContent = avatarData.icon;
+        resultIcon.src = avatarData.img;
         resultText.innerHTML = `${avatarData.name} diz: <br><span>"${correctAnswerText}"</span>`;
         
         this.hintResultModal.classList.add('active');
@@ -532,7 +502,6 @@ const realLifeGame = {
         }, 3000);
     },
 
-    // Exibe o modal de feedback (resposta correta/incorreta).
     showFeedbackModal(isCorrect, explanation, onEndCallback) {
         this.feedbackOverlay.style.display = 'flex';
         this.feedbackIcon.textContent = isCorrect ? '🎉' : '😔';
@@ -546,14 +515,12 @@ const realLifeGame = {
         }, 2500);
     },
 
-    // Desenha o jogador na tela.
     drawPlayer() {
         if (this.player.loaded) {
             this.ctx.drawImage(this.player.image, this.player.x, this.player.y, this.player.width, this.player.height);
         }
     },
 
-    // Desenha as sementes e o indicador de coleta.
     drawSeeds() {
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
@@ -566,7 +533,6 @@ const realLifeGame = {
                 this.ctx.restore();
             }
         }
-        // Desenha o ícone de pinça se uma semente for coletável.
         if (this.collectibleSeed) {
             this.ctx.font = "24px Poppins";
             this.ctx.fillStyle = "white";
@@ -574,9 +540,7 @@ const realLifeGame = {
         }
     },
     
-    // Desenha o cenário do nível atual.
     drawEnvironment() {
-        // (O código para desenhar o ambiente permanece o mesmo)
         this.ctx.save();
         const horizontalPadding = this.overlay.width * 0.1;
         const effectiveWidth = this.overlay.width - (2 * horizontalPadding);
@@ -639,7 +603,6 @@ const realLifeGame = {
         this.ctx.restore();
     },
 
-    // Exibe a tela de fim de jogo.
     showGameOver(isWinner) {
         this.isGameOver = true;
         this.playing = false;
@@ -662,7 +625,6 @@ const realLifeGame = {
         this.gameoverOverlay.classList.add('active');
     },
 
-    // Toca um som simples para feedback de ações.
     playTone(freq, duration) {
         try {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
