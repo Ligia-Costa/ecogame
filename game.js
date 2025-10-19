@@ -21,6 +21,29 @@ const hintAvatarData = {
     isabeli: { name: 'Isabeli', img: 'isabeli.png' }
 };
 
+// Objeto para gerenciar os sons do jogo.
+const audioManager = {
+    backgroundMusic: document.getElementById('background-music'),
+    correctSound: document.getElementById('correct-sound'),
+    wrongSound: document.getElementById('wrong-sound'),
+    gameoverSound: document.getElementById('gameover-sound'),
+    
+    playMusic() {
+        this.backgroundMusic.volume = 0.3;
+        this.backgroundMusic.play().catch(e => console.log("A reprodução de música foi bloqueada pelo navegador."));
+    },
+    stopMusic() {
+        this.backgroundMusic.pause();
+        this.backgroundMusic.currentTime = 0;
+    },
+    playSound(sound) {
+        if(sound) {
+            sound.currentTime = 0;
+            sound.play();
+        }
+    }
+};
+
 // Objeto para gerenciar a exibição e interação com o modal de perguntas.
 const questionManager = {
     modal: document.getElementById('questionModal'),
@@ -70,6 +93,7 @@ const questionManager = {
             this.choices.appendChild(btn);
             this.choiceElements.push(btn);
         });
+        realLifeGame.updateSelectableElements();
         this.isAnswerLocked = false;
     }
 };
@@ -97,6 +121,7 @@ const realLifeGame = {
     gameoverOverlay: document.getElementById('gameover-overlay'),
     levelEl: document.getElementById('level'),
     restartButton: null,
+    changeAvatarButton: null,
     backButton: null,
 
     hintModal: document.getElementById('hintModal'),
@@ -134,14 +159,21 @@ const realLifeGame = {
     async init() {
         this.ctx = this.overlay.getContext('2d');
         this.restartButton = document.getElementById('restart-button');
+        this.changeAvatarButton = document.getElementById('change-avatar-button');
         this.backButton = document.getElementById('backBtn');
 
+        // Fallback for mouse/touch clicks
         this.restartButton.addEventListener('click', () => this.resetGame());
-        
+        this.changeAvatarButton.addEventListener('click', () => { window.location.href = 'avatar.html'; });
+        this.startGameBtn.addEventListener('click', () => this.startGame());
+
         const params = new URLSearchParams(window.location.search);
         const avatarId = params.get('avatar') || 'biologia';
         this.player.image.src = avatarImages[avatarId] || avatarImages['biologia'];
-        this.player.image.onload = () => { this.player.loaded = true; };
+        this.player.image.onload = () => { 
+            this.player.loaded = true; 
+            this.resizeCanvas();
+        };
 
         window.addEventListener('resize', () => this.resizeCanvas());
         
@@ -160,15 +192,24 @@ const realLifeGame = {
             alert("Erro ao iniciar o jogo.");
         }
     },
+    
+    shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    },
 
     updateSelectableElements() {
-        this.selectableElements = document.querySelectorAll('.gesture-selectable');
+        this.selectableElements = Array.from(document.querySelectorAll('.gesture-selectable'));
     },
 
     resizeCanvas() {
         this.overlay.width = this.gameContainer.clientWidth;
         this.overlay.height = this.gameContainer.clientHeight;
-        if (!this.playing && this.player.loaded) {
+        if (this.playing) {
+            this.createSeeds();
+        } else if (this.player.loaded) {
             this.player.x = this.overlay.width / 2 - this.player.width / 2;
             this.player.y = this.overlay.height * 0.8 - this.player.height;
         }
@@ -183,6 +224,7 @@ const realLifeGame = {
         } else {
             throw new Error(`Matéria "${normalizedAvatarId}" não encontrada em questions.json`);
         }
+        this.shuffleArray(this.gameQuestionBank);
     },
 
     formatQuestion(q, name) {
@@ -213,18 +255,9 @@ const realLifeGame = {
 
         if (this.playing) {
             this.drawEnvironment();
-            
             if (this.isGameOver || this.isHintActive || this.isQuestionActive) {
                 this.handCursor.style.display = 'block';
-                if (this.isGameOver) {
-                    this.handleGestureSelection(handLandmarks, [this.restartButton, this.backButton]);
-                } else if (this.isHintActive) {
-                    const availableHints = this.hintAvatarsContainer.querySelectorAll('.hint-avatar:not(.used)');
-                    this.handleGestureSelection(handLandmarks, Array.from(availableHints));
-                } else if (this.isQuestionActive) {
-                    const hintButton = (questionManager.hintBtn.style.display === 'none' || questionManager.hintBtn.classList.contains('disabled')) ? [] : [questionManager.hintBtn];
-                    this.handleGestureSelection(handLandmarks, [...questionManager.choiceElements, ...hintButton]);
-                }
+                this.handleGestureSelection(handLandmarks);
             } else {
                 this.handCursor.style.display = 'none';
                 this.detectMovement(handLandmarks);
@@ -233,17 +266,24 @@ const realLifeGame = {
             this.drawSeeds();
             this.drawPlayer();
         } else {
+            // Handles start screen and game over screen gestures
             this.handCursor.style.display = 'block';
-            this.handleGestureSelection(handLandmarks, [this.startGameBtn, this.backButton]);
+            this.handleGestureSelection(handLandmarks);
         }
     },
 
-    handleGestureSelection(landmarks, elements) {
+    handleGestureSelection(landmarks) {
+        // Filter for currently visible selectable elements
+        const activeElements = this.selectableElements.filter(el => {
+            const rect = el.getBoundingClientRect();
+            return rect.width > 0 && rect.height > 0;
+        });
+
         if (!landmarks) {
             this.handCursor.style.opacity = '0';
             this.hoveredElement = null;
             this.hoverStartTime = null;
-            this.updateElementStyles(elements);
+            this.updateElementStyles(activeElements);
             return;
         }
         
@@ -255,7 +295,7 @@ const realLifeGame = {
         this.handCursor.style.top = `${fingerY}px`;
         
         let foundElement = null;
-        elements.forEach(element => {
+        activeElements.forEach(element => {
             const rect = element.getBoundingClientRect();
             if (fingerX > rect.left && fingerX < rect.right && fingerY > rect.top && fingerY < rect.bottom) {
                 foundElement = element;
@@ -272,9 +312,23 @@ const realLifeGame = {
                 
                 if (elapsedTime > this.SELECTION_TIME_MS) {
                     this.isSelectionLocked = true;
-                    if (foundElement.id === 'start-game-btn') this.startGame();
-                    else if (foundElement.id === 'restart-button') this.resetGame();
-                    else foundElement.click();
+                    const actionType = foundElement.dataset.actionType;
+                    const actionValue = foundElement.dataset.actionValue;
+
+                    switch (actionType) {
+                        case 'start':
+                            this.startGame();
+                            break;
+                        case 'restart':
+                            this.resetGame();
+                            break;
+                        case 'navigate':
+                            if (actionValue) window.location.href = actionValue;
+                            break;
+                        default:
+                            foundElement.click(); // Fallback for elements without data-action
+                            break;
+                    }
                 }
             }
         } else {
@@ -282,12 +336,11 @@ const realLifeGame = {
             this.hoverStartTime = null;
         }
 
-        this.updateElementStyles(elements);
+        this.updateElementStyles(activeElements);
     },
     
     updateElementStyles(elements) {
-        const allSelectables = document.querySelectorAll('.gesture-selectable');
-        allSelectables.forEach(el => {
+        elements.forEach(el => {
             const isHovered = el === this.hoveredElement;
             el.classList.toggle('hovered', isHovered);
             
@@ -305,16 +358,22 @@ const realLifeGame = {
     },
 
     startGame() {
+        if(this.playing) return;
         this.playing = true;
+        audioManager.playMusic();
 
-        const handsInGame = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
-        handsInGame.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
-        handsInGame.onResults(results => this.onHandResults(results));
-        const cameraInGame = new Camera(this.videoInGame, {
-            onFrame: async () => await handsInGame.send({ image: this.videoInGame }),
-            width: 640, height: 480
-        });
-        cameraInGame.start();
+        // Setup in-game camera if not already active
+        if(!this.videoInGame.srcObject) {
+            const handsInGame = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+            handsInGame.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+            handsInGame.onResults(results => this.onHandResults(results));
+            const cameraInGame = new Camera(this.videoInGame, {
+                onFrame: async () => await handsInGame.send({ image: this.videoInGame }),
+                width: 640, height: 480
+            });
+            cameraInGame.start();
+        }
+        
         navigator.mediaDevices.getUserMedia({ video: true, audio: false })
             .then(stream => { this.miniCam.srcObject = stream; })
             .catch(err => console.error("Erro na mini-câmera:", err));
@@ -324,10 +383,11 @@ const realLifeGame = {
         this.gameHud.style.visibility = 'visible';
         
         this.resetGame();
-        this.playTone(800, 0.2);
     },
 
     resetGame() {
+        audioManager.stopMusic();
+        audioManager.playMusic();
         this.score = 0;
         this.lives = 3;
         this.currentLevel = 1;
@@ -337,6 +397,7 @@ const realLifeGame = {
         this.isQuestionActive = false;
         this.isHintActive = false;
         this.isGameOver = false;
+        this.playing = true;
 
         this.gameoverOverlay.classList.remove('active');
         this.setupLevel();
@@ -358,18 +419,14 @@ const realLifeGame = {
 
     setupLevel() {
         this.levelProgress = 0;
-        this.currentLevelQuestions = [];
-        for (let i = 0; i < this.seedsPerLevel; i++) {
-            if (this.gameQuestionBank.length > 0) {
-                const randomIndex = Math.floor(Math.random() * this.gameQuestionBank.length);
-                this.currentLevelQuestions.push(this.gameQuestionBank.splice(randomIndex, 1)[0]);
-            }
-        }
+        this.shuffleArray(this.gameQuestionBank);
+        this.currentLevelQuestions = this.gameQuestionBank.slice(0, this.seedsPerLevel);
+        
         if (this.currentLevelQuestions.length === 0) {
             this.showGameOver(true);
             return;
         }
-        this.createSeeds();
+        this.resizeCanvas();
         this.updateHud();
         this.player.x = this.overlay.width / 2 - this.player.width / 2;
         this.player.y = this.overlay.height * 0.8 - this.player.height;
@@ -430,23 +487,22 @@ const realLifeGame = {
     triggerQuestion(seed) {
         if (this.isQuestionActive || this.levelProgress >= this.currentLevelQuestions.length) return;
         this.isQuestionActive = true;
-        this.playTone(1000, 0.2);
         const question = this.currentLevelQuestions[this.levelProgress];
         this.currentQuestionForHint = question;
         const hintStatus = {
-            show: this.currentLevel >= 2,
+            show: this.currentLevel >= 2, // Dicas disponíveis a partir do nível 2
             remaining: this.hintsRemaining
         };
 
         questionManager.show(question, (isCorrect, explanation) => {
             this.currentQuestionForHint = null;
             if (isCorrect) {
-                this.playTone(1200, 0.3);
+                audioManager.playSound(audioManager.correctSound);
                 this.score += 100;
                 this.levelProgress++;
                 seed.collected = true;
             } else {
-                this.playTone(200, 0.4);
+                audioManager.playSound(audioManager.wrongSound);
                 this.lives--;
             }
             this.updateHud();
@@ -473,11 +529,11 @@ const realLifeGame = {
         });
         this.isHintActive = true;
         this.hintModal.classList.add('active');
+        this.updateSelectableElements();
     },
 
     useHint(avatarId) {
         if (this.usedHints.includes(avatarId) || this.hintsRemaining <= 0) return;
-        this.playTone(1500, 0.2);
         this.hintsRemaining--;
         this.usedHints.push(avatarId);
         this.isHintActive = false;
@@ -499,6 +555,7 @@ const realLifeGame = {
             if (correctChoiceEl) {
                 correctChoiceEl.classList.add('correct');
             }
+            this.updateSelectableElements();
         }, 3000);
     },
 
@@ -604,6 +661,8 @@ const realLifeGame = {
     },
 
     showGameOver(isWinner) {
+        audioManager.stopMusic();
+        audioManager.playSound(audioManager.gameoverSound);
         this.isGameOver = true;
         this.playing = false;
         const icon = document.getElementById('gameover-icon');
@@ -623,20 +682,6 @@ const realLifeGame = {
             message.textContent = 'Não desista! Cada tentativa é um passo a mais para um planeta sustentável. Tente novamente!';
         }
         this.gameoverOverlay.classList.add('active');
-    },
-
-    playTone(freq, duration) {
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.start();
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-            oscillator.stop(audioCtx.currentTime + duration);
-        } catch (e) { console.log("Não foi possível reproduzir o som.", e); }
+        this.updateSelectableElements();
     }
 };
