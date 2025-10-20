@@ -262,6 +262,8 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
             animation: modalAppear 0.5s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         #custom-alert-title {
@@ -278,6 +280,9 @@
             text-align: left; /* Melhora a legibilidade de listas */
             white-space: pre-wrap; /* Essencial para manter as quebras de linha do JS */
             opacity: 0.9;
+            overflow-y: auto; /* Adiciona scroll vertical se necessário */
+            max-height: 60vh; /* Define uma altura máxima para o conteúdo */
+            padding-right: 1rem; /* Espaço para a barra de rolagem */
         }
 
         #custom-alert-ok-btn {
@@ -318,7 +323,7 @@
                 <a href="avatar.html" class="mode-card">
                     <div class="icon"><i class="fas fa-camera"></i></div>
                     <h3>Jogo Real</h3>
-                    <p>Use os movimentos do seu corpo, capturados pela câmera, para controlar o personagem.</p>
+                    <p>Use os movimentos da sua mão, capturados pela câmera, para controlar o personagem.</p>
                 </a>
                 <a href="virtual.html" class="mode-card">
                     <div class="icon"><i class="fas fa-gamepad"></i></div>
@@ -385,37 +390,37 @@
         // ALTERADO: A função showCredits agora chama o modal personalizado
         function showCredits() {
             const title = "CRÉDITOS DO ECOGAME";
-            const message = `Desenvolvido com ❤️ para promover a educação ambiental
-
-🎨 Design e Programação: EcoGame Team
-📚 Conteúdo Educativo: Baseado em estudos sobre bioeconomia e futuro sustentável
-
-Agradecimentos especiais a todos os educadores
-que inspiram as futuras gerações a cuidar do nosso planeta!`;
+            const message = "Desenvolvido com ❤️ para promover a educação ambiental\n\n" +
+                          "🎨 Design e Programação: EcoGame Team\n" +
+                          "📚 Conteúdo Educativo: Baseado em estudos sobre bioeconomia e futuro sustentável\n\n" +
+                          "Agradecimentos especiais a todos os educadores\n" +
+                          "que inspiram as futuras gerações a cuidar do nosso planeta!";
             showCustomAlert(title, message);
         }
 
         creditsButton.addEventListener('click', showCredits);
 
-        // ALTERADO: O botão de instruções agora chama o modal personalizado
+        // ALTERADO: O botão de instruções agora chama o modal personalizado com as instruções completas
         instructionsButton.addEventListener('click', () => {
             const title = "INSTRUÇÕES DO ECOGAME";
-            const message = `🎯 OBJETIVO:
-- Colete todas as sementes do conhecimento
-- Responda corretamente às perguntas sobre sustentabilidade
-- Aumente o nível ambiental do planeta
-
-🌱 COMO JOGAR:
-1. Escolha seu avatar educativo
-2. Mova-se pelo cenário e pule nas plataformas
-3. Colete as sementes para responder perguntas
-4. Acumule pontos e melhore o ambiente
-
-Boa sorte em sua missão sustentável! 🌍`;
+            const message = "🎯 OBJETIVO:\n" +
+                          "- Colete todas as sementes do conhecimento.\n" +
+                          "- Responda corretamente às perguntas sobre sustentabilidade.\n" +
+                          "- Aumente o nível ambiental do planeta.\n\n" +
+                          "---\n\n" +
+                          "🎮 MODO VIRTUAL (Teclado):\n" +
+                          "- Mover: A / D ou Setas Esquerda / Direita\n" +
+                          "- Pular: W / Espaço ou Seta para Cima\n" +
+                          "- Pausar: ESC\n\n" +
+                          "---\n\n" +
+                          "📸 MODO REAL (Câmera):\n" +
+                          "- Movimento: Mova sua mão direita (com o dedo indicador estendido) na frente da câmera para controlar a posição do personagem.\n" +
+                          "- Seleção de Itens (Menus/Respostas): Aponte para um botão e mantenha a posição por alguns segundos para ativá-lo. Uma barra de progresso indicará a seleção.\n" +
+                          "- Coletar Sementes: Aproxime-se de uma semente e faça um gesto de \"pinça\" (unindo o polegar e o indicador) para coletá-la.\n\n" +
+                          "Boa sorte em sua missão sustentável! 🌍";
             showCustomAlert(title, message);
         });
     </script>
 </body>
 
 </html>
-
