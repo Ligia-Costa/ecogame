@@ -18,7 +18,7 @@ const avatarImages = {
 const hintAvatarData = {
     joao: { name: 'Tio João', img: 'joao.png' },
     rafa: { name: 'Tio Rafa', img: 'rafael.png' },
-    isabeli: { name: 'Isabeli', img: 'isabeli.png' }
+    isabeli: { name: 'Tia Isa', img: 'isabeli.png' }
 };
 
 // Objeto para gerenciar os sons do jogo.
