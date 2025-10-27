@@ -1,5 +1,5 @@
 {
-"lingua_portuguesa": [
+  "lingua_portuguesa": [
     {
       "pergunta": "Qual é o principal objetivo de um texto argumentativo sobre bioeconomia e desenvolvimento sustentável?",
       "alternativas": [
@@ -164,6 +164,17 @@
       ],
       "resposta_correta": "B) Confirmação por múltiplas fontes independentes",
       "dica": "A confiabilidade de uma notícia aumenta quando a mesma informação é confirmada por diferentes fontes especializadas."
+    },
+    {
+      "pergunta": "Qual figura de linguagem é utilizada na frase 'A natureza pede socorro'?",
+      "alternativas": [
+        "A) Metáfora",
+        "B) Hipérbole",
+        "C) Personificação (Prosopopeia)",
+        "D) Eufemismo"
+      ],
+      "resposta_correta": "C) Personificação (Prosopopeia)",
+      "dica": "Pense em qual recurso atribui características humanas a seres inanimados ou irracionais."
     }
   ],
   "quimica": [
@@ -331,7 +342,18 @@
       ],
       "resposta_correta": "B) Decomposição controlada de matéria orgânica",
       "dica": "A compostagem transforma restos orgânicos em adubo através da ação de microorganismos."
-    }
+    },
+    {
+        "pergunta": "Qual destes gases NÃO é considerado um Gás de Efeito Estufa (GEE) primário?",
+        "alternativas": [
+          "A) Dióxido de Carbono (CO₂)",
+          "B) Metano (CH₄)",
+          "C) Óxido Nitroso (N₂O)",
+          "D) Oxigênio (O₂)"
+        ],
+        "resposta_correta": "D) Oxigênio (O₂)",
+        "dica": "Lembre-se dos gases que retêm calor na atmosfera. O oxigênio é essencial para a respiração, mas não retém calor significativamente."
+      }
   ],
   "matematica": [
     {
@@ -498,7 +520,18 @@
       ],
       "resposta_correta": "A) Análise de sistemas complexos",
       "dica": "A análise de ciclo de vida considera todas as etapas: extração, produção, uso e descarte - um sistema complexo."
-    }
+    },
+    {
+        "pergunta": "Se uma cidade reduziu seu consumo de água em 15% e antes consumia 200 milhões de litros por dia, qual o novo consumo diário?",
+        "alternativas": [
+          "A) 170 milhões de litros",
+          "B) 185 milhões de litros",
+          "C) 30 milhões de litros",
+          "D) 230 milhões de litros"
+        ],
+        "resposta_correta": "A) 170 milhões de litros",
+        "dica": "Calcule quanto é 15% de 200 milhões e subtraia esse valor do consumo original."
+      }
   ],
   "ingles": [
     {
@@ -665,6 +698,17 @@
       ],
       "resposta_correta": "A) Energy efficiency",
       "dica": "Doing the same work while using less energy through better technology or practices."
+    },
+     {
+      "pergunta": "What does the acronym 'SDG' stand for in the context of global development?",
+      "alternativas": [
+        "A) Sustainable Development Goals",
+        "B) Social Development Grants",
+        "C) Standard Data Gathering",
+        "D) Strategic Defense Grid"
+      ],
+      "resposta_correta": "A) Sustainable Development Goals",
+      "dica": "These are a set of 17 goals adopted by the United Nations to address global challenges."
     }
   ],
   "biologia": [
@@ -832,7 +876,18 @@
       ],
       "resposta_correta": "A) Criando organismos para produzir biocombustíveis",
       "dica": "Projetar microrganismos que produzam combustíveis de forma mais eficiente e limpa."
-    }
+    },
+    {
+        "pergunta": "A eutrofização de um corpo d'água, causada pelo excesso de nutrientes (como nitrogênio e fósforo), leva principalmente a:",
+        "alternativas": [
+          "A) Aumento da transparência da água",
+          "B) Diminuição drástica do oxigênio dissolvido",
+          "C) Redução do crescimento de algas",
+          "D) Melhora na qualidade da água para consumo humano"
+        ],
+        "resposta_correta": "B) Diminuição drástica do oxigênio dissolvido",
+        "dica": "O excesso de algas consome oxigênio ao se decompor, prejudicando a vida aquática."
+      }
   ],
   "fisica": [
     {
@@ -999,6 +1054,17 @@
       ],
       "resposta_correta": "A) Estudando propriedades que permitem maior durabilidade e eficiência",
       "dica": "A física ajuda a entender e melhorar propriedades como resistência, condutividade térmica e eficiência energética dos materiais."
+    },
+     {
+      "pergunta": "Qual forma de transferência de calor é predominante no aquecimento da Terra pelo Sol?",
+      "alternativas": [
+        "A) Condução",
+        "B) Convecção",
+        "C) Irradiação",
+        "D) Evaporação"
+      ],
+      "resposta_correta": "C) Irradiação",
+      "dica": "Pense em como a energia viaja através do vácuo do espaço para chegar até nós."
     }
   ],
   "historia": [
@@ -1166,6 +1232,17 @@
       ],
       "resposta_correta": "A) Do Código Florestal de 1934 às políticas atuais de bioeconomia",
       "dica": "O Brasil tem uma trajetória longa de legislação ambiental, evoluindo da simples proteção florestal para conceitos complexos como bioeconomia e serviços ambientais."
+    },
+     {
+      "pergunta": "O que foi a 'Crise do Lixo' que atingiu grandes cidades no século XX?",
+      "alternativas": [
+        "A) Uma falta de produtos devido à reciclagem excessiva",
+        "B) A dificuldade em gerenciar o volume crescente de resíduos sólidos urbanos",
+        "C) Um período onde o lixo era considerado valioso",
+        "D) Uma doença transmitida pelo lixo"
+      ],
+      "resposta_correta": "B) A dificuldade em gerenciar o volume crescente de resíduos sólidos urbanos",
+      "dica": "Com o aumento do consumo e da população, os aterros sanitários começaram a lotar rapidamente."
     }
   ],
   "geografia": [
@@ -1333,6 +1410,17 @@
       ],
       "resposta_correta": "A) Estabilizam solos e protegem recursos hídricos",
       "dica": "Estas áreas funcionam como 'esponjas' naturais que absorvem água da chuva e previnem erosão e assoreamento."
+    },
+     {
+      "pergunta": "Qual bioma brasileiro é conhecido como a 'caixa d'água do Brasil' devido à nascente de importantes bacias hidrográficas?",
+      "alternativas": [
+        "A) Amazônia",
+        "B) Mata Atlântica",
+        "C) Cerrado",
+        "D) Caatinga"
+      ],
+      "resposta_correta": "C) Cerrado",
+      "dica": "Este bioma, localizado no planalto central, é crucial para a distribuição de água no país."
     }
   ],
   "arte": [
@@ -1500,6 +1588,17 @@
       ],
       "resposta_correta": "A) Apresentando realidades ambientais de forma impactante",
       "dica": "Documentários podem levar o espectador a lugares e situações que mostram claramente os desafios ambientais atuais."
+    },
+    {
+      "pergunta": "Qual movimento artístico do século XX frequentemente utilizava objetos descartados ou 'found objects' em suas criações?",
+      "alternativas": [
+        "A) Impressionismo",
+        "B) Dadaísmo",
+        "C) Renascimento",
+        "D) Barroco"
+      ],
+      "resposta_correta": "B) Dadaísmo",
+      "dica": "Este movimento questionava as convenções da arte e muitas vezes usava materiais não tradicionais."
     }
   ],
   "educacao_fisica": [
@@ -1667,6 +1766,17 @@
       ],
       "resposta_correta": "A) Promove conexão mente-corpo-ambiente sem consumo energético",
       "dica": "Praticar em contato com a natureza reforça a interdependência entre bem-estar pessoal e ambiental."
+    },
+    {
+      "pergunta": "A prática de 'Plogging' combina qual atividade física com a coleta de lixo?",
+      "alternativas": [
+        "A) Natação",
+        "B) Ciclismo",
+        "C) Corrida ou caminhada",
+        "D) Yoga"
+      ],
+      "resposta_correta": "C) Corrida ou caminhada",
+      "dica": "O nome vem da junção do verbo sueco 'plocka upp' (pegar) com 'jogging' (correr)."
     }
   ],
   "filosofia": [
@@ -1834,6 +1944,17 @@
       ],
       "resposta_correta": "A) Capacidade de julgar considerando múltiplos valores e contextos",
       "dica": "Equilibrar necessidades econômicas, sociais e ambientais requer mais que regras fixas - requer sabedoria prática."
+    },
+    {
+      "pergunta": "A 'Hipótese Gaia', proposta por James Lovelock, sugere que:",
+      "alternativas": [
+        "A) A Terra é apenas uma rocha inerte no espaço",
+        "B) Os seres humanos são superiores a todas as outras formas de vida",
+        "C) A biosfera terrestre funciona como um único organismo autorregulador",
+        "D) A exploração dos recursos naturais é ilimitada"
+      ],
+      "resposta_correta": "C) A biosfera terrestre funciona como um único organismo autorregulador",
+      "dica": "Essa hipótese vê o planeta como um sistema complexo e interconectado que mantém as condições para a vida."
     }
   ],
   "sociologia": [
@@ -2001,6 +2122,17 @@
       ],
       "resposta_correta": "A) Analisando mudanças institucionais e culturais necessárias",
       "dica": "A transição não é só tecnológica - envolve mudar valores, leis, hábitos de consumo e relações econômicas."
+    },
+    {
+      "pergunta": "O conceito de 'gentrificação verde' refere-se a qual fenômeno social?",
+      "alternativas": [
+        "A) A criação de parques que beneficia igualmente todos os moradores",
+        "B) O aumento do custo de vida em bairros após melhorias ambientais, expulsando moradores de baixa renda",
+        "C) A poluição causada por áreas verdes mal planejadas",
+        "D) A diminuição do valor dos imóveis perto de parques"
+      ],
+      "resposta_correta": "B) O aumento do custo de vida em bairros após melhorias ambientais, expulsando moradores de baixa renda",
+      "dica": "Pense em como melhorias, mesmo as 'verdes', podem ter consequências sociais desiguais."
     }
   ]
 }

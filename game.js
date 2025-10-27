@@ -27,6 +27,7 @@ const audioManager = {
     correctSound: document.getElementById('correct-sound'),
     wrongSound: document.getElementById('wrong-sound'),
     gameoverSound: document.getElementById('gameover-sound'),
+    victorySound: document.getElementById('victory-sound'), // REFERÊNCIA AO NOVO SOM DE VITÓRIA
 
     playMusic() {
         this.backgroundMusic.volume = 0.3;
@@ -62,12 +63,12 @@ const questionManager = {
         this.choices.innerHTML = '';
 
         // Configura o botão de dica.
-        if (hintStatus.show) {
+        if (hintStatus.show) { // Verifica a propriedade 'show' passada
             this.hintBtn.style.display = 'inline-flex';
             this.hintBtn.querySelector('span').textContent = hintStatus.remaining;
             this.hintBtn.classList.toggle('disabled', hintStatus.remaining <= 0);
         } else {
-            this.hintBtn.style.display = 'none';
+            this.hintBtn.style.display = 'none'; // Esconde o botão se show for false
         }
 
         // Cria os botões de alternativa de resposta.
@@ -751,8 +752,9 @@ const realLifeGame = {
          this.currentQuestionForHint = question; // Armazena para a função de dica
 
          // Status da dica para passar ao questionManager
+         // **** ALTERAÇÃO: Mostrar dica apenas a partir do nível 2 ****
          const hintStatus = {
-             show: true, // Mostra sempre o botão (AJUSTADO - antes era >= 2)
+             show: this.currentLevel >= 2, // Mostra o botão se nível for 2 ou maior
              remaining: this.hintsRemaining
          };
 
@@ -766,7 +768,7 @@ const realLifeGame = {
                  this.score += 100; // Aumenta a pontuação
                  this.levelProgress++; // Incrementa o progresso do nível
                  seed.collected = true; // Marca a semente como coletada permanentemente
-                 this.addTime(20); // Adiciona 20 segundos ao timer (NOVO)
+                 this.addTime(20); // Adiciona 20 segundos ao timer
                  // Mostra feedback de acerto
                  this.showFeedbackModal(true, explanation, "+100 Pontos, +20 Segundos!", () => {
                      this.checkLevelCompletion(); // Verifica se o nível ou jogo acabou
@@ -774,7 +776,7 @@ const realLifeGame = {
              } else {
                  audioManager.playSound(audioManager.wrongSound); // Som de erro
                  this.lives--; // Decrementa vidas
-                 this.subtractTime(15); // Subtrai 15 segundos do timer (NOVO)
+                 this.subtractTime(15); // Subtrai 15 segundos do timer
                  seed.collected = false; // Permite tentar coletar novamente
                  this.updateHud(); // Atualiza o HUD (vidas e tempo)
                  // Mostra feedback de erro
@@ -811,8 +813,8 @@ const realLifeGame = {
 
     // Mostra o modal para escolher um avatar de dica
     showHintModal() {
-        // Não mostra se não há dicas restantes ou se não há pergunta ativa
-        if (this.hintsRemaining <= 0 || !this.isQuestionActive || this.isHintActive) return;
+        // Não mostra se não há dicas restantes ou se não há pergunta ativa ou se o nível for menor que 2
+        if (this.hintsRemaining <= 0 || !this.isQuestionActive || this.isHintActive || this.currentLevel < 2) return;
         console.log("Mostrando modal de dica..."); // Log
         // Marca os avatares já usados como desabilitados visualmente
         this.hintAvatarsContainer.querySelectorAll('.hint-avatar').forEach(avatar => {
@@ -1023,7 +1025,12 @@ const realLifeGame = {
         console.log("Fim de Jogo. Vitória:", isWinner); // Log
         this.stopTimer(); // Para o timer
         audioManager.stopMusic(); // Para a música
-        audioManager.playSound(audioManager.gameoverSound); // Toca som de game over
+        // **** ALTERAÇÃO: Tocar som específico para vitória ****
+        if (isWinner) {
+            audioManager.playSound(audioManager.victorySound);
+        } else {
+            audioManager.playSound(audioManager.gameoverSound);
+        }
         this.isGameOver = true; // Marca o estado como game over
         this.playing = false; // Marca que o jogo não está mais ativo
 
