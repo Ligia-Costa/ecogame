@@ -8,7 +8,7 @@
 > Bem-vindo(a) ao EcoGame, onde a diversão encontra a sustentabilidade! Sua missão é embarcar em uma jornada educativa para restaurar a vitalidade do nosso planeta. Escolha seu avatar, colete Sementes do Conhecimento e responda a desafios sobre bioeconomia e sustentabilidade para ver o mundo se transformar diante dos seus olhos.
 
 <p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGlqd3FmdmZpN3E4dGZtMzRyeXhpNHdkaWtkaGZqOW5uNmtwd256aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LpdlqT15ImE5W/giphy.gif" alt="Animação de um planeta feliz" width="200"/>
+  <img src="[https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGlqd3FmdmZpN3E4dGZtMzRyeXhpNHdkaWtkaGZqOW5uNmtwd256aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LpdlqT15ImE5W/giphy.gif](https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif)" alt="Animação de um planeta" width="200"/>
 </p>
 
 ## ✨ Funcionalidades do EcoGame
@@ -72,4 +72,5 @@ Construído com a magia do HTML, CSS e JavaScript puro, o EcoGame roda diretamen
     <strong>Feito com ❤️ e clorofila para um mundo melhor.</strong>
     <br>
     Bom jogo!
+
 </div>
