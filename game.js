@@ -1043,7 +1043,7 @@ const realLifeGame = {
             okButton = document.createElement('button');
             okButton.id = okButtonId;
             okButton.textContent = 'Entendi';
-            okButton.className = 'btn btn-primary gesture-selectable mt-4'; // Adiciona classes
+            okButton.className = 'btn btn-secundary gesture-selectable mt-4'; // Adiciona classes
             okButton.dataset.actionType = 'close-hint-result'; // Define a ação
             okButton.innerHTML += '<div class="selection-progress"></div>'; // Adiciona barra de progresso
             modalContentDiv.appendChild(okButton);

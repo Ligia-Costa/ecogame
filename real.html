@@ -15,191 +15,266 @@
   <link rel="shortcut icon" href="icone.ico" type="image/x-icon">
 
   <style>
+    /* ----- Variáveis de Cor ----- */
     :root {
-      --accent: #f59e0b;
-      --muted: #cbd5e1;
-      --card: #0f172a;
-      --success: #10b981;
-      --danger: #ef4444;
-      --info: #3b82f6;
+      --accent: #f59e0b; /* Laranja/Âmbar para destaque */
+      --muted: #cbd5e1; /* Cinza claro para texto secundário */
+      --card: #0f172a; /* Azul muito escuro para cards */
+      --success: #10b981; /* Verde para sucesso */
+      --danger: #ef4444; /* Vermelho para erro */
+      --info: #3b82f6; /* Azul para informações */
+      --bg-dark: #0a192f; /* Azul mais escuro para fundo */
+      --bg-gradient-end: #06394a; /* Verde-azulado escuro para gradiente */
+      --text-light: #e6eef8; /* Branco levemente azulado para texto principal */
+      --text-dark: #1f2937; /* Cinza escuro para texto em botões claros */
+      --border-light: rgba(255, 255, 255, 0.1); /* Borda sutil clara */
+      --border-medium: rgba(255, 255, 255, 0.2); /* Borda média clara */
+      --overlay-bg: rgba(2, 6, 23, 0.8); /* Fundo para modais */
+      --modal-gradient-start: #0f172a;
+      --modal-gradient-end: #1e293b;
+      --modal-border: rgba(255, 255, 255, 0.1);
+      --input-bg: rgba(255, 255, 255, 0.1);
     }
 
+    /* ----- Reset Básico e Estilo do Body ----- */
     html, body {
       margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif;
-      background: #0a192f; color: #e6eef8; overflow: hidden; display: flex; flex-direction: column;
+      background: linear-gradient(135deg, var(--bg-dark), var(--bg-gradient-end)); /* Gradiente de fundo */
+      color: var(--text-light); overflow: hidden; display: flex; flex-direction: column;
     }
 
+    /* ----- Elementos de Gestos (Vídeo e Cursor) ----- */
     .gesture-elements {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        z-index: 9999; pointer-events: none;
+        z-index: 9999; pointer-events: none; /* Não interfere com cliques */
     }
-    #video-gesture { display: none; }
+    #video-gesture { display: none; } /* Vídeo de captura escondido */
     #hand-cursor {
         position: absolute; width: 20px; height: 20px; background-color: var(--accent);
         border-radius: 50%; border: 2px solid white;
         box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
-        transform: translate(-50%, -50%); transition: transform 0.1s ease-out;
-        opacity: 0;
+        transform: translate(-50%, -50%); /* Centraliza no ponto do dedo */
+        transition: transform 0.1s ease-out, background-color 0.3s ease; /* Transições suaves */
+        opacity: 0; /* Começa invisível */
     }
 
+    /* ----- Layout Principal ----- */
     .app-container {
       width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px;
-      display: flex; flex-direction: column; flex-grow: 1;
+      display: flex; flex-direction: column; flex-grow: 1; /* Ocupa espaço vertical */
     }
 
     header h1 {
-      color: var(--accent); font-size: clamp(1.5rem, 4vw, 2.0rem);
+      color: var(--accent); font-size: clamp(1.5rem, 4vw, 2.0rem); /* Tamanho responsivo */
       margin-bottom: 1rem; text-align: center;
     }
 
+    /* ----- HUD (Painel de Informações) ----- */
     .game-hud {
       display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center;
-      background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 10px 16px;
-      margin-bottom: 16px; gap: 15px;
+      background: rgba(15, 23, 42, 0.7); /* Fundo semi-transparente */
+      border-radius: 12px; padding: 10px 16px;
+      margin-bottom: 16px; gap: 15px; /* Espaçamento entre itens */
+      visibility: hidden; /* Começa escondido */
     }
-
     .hud-stat { font-size: clamp(0.9rem, 2.5vw, 1.1rem); font-weight: 600; }
-    .hud-stat i { color: var(--accent); }
+    .hud-stat i { color: var(--accent); margin-right: 5px; } /* Ícone com cor de destaque */
     .hud-stat span { color: white; font-weight: bold; }
-    /* Estilo Adicional para o Timer */
-    #timer-display span {
-        color: var(--accent); /* Cor de destaque */
-        font-weight: bold;
-    }
+    #timer-display span { color: var(--accent); font-weight: bold; } /* Destaque para o tempo */
 
+    /* ----- Estilos Gerais de Botão (Adicionado/Verificado) ----- */
     .btn {
-      border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
-      transition: all 0.3s; font-size: 1rem; text-decoration: none; display: inline-flex;
-      align-items: center; justify-content: center; gap: 8px;
+        padding: 1rem 2rem; /* Tamanho do botão */
+        border: none;
+        border-radius: 50px; /* Bordas arredondadas */
+        font-size: 1.1rem; /* Tamanho do texto */
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif; /* Garante a fonte */
+        cursor: pointer;
+        transition: all 0.3s ease; /* Transição suave */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem; /* Espaço entre ícone e texto */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        position: relative; /* Para a barra de progresso */
+        overflow: hidden; /* Para a barra de progresso */
     }
-
     .btn-primary {
-      background-color: var(--accent);
-      color: #1f2937;
+        background: linear-gradient(to right, var(--accent), #ffb74d); /* Gradiente laranja */
+        color: var(--text-dark); /* Texto escuro para contraste */
     }
-     .btn-primary.hovered {
-        background-color: #ffb74d;
-    }
-
     .btn-secondary {
         background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
         color: white;
+        border: 1px solid var(--border-medium);
     }
-     .btn-secondary.hovered {
+    .btn:hover { /* Efeito hover para mouse */
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    .btn:active { /* Efeito ao clicar */
+        transform: translateY(0);
+    }
+    .btn.hovered { /* Efeito hover para GESTOS */
+        transform: scale(1.05); /* Aumenta um pouco */
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); /* Brilho */
+    }
+    /* Estilo específico para botões primários com hover de gesto */
+    .btn-primary.hovered {
+        background: linear-gradient(to right, #ffb74d, var(--accent)); /* Inverte gradiente */
+    }
+    /* Estilo específico para botões secundários com hover de gesto */
+    .btn-secondary.hovered {
         background: rgba(255, 255, 255, 0.2);
+        border-color: var(--accent);
     }
 
-
+    /* ----- Container do Jogo ----- */
     .game-container {
-      position: relative; width: 100%; flex-grow: 1; background: transparent;
+      position: relative; width: 100%; flex-grow: 1; background: transparent; /* Fundo transparente */
       border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
+    /* ----- Overlay Inicial ----- */
     #start-overlay {
         position: absolute; inset: 0; background-color: rgba(10, 25, 47, 0.8); backdrop-filter: blur(5px);
         z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center;
         text-align: center; transition: opacity 0.5s ease;
     }
     #start-overlay h2 { font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem; }
-    #start-overlay p { font-size: 1.1rem; margin-bottom: 2rem; max-width: 400px; }
+    #start-overlay p { font-size: 1.1rem; margin-bottom: 2rem; max-width: 400px; color: var(--muted); }
+    #start-game-btn { padding: 12px 24px; } /* Ajuste de padding se necessário */
 
+    /* ----- Elementos Selecionáveis por Gesto ----- */
     .gesture-selectable {
-        border: 2px solid transparent;
-        position: relative;
-        overflow: hidden;
+        border: 2px solid transparent; /* Borda invisível para espaço */
+        position: relative; /* Necessário para a barra de progresso */
+        overflow: hidden; /* Para conter a barra */
+        transition: all 0.3s ease; /* Transição suave geral */
     }
-    .gesture-selectable.hovered {
-        transform: scale(1.05);
-        border-color: var(--accent);
-        box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
-    }
-    .selection-progress {
+    .selection-progress { /* Barra de progresso de seleção */
         position: absolute; bottom: 0; left: 0; height: 5px;
         width: 0%; background-color: var(--accent); transition: width 0.1s linear;
     }
-
-    #start-game-btn {
-        padding: 12px 24px;
+    /* Classe adicionada via JS quando o cursor está sobre o elemento */
+    .gesture-selectable.hovered {
+        transform: scale(1.05); /* Leve aumento */
+        border-color: var(--accent); /* Borda de destaque */
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); /* Brilho */
     }
 
+    /* ----- Botão Voltar ----- */
     #backBtn {
       position: absolute; top: 16px; left: 16px; z-index: 999;
-      background: #1f2937; color: white; border: 1px solid var(--muted);
-      padding: 8px 14px;
+      background: var(--card); color: white; border: 1px solid var(--muted);
+      padding: 8px 14px; /* Tamanho menor */
+      border-radius: 8px; /* Borda padrão */
+      /* Remove padding e tamanho herdado de .btn se necessário */
+      font-size: 0.9rem;
     }
+    /* Estilo hover para o botão voltar (gesto) */
      #backBtn.hovered {
         background: var(--accent);
-        color: #1f2937;
+        color: var(--text-dark);
         border-color: var(--accent);
      }
 
+    /* ----- Vídeo e Canvas do Jogo ----- */
+    video#video-ingame { display: none; } /* Vídeo de captura escondido */
+    canvas#overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; } /* Canvas sobrepõe tudo */
 
-    video#video-ingame { display: none; }
-    canvas#overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
+    /* ----- Mini Câmera ----- */
     video#miniCam {
       position: absolute; bottom: 10px; right: 10px; width: 20%; max-width: 120px;
       border-radius: 8px; border: 2px solid var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      transform: scaleX(-1); background: black; z-index: 10;
+      transform: scaleX(-1); /* Espelha a imagem */
+      background: black; z-index: 10;
     }
 
+    /* ----- Estilos Gerais de Modal ----- */
     .modal {
-      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
-      background: rgba(2,6,23,0.8); backdrop-filter: blur(5px); z-index: 1000; padding: 20px;
+      position: fixed; inset: 0; display: none; /* Começa escondido */
+      align-items: center; justify-content: center;
+      background: var(--overlay-bg); backdrop-filter: blur(5px); z-index: 1000; padding: 20px;
     }
-    .modal.active { display: flex; animation: fadeInModal 0.3s ease-out forwards; } /* Adiciona animação */
-    .modal.hiding { animation: fadeOutModal 0.3s ease-in forwards; } /* Animação para esconder */
+    .modal.active { display: flex; animation: fadeInModal 0.3s ease-out forwards; } /* Mostra com fade-in */
+    .modal.hiding { animation: fadeOutModal 0.3s ease-in forwards; } /* Esconde com fade-out */
 
-    @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeOutModal { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes fadeInModal { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeOutModal { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.9); } }
 
-
-    .q-modal-card { /* Estilo base para todos os modais */
-      background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px; border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.1); max-width: 500px; width: 100%; text-align: center;
+    /* ----- Estilo Base para Cards de Modal ----- */
+    .q-modal-card {
+      background: linear-gradient(135deg, var(--modal-gradient-start), var(--modal-gradient-end));
+      padding: 30px; border-radius: 20px;
+      border: 1px solid var(--modal-border); max-width: 500px; width: 100%; text-align: center;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
+
+    /* ----- Modal de Pergunta ----- */
     .q-header {
         display: flex; justify-content: center; align-items: center; margin-bottom: 1rem;
     }
-    #qTitle { flex-grow: 1; }
-    #qText { font-size: 1.2rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    #qTitle { flex-grow: 1; color: var(--accent); font-size: 1.5rem; } /* Título destacado */
+    #qText { font-size: 1.2rem; line-height: 1.6; margin-bottom: 1.5rem; color: var(--text-light); }
     .choices { display: flex; flex-direction: column; gap: 12px; margin-bottom: 1.5rem; }
-    .choice {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    .choice { /* Botões de alternativa */
+      background: var(--input-bg); border: 1px solid var(--border-light);
       padding: 14px 22px; border-radius: 10px; cursor: pointer; transition: all 0.3s;
-      font-size: 1rem; text-align: left; /* Alinha texto à esquerda */
+      font-size: 1rem; text-align: left; /* Alinhado à esquerda */
+      color: var(--text-light); /* Cor do texto */
     }
-    .choice:hover { background: rgba(255,255,255,0.1); }
-    .choice.correct { background: rgba(16,185,129,0.2); border-color: var(--success); }
-    .choice.incorrect { background: rgba(239,68,68,0.2); border-color: var(--danger); }
+    .choice:hover { background: rgba(255,255,255,0.1); } /* Hover de mouse */
+    .choice.correct { background: rgba(16,185,129,0.2); border-color: var(--success); } /* Resposta correta */
+    .choice.incorrect { background: rgba(239,68,68,0.2); border-color: var(--danger); } /* Resposta incorreta */
+    /* Estilo hover de gesto para as escolhas */
+    .choice.gesture-selectable.hovered {
+        background: rgba(255,255,255,0.15);
+        transform: scale(1.03); /* Leve aumento */
+        border-color: var(--accent);
+    }
 
+    /* ----- Botão de Dica ----- */
     #q-hint-btn {
         background: var(--info); color: white; border-radius: 8px; padding: 10px 18px;
-        cursor: pointer; font-size: 0.9rem; transition: 0.3s; display: none;
-        border: 1px solid transparent; width: 100%; margin-top: 10px; /* Adiciona margem */
+        cursor: pointer; font-size: 0.9rem; transition: 0.3s; display: none; /* Começa escondido */
+        border: 1px solid transparent; width: 100%; margin-top: 10px; /* Ocupa largura total */
     }
-    #q-hint-btn.disabled { background: #555; cursor: not-allowed; opacity: 0.6; }
+    #q-hint-btn.disabled { background: #555; cursor: not-allowed; opacity: 0.6; } /* Estilo desabilitado */
+    /* Estilo hover de gesto para o botão de dica */
+    #q-hint-btn.gesture-selectable.hovered {
+        background: #2563eb; /* Azul um pouco mais claro */
+        transform: scale(1.05);
+        border-color: #60a5fa;
+    }
+    #q-hint-btn.disabled.hovered { /* Não aplica hover se desabilitado */
+        transform: none;
+        border-color: transparent;
+        background: #555;
+    }
 
-    .feedback-modal-overlay { /* Reutiliza a classe modal mas com Z-index maior */
+    /* ----- Modal de Feedback (Acerto/Erro) ----- */
+    .feedback-modal-overlay { /* Z-index maior para sobrepor outros modais */
         position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
         background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1100; padding: 20px;
     }
-     .feedback-modal-overlay.active { display: flex; } /* Adiciona classe active */
-
-    .feedback-modal { /* Usa q-modal-card como base */
-      background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
-      padding: 1.5rem; max-width: 400px; width: 100%; text-align: center;
+    .feedback-modal-overlay.active { display: flex; } /* Classe para mostrar */
+    .feedback-modal { /* Card do feedback */
+      background: linear-gradient(135deg, var(--modal-gradient-end), #334155); /* Gradiente diferente */
+      border-radius: 20px; padding: 1.5rem; max-width: 400px; width: 100%; text-align: center;
+      border: 1px solid var(--border-medium);
     }
     #feedback-icon { font-size: 3rem; margin-bottom: 1rem; }
     #feedback-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
     #feedback-message { font-size: 1rem; color: var(--muted); margin-bottom: 0.5rem; }
-    #feedback-explanation { font-size: 0.9rem; color: #a0aec0; }
+    #feedback-explanation { font-size: 0.9rem; color: #a0aec0; } /* Explicação mais sutil */
 
-
-    .gameover-modal { /* Usa q-modal-card como base */
-        background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
+    /* ----- Modal de Fim de Jogo ----- */
+    .gameover-modal { /* Baseado no q-modal-card */
+        background: linear-gradient(135deg, var(--modal-gradient-end), #334155); border-radius: 20px;
         padding: 2rem 3rem; max-width: 500px; width: 100%; text-align: center;
         border: 1px solid var(--accent); box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     }
@@ -209,48 +284,68 @@
     #gameover-score { font-size: 1.5rem; margin-bottom: 2rem; }
     #gameover-score span { font-weight: 700; color: var(--accent); }
     .gameover-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;}
+    /* Botões usam o estilo .btn geral */
     #restart-button, #change-avatar-button { padding: 12px 24px; }
 
-    /* Estilos Modal de Hint (Seleção e Resultado) - Usam q-modal-card como base */
-    .hint-modal-card {
-        background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px; border-radius: 20px;
+    /* ----- Modal de Seleção de Dica ----- */
+    .hint-modal-card { /* Baseado no q-modal-card */
+        background: linear-gradient(135deg, var(--modal-gradient-start), var(--modal-gradient-end));
+        padding: 30px; border-radius: 20px;
         border: 1px solid var(--info); max-width: 600px; width: 100%; text-align: center;
     }
+    .hint-modal-card h3 { color: var(--info); font-size: 1.6rem; margin-bottom: 0.5rem; } /* Título azul */
+    .hint-modal-card p { color: var(--muted); margin-bottom: 1.5rem; }
     .hint-avatars { display: flex; justify-content: space-around; gap: 20px; margin-top: 20px; }
-    .hint-avatar {
-        background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+    .hint-avatar { /* Card de cada avatar de dica */
+        background: var(--input-bg); border: 1px solid var(--border-medium);
         border-radius: 15px; padding: 20px; cursor: pointer; transition: all 0.3s ease; flex: 1;
+        display: flex; flex-direction: column; align-items: center; /* Centraliza conteúdo */
     }
-    .hint-avatar:hover { transform: translateY(-5px); border-color: var(--info); }
-    .hint-avatar.used { opacity: 0.4; cursor: not-allowed; transform: none; border-color: rgba(255,255,255,0.2); }
+    /* Estilo hover de gesto para avatares de dica */
+    .hint-avatar.gesture-selectable.hovered {
+        transform: translateY(-5px) scale(1.03); /* Levanta e aumenta */
+        border-color: var(--info); /* Borda azul */
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); /* Brilho azul */
+    }
+    .hint-avatar.used { opacity: 0.4; cursor: not-allowed; transform: none; border-color: var(--border-medium); } /* Usado */
+    .hint-avatar.used.hovered { /* Não aplica hover se já usado */
+         transform: none;
+         border-color: var(--border-medium);
+         box-shadow: none;
+    }
     .hint-avatar-icon { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;}
-    .hint-avatar-name { font-weight: 600; margin-top: 10px; }
+    .hint-avatar-name { font-weight: 600; margin-top: 10px; color: var(--text-light); }
 
-    .hint-result-modal { /* Usa q-modal-card como base */
+    /* ----- Modal de Resultado da Dica ----- */
+    .hint-result-modal { /* Baseado no q-modal-card */
         text-align: center;
-        background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
+        background: linear-gradient(135deg, var(--modal-gradient-end), #334155); border-radius: 20px;
         padding: 2rem; max-width: 450px; width: 100%;
+        border: 1px solid var(--border-light);
     }
-    #hint-result-icon { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; }
-    #hint-result-text { font-size: 1.2rem; font-weight: 600; }
-    #hint-result-text span { color: var(--success); display: block; margin-top: 0.5rem; }
+    #hint-result-icon { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; border: 3px solid var(--accent); } /* Ícone com borda */
+    #hint-result-text { font-size: 1.2rem; font-weight: 600; color: var(--text-light); }
+    #hint-result-text span { color: var(--success); display: block; margin-top: 0.5rem; font-style: italic; } /* Texto da dica destacado */
+    /* Botão 'Entendi' usa .btn .btn-primary */
+    .mt-4 { margin-top: 1rem; } /* Classe utilitária para margem */
 
-    /* Estilos para o Modal de Inserir Nome */
-    .name-input-modal { /* Usa q-modal-card como base */
-        background: linear-gradient(135deg, #1e293b, #334155); border-radius: 20px;
+    /* ----- Modal de Inserir Nome para Ranking ----- */
+    .name-input-modal { /* Baseado no gameover-modal */
+        background: linear-gradient(135deg, var(--modal-gradient-end), #334155); border-radius: 20px;
         padding: 2rem 3rem; max-width: 500px; width: 100%; text-align: center;
         border: 1px solid var(--success); box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     }
-    #nameInputModal h2 { font-size: 1.8rem; color: var(--success); margin-bottom: 1rem; }
-    #nameInputModal p { margin-bottom: 1.5rem; color: var(--muted); }
-    #playerNameInput {
+    #ranking-name-modal h2 { font-size: 1.8rem; color: var(--success); margin-bottom: 1rem; }
+    #ranking-name-modal p { margin-bottom: 1.5rem; color: var(--muted); }
+    #player-name-input { /* Campo de input */
         width: 80%; padding: 12px; margin-bottom: 1.5rem; border-radius: 8px;
-        border: 1px solid var(--muted); background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--muted); background-color: var(--input-bg);
         color: white; font-size: 1.1rem; text-align: center;
     }
-    #playerNameInput:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
-    #saveScoreButton { padding: 12px 30px; background-color: var(--success); color: #1f2937; }
-     #saveScoreButton.hovered { background-color: #15803d; } /* Verde mais escuro no hover */
+    #player-name-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+    /* Botão usa .btn .btn-primary */
+    #submit-score-button { background-color: var(--success); color: var(--text-dark); padding: 12px 30px;}
+    #submit-score-button.hovered { background-color: #15803d; } /* Verde mais escuro no hover de gesto */
 
   </style>
 </head>
@@ -271,12 +366,12 @@
       <h1>EcoGame: Aventura Corporal</h1>
     </header>
 
-    <div class="game-hud" style="visibility: hidden;">
+    <div class="game-hud">
         <div id="level-display" class="hud-stat"><i class="fa-solid fa-layer-group"></i> Nível: <span id="level">1</span></div>
         <div id="env-status" class="hud-stat"><i class="fa-solid fa-seedling"></i> Progresso: <span>--</span></div>
         <div id="lives-display" class="hud-stat"><i class="fa-solid fa-heart"></i> Vidas: <span id="lives">3</span></div>
         <div id="score-display" class="hud-stat"><i class="fa-solid fa-star"></i> Pontos: <span id="score">0</span></div>
-        <div id="timer-display" class="hud-stat"><i class="fa-solid fa-clock"></i> Tempo: <span id="timer">02:30</span></div> 
+        <div id="timer-display" class="hud-stat"><i class="fa-solid fa-clock"></i> Tempo: <span id="timer">02:30</span></div>
     </div>
 
     <div id="real-life-mode" class="game-container">
@@ -290,8 +385,7 @@
       </div>
       <video id="video-ingame" class="input_video"></video>
       <canvas id="overlay" class="output_canvas"></canvas>
-      <video id="miniCam" autoplay playsinline muted></video>
-    </div>
+      <video id="miniCam" autoplay playsinline muted></video> </div>
   </div>
 
     <div id="questionModal" class="modal">
@@ -302,8 +396,7 @@
             <p id="qText">Texto da pergunta...</p>
             <div id="choices" class="choices">
                 </div>
-            <button id="q-hint-btn" class="btn gesture-selectable">
-                <i class="fa-solid fa-lightbulb"></i> Dica (<span>3</span>)
+            <button id="q-hint-btn" class="btn gesture-selectable"> <i class="fa-solid fa-lightbulb"></i> Dica (<span>3</span>)
                 <div class="selection-progress"></div>
             </button>
         </div>
@@ -312,7 +405,7 @@
     <div id="hintModal" class="modal">
         <div class="hint-modal-card">
             <h3>Pedir Ajuda aos Sábios</h3>
-            <p>Escolha um dos sábios para revelar a resposta correta. Cada um só pode ser usado uma vez por jogo!</p>
+            <p>Escolha um dos sábios para receber uma dica sobre a pergunta. Cada um só pode ser usado uma vez por jogo!</p>
             <div id="hint-avatars" class="hint-avatars">
                 <div class="hint-avatar gesture-selectable" data-avatar="joao">
                     <img src="joao.png" alt="Avatar Tio João" class="hint-avatar-icon">
@@ -337,7 +430,7 @@
         <div class="hint-result-modal">
             <img id="hint-result-icon" src="" alt="Sábio" class="hint-result-icon">
             <p id="hint-result-text"></p>
-        </div>
+            </div>
     </div>
 
     <div id="feedback-overlay" class="feedback-modal-overlay">
@@ -369,16 +462,16 @@
     </div>
 
     <div id="ranking-name-modal" class="modal">
-    <div class="gameover-modal" style="border-color: var(--info);"> <h2 id="ranking-name-title" class="text-2xl font-bold mb-4 text-center text-info"> Salvar Pontuação </h2>
-        <p class="text-center mb-4 text-gray-300">Digite seu nome para registrar no ranking:</p>
-        <input type="text" id="player-name-input" placeholder="Seu nome" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white mb-4 focus:outline-none focus:ring-2 focus:ring-info">
-        <button id="submit-score-button" class="btn btn-primary w-full gesture-selectable" data-action-type="submit-score">
-            <i class="fa-solid fa-save"></i> Salvar no Ranking
-            <div class="selection-progress"></div>
-        </button>
+        <div class="name-input-modal">
+            <h2 id="ranking-name-title">Salvar Pontuação</h2>
+            <p>Digite seu nome para registrar no ranking:</p>
+            <input type="text" id="player-name-input" placeholder="Seu nome" maxlength="15">
+            <button id="submit-score-button" class="btn btn-primary gesture-selectable" data-action-type="submit-score">
+                <i class="fa-solid fa-save"></i> Salvar no Ranking
+                <div class="selection-progress"></div>
+            </button>
+        </div>
     </div>
-    </div>
-
 
     <audio id="background-music" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
@@ -394,11 +487,10 @@
         <source src="https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3" type="audio/mpeg">
     </audio>
     <audio id="victory-sound">
-        <source src="goodresult-82807.mp3" type="audio/mpeg"> 
+        <source src="goodresult-82807.mp3" type="audio/mpeg">
     </audio>
 
     <script src="ranking.js"></script>
     <script src="game.js"></script>
 </body>
-
 </html>
