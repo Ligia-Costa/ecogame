@@ -31,26 +31,27 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0f172a, #1e293b);
             color: var(--light);
-            overflow-x: hidden;
-            min-height: 100vh;
+            overflow: hidden;
+            height: 100vh;
             user-select: none;
         }
 
         /* Container principal responsivo */
         .game-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1rem;
-            min-height: 100vh;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Prevent scrollbars */
         }
 
         /* Telas do jogo */
         .screen {
             display: none;
             width: 100%;
-            min-height: 100vh;
+            height: 100%;
             padding: 1rem;
         }
 
@@ -70,6 +71,16 @@
         /* Tela de Seleção de Matéria - Cores frias */
         .subject-selection {
             background: linear-gradient(135deg, #1e3a8a, #3730a3);
+            justify-content: center;
+            position: relative;
+            overflow-y: auto; /* Adiciona a barra de rolagem vertical */
+        }
+
+        #subject-back-btn-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
 
         .subject-title {
@@ -229,15 +240,17 @@
             position: relative;
             padding: 0;
             justify-content: flex-start;
+            overflow: hidden; /* Garante que nada saia da tela */
         }
 
         /* HUD Responsivo */
         .hud {
-            position: relative;
+            position: absolute; /* HUD fica sobre o canvas */
+            top: 0;
+            left: 0;
             width: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(15px);
-            border-radius: 0 0 20px 20px;
+            background: rgba(15, 23, 42, 0.85); /* Mais transparente */
+            backdrop-filter: blur(10px);
             padding: 1rem;
             color: var(--ice);
             display: flex;
@@ -247,6 +260,7 @@
             gap: 1rem;
             z-index: 100;
             border-bottom: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 0; /* Sem cantos arredondados */
         }
 
         .hud-section {
@@ -302,18 +316,21 @@
 
         /* Container do Canvas responsivo (MODIFICADO) */
         .game-canvas-container {
-            flex: 1; /* Faz o container ocupar o espaço vertical restante */
-            width: 100%; /* Ocupa toda a largura */
-            margin-top: 1rem; /* Adiciona um espaço entre a HUD e o canvas */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: #0f172a;
             overflow: hidden;
-            position: relative;
+            z-index: 1; /* Garante que fique atrás da HUD */
         }
 
         #gameCanvas {
             width: 100%;
             height: 100%;
             display: block;
+            object-fit: cover; /* Cobre a tela mantendo a proporção */
         }
 
         /* Controles com novo layout */
@@ -951,8 +968,8 @@
             
             <div class="subject-grid" id="subject-grid">
                 </div>
-            
-            <div class="btn-group">
+
+            <div class="btn-group" id="subject-back-btn-container">
                 <a href="index.html" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Voltar ao Menu
                 </a>
@@ -1160,7 +1177,29 @@
                 <div id="feedback-bonus" class="feedback-bonus"></div>
             </div>
         </div>
+
+        <div id="ranking-name-modal" class="modal-overlay">
+            <div class="modal">
+                <h2 id="ranking-name-title" class="modal-title">Salvar Pontuação</h2>
+                <p class="modal-body" style="margin-bottom: 1.5rem;">Digite seu nome para registrar sua incrível jornada no ranking!</p>
+                <input type="text" id="player-name-input" placeholder="Seu nome de herói" maxlength="15" style="width: 100%; padding: 1rem; margin-bottom: 1.5rem; border-radius: 10px; border: 2px solid var(--primary); background-color: rgba(15, 23, 42, 0.8); color: var(--light); font-size: 1.1rem; transition: var(--transition);">
+                <button id="submit-score-button" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-save"></i> Salvar no Ranking
+                </button>
+            </div>
+        </div>
+
+        <div id="ranking-modal" class="modal-overlay">
+            <div class="modal">
+                <h2 id="ranking-title">Ranking</h2>
+                <div id="ranking-table-body"></div>
+                <button id="close-ranking-button" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Fechar
+                </button>
+            </div>
+        </div>
     </div>
+    <script src="ranking.js"></script>
 
     <script>
         // Dados dos avatares por matéria
@@ -1305,6 +1344,12 @@
         const hintAvatars = ['joao.png', 'rafael.png'];
 
 
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
         // Adicione este código ao seu script existente
         function initControlsToggle() {
             const controlsHelp = document.querySelector('.controls-help');
@@ -1348,6 +1393,19 @@
             const backButton = document.getElementById('back-button');
             backButton.addEventListener('click', () => {
                 showScreen('subject'); 
+            });
+
+            const viewRankingButton = document.getElementById('view-ranking-button');
+            const rankingModal = document.getElementById('ranking-modal');
+            const closeRankingButton = document.getElementById('close-ranking-button');
+
+            viewRankingButton.addEventListener('click', () => {
+                displayRanking('virtual'); 
+                rankingModal.style.display = 'flex';
+            });
+
+            closeRankingButton.addEventListener('click', () => {
+                rankingModal.style.display = 'none';
             });
 
             // Lógica do botão de dica (SUBSTITUIR O EXISTENTE)
@@ -1472,18 +1530,16 @@
                 
                 // Processar as primeiras 15 perguntas COM DICAS
                 gameQuestions = rawQuestions.slice(0, 15).map((q, index) => {
-                    const correctAnswerChar = q.resposta_correta.trim().charAt(0).toUpperCase();
-                    const correctIndex = q.alternativas.findIndex(alt => 
-                        alt.trim().charAt(0).toUpperCase() === correctAnswerChar
-                    );
+                    const cleanedChoices = q.alternativas.map(choice => choice.replace(/^[A-Z]\)\s*/, '').trim());
+                    const correctAnswerText = q.resposta_correta.replace(/^[A-Z]\)\s*/, '').trim();
 
                     return {
                         id: index + 1,
                         question: q.pergunta,
-                        options: [...q.alternativas],
-                        correct: correctIndex,
-                        explanation: `Resposta correta: ${q.alternativas[correctIndex]}`,
-                        hint: q.dica || "Pense cuidadosamente sobre a resposta mais lógica." // ADICIONAR DICA
+                        options: cleanedChoices,
+                        correctAnswer: correctAnswerText,
+                        originalCorrectAnswer: q.resposta_correta,
+                        hint: q.dica || "Pense cuidadosamente sobre a resposta mais lógica."
                     };
                 });
 
@@ -1496,13 +1552,13 @@
                     id: i + 1,
                     question: `Pergunta ${i + 1} sobre ${gameState.selectedSubject.name}: Qual é o principal conceito de sustentabilidade?`,
                     options: [
-                        "A) Uso responsável dos recursos naturais",
-                        "B) Exploração máxima dos recursos",
-                        "C) Ignorar impactos ambientais", 
-                        "D) Foco apenas no lucro"
-                    ],
-                    correct: 0,
-                    explanation: "A sustentabilidade envolve o uso responsável dos recursos naturais.",
+                        "Uso responsável dos recursos naturais",
+                        "Exploração máxima dos recursos",
+                        "Ignorar impactos ambientais", 
+                        "Foco apenas no lucro"
+                    ].map(o => o.replace(/^[A-Z]\)\s*/, '').trim()),
+                    correctAnswer: "Uso responsável dos recursos naturais",
+                    originalCorrectAnswer: "A) Uso responsável dos recursos naturais",
                     hint: "Pense no equilíbrio entre desenvolvimento e preservação ambiental." // DICA PADRÃO
                 }));
             }
@@ -1533,70 +1589,55 @@
         }
 
         // Função para melhor distribuição das sementes com mais plataformas
-        function createSeeds(){
+        function createSeeds() {
             seeds = [];
             let seedCount = 0;
             
-            // Colocar 1 semente em cada plataforma flutuante (10 plataformas flutuantes)
-            for (let i = 1; i < platforms.length; i++) { // Começa do 1 para pular o chão
-                // Posicionar semente em posição variada na plataforma (não sempre no centro)
-                const platform = platforms[i];
-                let xPos;
-                
-                // Alternar entre esquerda, centro e direita da plataforma
-                const positionType = i % 3;
-                if (positionType === 0) {
-                    xPos = platform.x + 20; // Esquerda
-                } else if (positionType === 1) {
-                    xPos = platform.x + platform.width / 2 - 10; // Centro
-                } else {
-                    xPos = platform.x + platform.width - 40; // Direita
+            const floatingPlatforms = platforms.slice(1); // Ignora o chão
+            
+            // GARANTE QUE HÁ NO MÁXIMO 15 SEMENTES
+            const totalSeeds = Math.min(15, floatingPlatforms.length + 4); 
+            
+            // Colocar 1 semente em cada plataforma flutuante (agora são 11)
+            floatingPlatforms.forEach((platform, i) => {
+                if (seedCount < 11) { // Garante 1 semente para cada plataforma flutuante
+                    let xPos = platform.x + platform.width / 2 - 10; // Centro
+                    
+                    seeds.push({
+                        x: xPos,
+                        y: platform.y - 40,
+                        width: 20,
+                        height: 20,
+                        collected: false,
+                        questionId: seedCount + 1,
+                        color: '#FFD700'
+                    });
+                    seedCount++;
                 }
+            });
+            
+            // Colocar as sementes restantes no chão (total - sementes flutuantes)
+            const remainingSeeds = totalSeeds - seedCount;
+            const groundPlatform = platforms[0];
+            
+            // Posições pré-definidas para as sementes do chão (bem espaçadas)
+            const groundPositions = [300, 500, 1000, 1750];
+            
+            for (let i = 0; i < remainingSeeds; i++) {
+                const xPos = groundPositions[i % groundPositions.length] + (Math.random() * 20 - 10);
                 
                 seeds.push({
                     x: xPos,
-                    y: platform.y - 40,
-                    width: 20,
-                    height: 20,
-                    collected: false,
-                    questionId: seedCount + 1,
-                    color: '#FFD700',
-                    platformIndex: i
-                });
-                seedCount++;
-            }
-            
-            // Colocar as sementes restantes no chão (plataforma 0) - BEM ESPALHADAS NO CHÃO DE 2000
-            const remainingSeeds = 15 - seedCount;
-            const groundPlatform = platforms[0];
-            
-            // Posições pré-definidas para as sementes do chão (bem espaçadas em 2000px)
-            const groundPositions = [
-                300,   // Começa mais adiante
-                500,   // 
-                1000,   // 
-                1200,   // 
-                1400,  // Meio
-                1500,  // 
-                1750,  // 
-                
-            ];
-            
-            for (let i = 0; i < remainingSeeds; i++) {
-                const xPos = groundPositions[i % groundPositions.length] + (Math.random() * 40 - 20);
-                
-                seeds.push({
-                    x: Math.max(20, Math.min(groundPlatform.width - 40, xPos)),
                     y: groundPlatform.y - 40,
                     width: 20,
                     height: 20,
                     collected: false,
                     questionId: seedCount + 1,
-                    color: '#FFD700',
-                    platformIndex: 0
+                    color: '#FFD700'
                 });
                 seedCount++;
-            }}
+            }
+        }
 
         function updateEnvironmentState() {
             const seeds = gameState.questionsAnswered;
@@ -1614,6 +1655,10 @@
         function initializeGame() {
             console.log('Inicializando mundo do jogo...');
             
+            // Ajustar o tamanho do canvas para a tela cheia
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
             // Resetar estado
             gameState.score = 0;
             gameState.lives = 3;
@@ -1640,20 +1685,22 @@
             
             // Criar plataformas - MAIS PLATAFORMAS ADICIONADAS
             platforms = [
-                // Chão principal ESTENDIDO
-                { x: 0, y: GROUND_LEVEL, width: 2000, height: 100, color: '#8B4513' },
+                // Chão principal ESTENDIDO, com altura dinâmica para preencher o vão
+                { x: 0, y: GROUND_LEVEL, width: 2000, height: canvas.height - GROUND_LEVEL, color: '#8B4513' },
                 
-                // Plataformas flutuantes BEM ESPAÇADAS
+                // Plataformas flutuantes BEM ESPAÇADAS (ORDENADAS POR 'X')
                 { x: 150, y: 320, width: 100, height: 20, color: '#A0522D' },
+                { x: 250, y: 150, width: 100, height: 20, color: '#A0522D' }, // Alta
                 { x: 400, y: 250, width: 100, height: 20, color: '#A0522D' },
                 { x: 650, y: 350, width: 100, height: 20, color: '#A0522D' },
+                { x: 750, y: 180, width: 100, height: 20, color: '#A0522D' }, // Alta
                 { x: 900, y: 280, width: 100, height: 20, color: '#A0522D' },
-                { x: 1150, y: 200, width: 100, height: 20, color: '#A0522D' },
+                { x: 1150, y: 200, width: 100, height: 20, color: '#A0522D' }, // Alta
+                { x: 1250, y: 380, width: 100, height: 20, color: '#A0522D' },
                 { x: 1400, y: 320, width: 100, height: 20, color: '#A0522D' },
-                { x: 1650, y: 180, width: 100, height: 20, color: '#A0522D' },
-                { x: 250, y: 150, width: 100, height: 20, color: '#A0522D' },
-                { x: 750, y: 180, width: 100, height: 20, color: '#A0522D' },
-                { x: 1250, y: 380, width: 100, height: 20, color: '#A0522D' }
+                // PLATAFORMA ADICIONADA PARA FACILITAR O SALTO FINAL
+                { x: 1525, y: 250, width: 100, height: 20, color: '#A0522D' },
+                { x: 1650, y: 180, width: 100, height: 20, color: '#A0522D' } // Plataforma final (alta)
             ];
             
             // Criar sementes com distribuição melhorada
@@ -1750,7 +1797,10 @@
             
             // Limites do mundo
             if (player.x < 0) player.x = 0;
-            if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+            // Corrigido para usar a largura do mundo (2000) em vez da largura da tela
+            if (player.x > platforms[0].width - player.width) {
+                player.x = platforms[0].width - player.width;
+            }
             if (player.y > canvas.height - player.height) {
                 player.y = canvas.height - player.height;
                 player.velocityY = 0;
@@ -1816,18 +1866,24 @@
             
             questionText.textContent = question.question;
             optionsContainer.innerHTML = '';
-            
-            question.options.forEach((option, index) => {
+
+            let shuffledOptions = [...question.options];
+            shuffleArray(shuffledOptions);
+
+            shuffledOptions.forEach((optionText, index) => {
                 const button = document.createElement('button');
                 button.className = 'option-btn';
                 button.innerHTML = `
                     <div class="option-letter">${String.fromCharCode(65 + index)}</div>
-                    <span>${option}</span>
+                    <span>${optionText}</span>
                 `;
-                button.addEventListener('click', () => answerQuestion(index));
+                button.addEventListener('click', () => {
+                    const isCorrect = optionText.trim() === question.correctAnswer;
+                    answerQuestion(isCorrect, question.correctAnswer);
+                });
                 optionsContainer.appendChild(button);
             });
-            
+
             questionOverlay.style.display = 'flex';
             
             // MOSTRAR BOTÃO DE DICA APENAS SE HOUVER DICA DISPONÍVEL
@@ -1839,27 +1895,34 @@
             }
         }
 
-        function answerQuestion(selectedIndex) {
-            const isCorrect = (selectedIndex === currentQuestion.question.correct);
-            
+        function answerQuestion(isCorrect, correctAnswerText) {
             if (isCorrect) {
                 // Resposta correta
                 gameState.score += 10;
                 gameState.questionsAnswered++;
                 updateEnvironmentState();
-                showFeedback(true, currentQuestion.question.explanation, "+10 pontos!");
+
+                const isGameOver = gameState.questionsAnswered >= gameState.totalQuestions;
                 
-                if (gameState.questionsAnswered >= gameState.totalQuestions) {
-                    setTimeout(() => completeLevel(), 5000); // 2s feedback + 3s de visualização
-                }
+                showFeedback(
+                    true, 
+                    `A resposta correta é: ${correctAnswerText}`, 
+                    "+10 pontos!",
+                    isGameOver ? () => showGameOver() : null // Passa showGameOver como callback se o jogo acabou
+                );
+
             } else {
                 // Resposta incorreta
                 gameState.lives--;
-                showFeedback(false, currentQuestion.question.explanation, "-1 vida!");
                 
-                if (gameState.lives <= 0) {
-                    setTimeout(() => showGameOver(), 1500);
-                } else {
+                showFeedback(
+                    false, 
+                    `A resposta correta é: ${correctAnswerText}`, 
+                    "-1 vida!",
+                    gameState.lives <= 0 ? () => showGameOver() : null // Passa showGameOver se as vidas acabaram
+                );
+                
+                if (gameState.lives > 0) {
                     // Devolve a semente para poder coletar novamente
                     currentQuestion.seed.collected = false;
                 }
@@ -1869,7 +1932,7 @@
             questionOverlay.style.display = 'none';
         }
 
-        function showFeedback(isCorrect, message, bonus) {
+        function showFeedback(isCorrect, message, bonus, onComplete = null) {
             feedbackIcon.textContent = isCorrect ? '🎉' : '❌';
             feedbackTitle.textContent = isCorrect ? 'Resposta Correta!' : 'Resposta Incorreta';
             feedbackTitle.style.color = isCorrect ? '#10B981' : '#EF4444';
@@ -1879,14 +1942,14 @@
             
             setTimeout(() => {
                 feedbackOverlay.style.display = 'none';
-                if (gameState.lives > 0 && gameState.questionsAnswered < gameState.totalQuestions) {
+                
+                if (onComplete) {
+                    onComplete(); // Executa o callback se ele existir (para game over)
+                } else {
+                    // Comportamento padrão: voltar ao jogo
                     gameState.phase = 'playing';
                 }
             }, 2000);
-        }
-
-        function completeLevel() {
-            showGameOver();
         }
 
         function showGameOver() {
@@ -1894,6 +1957,29 @@
             finalSeedsElement.textContent = `${gameState.questionsAnswered}/15`;
             finalEnvironmentElement.textContent = gameState.environmentState.charAt(0).toUpperCase() + gameState.environmentState.slice(1);
             showScreen('gameOver');
+            showRankingNameModal();
+        }
+
+        function showRankingNameModal() {
+            const modal = document.getElementById('ranking-name-modal');
+            const input = document.getElementById('player-name-input');
+            const button = document.getElementById('submit-score-button');
+
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+
+            if (button) {
+                button.onclick = () => {
+                    const playerName = input.value.trim();
+                    if (playerName) {
+                        addScore(playerName, gameState.score, 'virtual');
+                        modal.style.display = 'none';
+                    } else {
+                        alert("Por favor, digite seu nome.");
+                    }
+                };
+            }
         }
 
         function createParticles(x, y, count, color) {
@@ -2128,6 +2214,14 @@
             initializeGame();
             showScreen('playing');
         }
+
+        // Expose game elements for Playwright testing
+        window.virtualLifeGame = {
+            get questions() { return gameQuestions; },
+            get gameState() { return gameState; }
+        };
+        window.showQuestion = showQuestion;
+        window.showGameOver = showGameOver;
 
         // Iniciar o jogo quando a página carregar
         window.addEventListener('load', init);
