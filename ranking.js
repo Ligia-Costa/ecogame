@@ -112,19 +112,51 @@ function displayRanking(gameMode) {
     });
 }
 
+/**
+ * (NOVA FUNÇÃO) Limpa os scores de um modo de jogo específico do localStorage.
+ * @param {string} gameMode - 'real' ou 'virtual'.
+ */
+function clearRanking(gameMode) {
+    const storageKey = getStorageKey(gameMode);
+    try {
+        localStorage.removeItem(storageKey);
+        console.log(`Ranking [${gameMode}] limpo.`);
+    } catch (e) {
+        console.error(`Erro ao limpar ranking [${gameMode}]:`, e);
+    }
+}
+
+
 // --- Funções para a página ranking.html ---
 
 /**
- * Inicializa a página de ranking, adicionando listeners aos botões
+ * (FUNÇÃO ATUALIZADA) Inicializa a página de ranking, adicionando listeners aos botões
  * e carregando o ranking inicial (padrão: real).
  */
 function initializeRankingPage() {
     const btnReal = document.getElementById('btn-ranking-real');
     const btnVirtual = document.getElementById('btn-ranking-virtual');
 
+    // Novos seletores para os botões de exclusão
+    const btnDeleteReal = document.getElementById('btn-delete-real');
+    const btnDeleteVirtual = document.getElementById('btn-delete-virtual');
+
+    // Novos seletores para o modal
+    const confirmModal = document.getElementById('confirm-delete-modal');
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+    const cancelBtn = document.getElementById('cancel-delete-btn');
+
+    let modeToDelete = null; // Armazena o modo a ser excluído ('real' ou 'virtual')
+    let currentActiveMode = 'real'; // Armazena o modo ativo para refresh
+
     if (btnReal && btnVirtual) {
         btnReal.addEventListener('click', () => {
+            currentActiveMode = 'real';
             displayRanking('real');
+            btnReal.classList.add('active');
+            btnVirtual.classList.remove('active');
+            
+            // Atualiza classes Tailwind (se estiver usando o novo HTML)
             btnReal.classList.add('bg-amber-500', 'text-gray-900');
             btnReal.classList.remove('bg-gray-700', 'text-gray-300');
             btnVirtual.classList.add('bg-gray-700', 'text-gray-300');
@@ -132,21 +164,63 @@ function initializeRankingPage() {
         });
 
         btnVirtual.addEventListener('click', () => {
+            currentActiveMode = 'virtual';
             displayRanking('virtual');
+            btnVirtual.classList.add('active');
+            btnReal.classList.remove('active');
+
+            // Atualiza classes Tailwind (se estiver usando o novo HTML)
             btnVirtual.classList.add('bg-amber-500', 'text-gray-900');
             btnVirtual.classList.remove('bg-gray-700', 'text-gray-300');
             btnReal.classList.add('bg-gray-700', 'text-gray-300');
             btnReal.classList.remove('bg-amber-500', 'text-gray-900');
         });
 
+        // Lógica do Modal de Exclusão
+        if (confirmModal && confirmBtn && cancelBtn && btnDeleteReal && btnDeleteVirtual) {
+            
+            const showModal = (mode) => {
+                modeToDelete = mode;
+                confirmModal.style.display = 'flex';
+            };
+
+            const hideModal = () => {
+                modeToDelete = null;
+                confirmModal.style.display = 'none';
+            };
+
+            btnDeleteReal.addEventListener('click', () => showModal('real'));
+            btnDeleteVirtual.addEventListener('click', () => showModal('virtual'));
+            cancelBtn.addEventListener('click', hideModal);
+            
+            // Fecha o modal se clicar fora da caixa
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target === confirmModal) {
+                    hideModal();
+                }
+            });
+
+            confirmBtn.addEventListener('click', () => {
+                if (modeToDelete) {
+                    clearRanking(modeToDelete);
+                    // Atualiza a exibição apenas se o modo excluído for o ativo
+                    if (modeToDelete === currentActiveMode) {
+                        displayRanking(currentActiveMode);
+                    }
+                    hideModal();
+                }
+            });
+        }
+
         // Carrega o ranking 'real' por padrão ao abrir a página
         displayRanking('real');
+        btnReal.classList.add('active');
+        // Atualiza classes Tailwind (se estiver usando o novo HTML)
         btnReal.classList.add('bg-amber-500', 'text-gray-900');
         btnVirtual.classList.add('bg-gray-700', 'text-gray-300');
 
     } else {
          // Se os botões não existirem (página antiga), carrega o ranking 'real'
-         // Você pode remover isso se atualizar o ranking.html
         displayRanking('real');
     }
 }
