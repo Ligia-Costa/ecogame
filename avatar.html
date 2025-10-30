@@ -54,11 +54,19 @@
         }
 
         h1 { font-size: 2.5rem; font-weight: 700; color: #f59e0b; margin-bottom: 1rem; }
-        h2 { font-size: 1.2rem; color: #cbd5e1; margin-bottom: 2.5rem; font-weight: 400; }
+        
+        /* --- MUDANÇA AQUI --- */
+        h2 { 
+            font-size: 1.2rem; 
+            color: #cbd5e1; 
+            margin-bottom: 1.5rem; /* Reduzido de 2.5rem */
+            font-weight: 400; 
+        }
 
         .avatar-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 25px; margin-bottom: 3rem;
+            gap: 20px; /* Reduzido de 25px */
+            margin-bottom: 2rem; /* Reduzido de 3rem */
         }
 
         .gesture-selectable {
@@ -69,8 +77,9 @@
             overflow: hidden;
         }
 
+        /* --- MUDANÇA AQUI --- */
         .avatar-card { 
-            padding: 20px 15px;
+            padding: 15px 10px; /* Reduzido de 20px 15px */
             border-radius: 18px;
         }
 
@@ -85,9 +94,13 @@
             box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
         }
 
+        /* --- MUDANÇA AQUI --- */
         .avatar-image {
-            width: 60px; height: 60px; margin: 0 auto 15px auto;
-            object-fit: contain; transition: transform 0.3s ease;
+            width: 60px; 
+            height: 60px; 
+            margin: 0 auto 10px auto; /* Reduzido de 15px */
+            object-fit: contain; 
+            transition: transform 0.3s ease;
         }
         .avatar-card.hovered .avatar-image { transform: scale(1.1); }
 
