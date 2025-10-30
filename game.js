@@ -354,20 +354,29 @@ const realLifeGame = {
                  explanation: "Houve um erro no carregamento desta pergunta."
              };
         }
-        // Encontra o índice da resposta correta (A=0, B=1, C=2, D=3)
-        const correctLetter = q.resposta_correta.trim().charAt(0).toUpperCase();
-        let correctIndex = q.alternativas.findIndex(alt => alt.trim().charAt(0).toUpperCase() === correctLetter);
+        
+        // Lógica de verificação da resposta corrigida
+        // Primeiro, tenta encontrar a resposta correta comparando o texto completo. Isso é mais confiável.
+        let correctIndex = q.alternativas.findIndex(alt => {
+            const alternativeText = alt.trim();
+            return alternativeText.toLowerCase() === q.resposta_correta.trim().toLowerCase();
+        });
 
-         // Fallback se a letra não for encontrada (ex: resposta escrita por extenso)
-         if (correctIndex === -1) {
-             console.warn("Não foi possível encontrar o índice da resposta correta pela letra, tentando buscar pelo texto:", q.resposta_correta);
-             correctIndex = q.alternativas.findIndex(alt => alt.trim().toLowerCase() === q.resposta_correta.trim().toLowerCase()); // Compara em minúsculas
-             if (correctIndex === -1) {
-                 console.error("Não foi possível determinar o índice correto para:", q);
-                 correctIndex = 0; // Assume a primeira como correta para evitar erro fatal
-             }
-         }
+        // Se a busca pelo texto completo falhar, usa a letra como um fallback.
+        if (correctIndex === -1) {
+            console.warn(`[Fallback] Não foi possível encontrar a resposta por texto para "${q.resposta_correta}". Tentando pela letra inicial.`);
+            const correctLetter = q.resposta_correta.trim().charAt(0).toUpperCase();
+            correctIndex = q.alternativas.findIndex(alt => alt.trim().charAt(0).toUpperCase() === correctLetter);
+        }
 
+        // Se ambos os métodos falharem, registra um erro e assume a primeira alternativa como correta para evitar que o jogo quebre.
+        if (correctIndex === -1) {
+            console.error(`[ERRO CRÍTICO] Não foi possível determinar o índice da resposta correta para a pergunta: "${q.pergunta}". A resposta correta fornecida foi "${q.resposta_correta}". Assumindo a primeira alternativa como correta.`);
+            correctIndex = 0;
+        }
+
+        // Remove os prefixos das alternativas para exibição limpa
+        const cleanedChoices = q.alternativas.map(choice => choice.replace(/^[A-Z]\)\s*/, ''));
 
         // Cria a explicação que será mostrada após a resposta
         const explanation = `A resposta correta é: ${q.alternativas[correctIndex]}`;
@@ -375,7 +384,7 @@ const realLifeGame = {
             name: name,
             question: {
                 text: q.pergunta,
-                choices: q.alternativas.map(alt => alt.substring(alt.indexOf(')') + 1).trim()), // Remove "A) ", "B) " etc. com mais segurança
+                choices: cleanedChoices, // Usa as alternativas limpas
                 answer: correctIndex, // Índice da resposta correta
                 hint: q.dica || "Pense com cuidado." // Usa a dica do JSON ou uma padrão
             },
