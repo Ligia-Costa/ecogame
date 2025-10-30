@@ -59,7 +59,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             animation: fadeIn 0.5s ease;
         }
 
@@ -71,9 +70,11 @@
         /* Tela de Seleção de Matéria - Cores frias */
         .subject-selection {
             background: linear-gradient(135deg, #1e3a8a, #3730a3);
-            justify-content: center;
+            justify-content: flex-start; /* Alinha o conteúdo ao topo */
             position: relative;
             overflow-y: auto; /* Adiciona a barra de rolagem vertical */
+            padding-top: 2rem; /* Adiciona um espaçamento no topo */
+            padding-bottom: 2rem; /* Adiciona um espaçamento na base */
         }
 
         #subject-back-btn-container {
@@ -154,6 +155,7 @@
         /* Tela de Seleção de Avatar - Cores frias */
         .avatar-screen {
             background: linear-gradient(135deg, #1e3a8a, #4338ca);
+            justify-content: center; /* Adicionado para centralizar */
         }
 
         .avatar-title {
@@ -448,6 +450,7 @@
         /* Tela de Game Over - Cores frias */
         .gameover-screen {
             background: linear-gradient(135deg, #1e3a8a, #3730a3);
+            justify-content: center; /* Adicionado para centralizar */
         }
 
         .gameover-card {
@@ -1178,28 +1181,7 @@
             </div>
         </div>
 
-        <div id="ranking-name-modal" class="modal-overlay">
-            <div class="modal">
-                <h2 id="ranking-name-title" class="modal-title">Salvar Pontuação</h2>
-                <p class="modal-body" style="margin-bottom: 1.5rem;">Digite seu nome para registrar sua incrível jornada no ranking!</p>
-                <input type="text" id="player-name-input" placeholder="Seu nome de herói" maxlength="15" style="width: 100%; padding: 1rem; margin-bottom: 1.5rem; border-radius: 10px; border: 2px solid var(--primary); background-color: rgba(15, 23, 42, 0.8); color: var(--light); font-size: 1.1rem; transition: var(--transition);">
-                <button id="submit-score-button" class="btn btn-primary" style="width: 100%;">
-                    <i class="fas fa-save"></i> Salvar no Ranking
-                </button>
-            </div>
-        </div>
-
-        <div id="ranking-modal" class="modal-overlay">
-            <div class="modal">
-                <h2 id="ranking-title">Ranking</h2>
-                <div id="ranking-table-body"></div>
-                <button id="close-ranking-button" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Fechar
-                </button>
-            </div>
-        </div>
     </div>
-    <script src="ranking.js"></script>
 
     <script>
         // Dados dos avatares por matéria
@@ -1393,19 +1375,6 @@
             const backButton = document.getElementById('back-button');
             backButton.addEventListener('click', () => {
                 showScreen('subject'); 
-            });
-
-            const viewRankingButton = document.getElementById('view-ranking-button');
-            const rankingModal = document.getElementById('ranking-modal');
-            const closeRankingButton = document.getElementById('close-ranking-button');
-
-            viewRankingButton.addEventListener('click', () => {
-                displayRanking('virtual'); 
-                rankingModal.style.display = 'flex';
-            });
-
-            closeRankingButton.addEventListener('click', () => {
-                rankingModal.style.display = 'none';
             });
 
             // Lógica do botão de dica (SUBSTITUIR O EXISTENTE)
@@ -1957,29 +1926,15 @@
             finalSeedsElement.textContent = `${gameState.questionsAnswered}/15`;
             finalEnvironmentElement.textContent = gameState.environmentState.charAt(0).toUpperCase() + gameState.environmentState.slice(1);
             showScreen('gameOver');
-            showRankingNameModal();
-        }
 
-        function showRankingNameModal() {
-            const modal = document.getElementById('ranking-name-modal');
-            const input = document.getElementById('player-name-input');
-            const button = document.getElementById('submit-score-button');
-
-            if (modal) {
-                modal.style.display = 'flex';
-            }
-
-            if (button) {
-                button.onclick = () => {
-                    const playerName = input.value.trim();
-                    if (playerName) {
-                        addScore(playerName, gameState.score, 'virtual');
-                        modal.style.display = 'none';
-                    } else {
-                        alert("Por favor, digite seu nome.");
-                    }
-                };
-            }
+            // Salvar no ranking
+            setTimeout(() => {
+                const playerName = prompt("Missão concluída! Digite seu nome para salvar no ranking:", "Herói Ecológico");
+                if (playerName) {
+                    addScore(playerName, gameState.score, 'virtual');
+                    alert("Sua pontuação foi salva no ranking!");
+                }
+            }, 1000); // Adiciona um pequeno delay
         }
 
         function createParticles(x, y, count, color) {
@@ -2226,5 +2181,6 @@
         // Iniciar o jogo quando a página carregar
         window.addEventListener('load', init);
     </script>
+    <script src="ranking.js"></script>
 </body>
 </html>
